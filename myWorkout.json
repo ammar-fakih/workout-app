@@ -1,22 +1,364 @@
 [
+  {},
+  [
+    {
+      "name": "Fullbody #1",
+      "startDate": "2019-07-24",
+      "repeatEvery": 2,
+      "exercises": [
+        {
+          "name": "Squat",
+          "sets": [
+            {
+              "id": 1,
+              "reps": 5
+            },
+            {
+              "id": 1,
+              "reps": 5
+            },
+            {
+              "id": 1,
+              "reps": 5
+            }
+          ]
+        },
+        {
+          "name": "Bench Press",
+          "sets": [
+            {
+              "id": 2,
+              "reps": 5
+            },
+            {
+              "id": 2,
+              "reps": 5
+            },
+            {
+              "id": 2,
+              "reps": 5
+            }
+          ]
+        },
+        {
+          "name": "Deadlift",
+          "sets": [
+            {
+              "id": 3,
+              "reps": 5
+            },
+            {
+              "id": 3,
+              "reps": 5
+            },
+            {
+              "id": 3,
+              "reps": 5
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Fullbody #2",
+      "startDate": "2019-07-31",
+      "repeatEvery": 2,
+      "exercises": [
+        {
+          "name": "Squat",
+          "sets": [
+            {
+              "id": 1,
+              "reps": 5
+            },
+            {
+              "id": 1,
+              "reps": 5
+            },
+            {
+              "id": 1,
+              "reps": 5
+            }
+          ]
+        },
+        {
+          "name": "Overhead Press",
+          "sets": [
+            {
+              "id": 4,
+              "reps": 5
+            },
+            {
+              "id": 4,
+              "reps": 5
+            },
+            {
+              "id": 4,
+              "reps": 5
+            }
+          ]
+        },
+        {
+          "name": "Deadlift",
+          "sets": [
+            {
+              "id": 3,
+              "reps": 5
+            },
+            {
+              "id": 3,
+              "reps": 5
+            },
+            {
+              "id": 3,
+              "reps": 5
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  {},
+  [
+    {
+      "name": "Fullbody #1",
+      "startDate": "2019-08-02",
+      "repeatEvery": 2,
+      "exercises": [
+        {
+          "name": "Squat",
+          "sets": [
+            {
+              "id": 1,
+              "reps": 5
+            },
+            {
+              "id": 1,
+              "reps": 5
+            },
+            {
+              "id": 1,
+              "reps": 5
+            }
+          ]
+        },
+        {
+          "name": "Bench Press",
+          "sets": [
+            {
+              "id": 2,
+              "reps": 5
+            },
+            {
+              "id": 2,
+              "reps": 5
+            },
+            {
+              "id": 2,
+              "reps": 5
+            }
+          ]
+        },
+        {
+          "name": "Deadlift",
+          "sets": [
+            {
+              "id": 3,
+              "reps": 5
+            },
+            {
+              "id": 3,
+              "reps": 5
+            },
+            {
+              "id": 3,
+              "reps": 5
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Fullbody #2",
+      "startDate": "2019-07-26",
+      "repeatEvery": 2,
+      "exercises": [
+        {
+          "name": "Squat",
+          "sets": [
+            {
+              "id": 1,
+              "reps": 5
+            },
+            {
+              "id": 1,
+              "reps": 5
+            },
+            {
+              "id": 1,
+              "reps": 5
+            }
+          ]
+        },
+        {
+          "name": "Overhead Press",
+          "sets": [
+            {
+              "id": 4,
+              "reps": 5
+            },
+            {
+              "id": 4,
+              "reps": 5
+            },
+            {
+              "id": 4,
+              "reps": 5
+            }
+          ]
+        },
+        {
+          "name": "Deadlift",
+          "sets": [
+            {
+              "id": 3,
+              "reps": 5
+            },
+            {
+              "id": 3,
+              "reps": 5
+            },
+            {
+              "id": 3,
+              "reps": 5
+            }
+          ]
+        }
+      ]
+    }
+  ]
+  ,
+  {},
+  [
+    {
+      "name": "Fullbody #1",
+      "startDate": "2019-07-28",
+      "repeatEvery": 2,
+      "exercises": [
+        {
+          "name": "Squat",
+          "sets": [
+            {
+              "id": 1,
+              "reps": 5
+            },
+            {
+              "id": 1,
+              "reps": 5
+            },
+            {
+              "id": 1,
+              "reps": 5
+            }
+          ]
+        },
+        {
+          "name": "Bench Press",
+          "sets": [
+            {
+              "id": 2,
+              "reps": 5
+            },
+            {
+              "id": 2,
+              "reps": 5
+            },
+            {
+              "id": 2,
+              "reps": 5
+            }
+          ]
+        },
+        {
+          "name": "Deadlift",
+          "sets": [
+            {
+              "id": 3,
+              "reps": 5
+            },
+            {
+              "id": 3,
+              "reps": 5
+            },
+            {
+              "id": 3,
+              "reps": 5
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Fullbody #2",
+      "startDate": "2019-08-04",
+      "repeatEvery": 2,
+      "exercises": [
+        {
+          "name": "Squat",
+          "sets": [
+            {
+              "id": 1,
+              "reps": 5
+            },
+            {
+              "id": 1,
+              "reps": 5
+            },
+            {
+              "id": 1,
+              "reps": 5
+            }
+          ]
+        },
+        {
+          "name": "Overhead Press",
+          "sets": [
+            {
+              "id": 4,
+              "reps": 5
+            },
+            {
+              "id": 4,
+              "reps": 5
+            },
+            {
+              "id": 4,
+              "reps": 5
+            }
+          ]
+        },
+        {
+          "name": "Deadlift",
+          "sets": [
+            {
+              "id": 3,
+              "reps": 5
+            },
+            {
+              "id": 3,
+              "reps": 5
+            },
+            {
+              "id": 3,
+              "reps": 5
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  {},
   {
-    "name": "Fullbody #1",
-    "exercises": [
-      {
-        "name": "Squat",
-        "sets": [
-          {
-            "reps": 5,
-            "weight": 100
-          }
-        ]
-      }
-    ]
-  },
-  {},
-  {},
-  {},
-  {},
-  {}, 
-  {}
+    "units": "IMPERIAL"
+  }
 ]
