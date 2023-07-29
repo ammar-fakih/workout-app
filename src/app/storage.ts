@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import createSecureStorage from './secureStorage';
 import appDataSlice from './appDataSlice';
+import workoutsSlice from '../features/Home/workoutsSlice';
 
 const SecureStorage = createSecureStorage();
 
@@ -14,10 +15,10 @@ const securePersistConfig = {
 
 const workoutsPersistConfig = {
   key: 'workouts',
-  storage: AsyncStorage
-}
+  storage: AsyncStorage,
+};
 
 export const rootReducer = combineReducers({
   secure: persistReducer(securePersistConfig, appDataSlice),
-  workouts: persistReducer(workoutsPersistConfig, appDataSlice)
+  workouts: persistReducer(workoutsPersistConfig, workoutsSlice),
 });

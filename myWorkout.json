@@ -1,25 +1,29 @@
 [
-  {},
+  [],
   [
     {
       "name": "Fullbody #1",
       "startDate": "2019-07-24",
-      "repeatEvery": 2,
+      "repeatEvery": "WEEK",
+      "frequency": 2,
       "exercises": [
         {
           "name": "Squat",
           "sets": [
             {
               "id": 1,
-              "reps": 5
+              "reps": 5,
+              "restTime": 300
             },
             {
               "id": 1,
-              "reps": 5
+              "reps": 5,
+              "restTime": 300
             },
             {
               "id": 1,
-              "reps": 5
+              "reps": 5,
+              "restTime": 300
             }
           ]
         },
@@ -28,15 +32,18 @@
           "sets": [
             {
               "id": 2,
-              "reps": 5
+              "reps": 5,
+              "restTime": 300
             },
             {
               "id": 2,
-              "reps": 5
+              "reps": 5,
+              "restTime": 300
             },
             {
               "id": 2,
-              "reps": 5
+              "reps": 5,
+              "restTime": 300
             }
           ]
         },
@@ -45,15 +52,18 @@
           "sets": [
             {
               "id": 3,
-              "reps": 5
+              "reps": 5,
+              "restTime": 300
             },
             {
               "id": 3,
-              "reps": 5
+              "reps": 5,
+              "restTime": 300
             },
             {
               "id": 3,
-              "reps": 5
+              "reps": 5,
+              "restTime": 300
             }
           ]
         }
@@ -62,22 +72,26 @@
     {
       "name": "Fullbody #2",
       "startDate": "2019-07-31",
-      "repeatEvery": 2,
+      "repeatEvery": "WEEK",
+      "frequency": 2,
       "exercises": [
         {
           "name": "Squat",
           "sets": [
             {
               "id": 1,
-              "reps": 5
+              "reps": 5,
+              "restTime": 300
             },
             {
               "id": 1,
-              "reps": 5
+              "reps": 5,
+              "restTime": 300
             },
             {
               "id": 1,
-              "reps": 5
+              "reps": 5,
+              "restTime": 300
             }
           ]
         },
@@ -86,15 +100,18 @@
           "sets": [
             {
               "id": 4,
-              "reps": 5
+              "reps": 5,
+              "restTime": 300
             },
             {
               "id": 4,
-              "reps": 5
+              "reps": 5,
+              "restTime": 300
             },
             {
               "id": 4,
-              "reps": 5
+              "reps": 5,
+              "restTime": 300
             }
           ]
         },
@@ -103,42 +120,49 @@
           "sets": [
             {
               "id": 3,
-              "reps": 5
+              "reps": 5,
+              "restTime": 300
             },
             {
               "id": 3,
-              "reps": 5
+              "reps": 5,
+              "restTime": 300
             },
             {
               "id": 3,
-              "reps": 5
+              "reps": 5,
+              "restTime": 300
             }
           ]
         }
       ]
     }
   ],
-  {},
+  [],
   [
     {
       "name": "Fullbody #1",
       "startDate": "2019-08-02",
-      "repeatEvery": 2,
+      "repeatEvery": "WEEK",
+      "frequency": 2,
       "exercises": [
         {
           "name": "Squat",
           "sets": [
             {
               "id": 1,
-              "reps": 5
+              "reps": 5,
+              "restTime": 300
             },
             {
               "id": 1,
-              "reps": 5
+              "reps": 5,
+              "restTime": 300
             },
             {
               "id": 1,
-              "reps": 5
+              "reps": 5,
+              "restTime": 300
             }
           ]
         },
@@ -147,15 +171,18 @@
           "sets": [
             {
               "id": 2,
-              "reps": 5
+              "reps": 5,
+              "restTime": 300
             },
             {
               "id": 2,
-              "reps": 5
+              "reps": 5,
+              "restTime": 300
             },
             {
               "id": 2,
-              "reps": 5
+              "reps": 5,
+              "restTime": 300
             }
           ]
         },
@@ -164,15 +191,18 @@
           "sets": [
             {
               "id": 3,
-              "reps": 5
+              "reps": 5,
+              "restTime": 300
             },
             {
               "id": 3,
-              "reps": 5
+              "reps": 5,
+              "restTime": 300
             },
             {
               "id": 3,
-              "reps": 5
+              "reps": 5,
+              "restTime": 300
             }
           ]
         }
@@ -181,22 +211,26 @@
     {
       "name": "Fullbody #2",
       "startDate": "2019-07-26",
-      "repeatEvery": 2,
+      "frequency": 2,
+      "repeatEvery": "WEEK",
       "exercises": [
         {
           "name": "Squat",
           "sets": [
             {
               "id": 1,
-              "reps": 5
+              "reps": 5,
+              "restTime": 300
             },
             {
               "id": 1,
-              "reps": 5
+              "reps": 5,
+              "restTime": 300
             },
             {
               "id": 1,
-              "reps": 5
+              "reps": 5,
+              "restTime": 300
             }
           ]
         },
@@ -205,15 +239,18 @@
           "sets": [
             {
               "id": 4,
-              "reps": 5
+              "reps": 5,
+              "restTime": 300
             },
             {
               "id": 4,
-              "reps": 5
+              "reps": 5,
+              "restTime": 300
             },
             {
               "id": 4,
-              "reps": 5
+              "reps": 5,
+              "restTime": 300
             }
           ]
         },
@@ -222,15 +259,18 @@
           "sets": [
             {
               "id": 3,
-              "reps": 5
+              "reps": 5,
+              "restTime": 300
             },
             {
               "id": 3,
-              "reps": 5
+              "reps": 5,
+              "restTime": 300
             },
             {
               "id": 3,
-              "reps": 5
+              "reps": 5,
+              "restTime": 300
             }
           ]
         }
@@ -238,27 +278,31 @@
     }
   ]
   ,
-  {},
+  [],
   [
     {
       "name": "Fullbody #1",
       "startDate": "2019-07-28",
-      "repeatEvery": 2,
+      "frequency": 2,
+      "repeatEvery": "WEEK",
       "exercises": [
         {
           "name": "Squat",
           "sets": [
             {
               "id": 1,
-              "reps": 5
+              "reps": 5,
+              "restTime": 300
             },
             {
               "id": 1,
-              "reps": 5
+              "reps": 5,
+              "restTime": 300
             },
             {
               "id": 1,
-              "reps": 5
+              "reps": 5,
+              "restTime": 300
             }
           ]
         },
@@ -267,15 +311,18 @@
           "sets": [
             {
               "id": 2,
-              "reps": 5
+              "reps": 5,
+              "restTime": 300
             },
             {
               "id": 2,
-              "reps": 5
+              "reps": 5,
+              "restTime": 300
             },
             {
               "id": 2,
-              "reps": 5
+              "reps": 5,
+              "restTime": 300
             }
           ]
         },
@@ -284,15 +331,18 @@
           "sets": [
             {
               "id": 3,
-              "reps": 5
+              "reps": 5,
+              "restTime": 300
             },
             {
               "id": 3,
-              "reps": 5
+              "reps": 5,
+              "restTime": 300
             },
             {
               "id": 3,
-              "reps": 5
+              "reps": 5,
+              "restTime": 300
             }
           ]
         }
@@ -301,22 +351,26 @@
     {
       "name": "Fullbody #2",
       "startDate": "2019-08-04",
-      "repeatEvery": 2,
+      "frequency": 2,
+      "repeatEvery": "WEEK",
       "exercises": [
         {
           "name": "Squat",
           "sets": [
             {
               "id": 1,
-              "reps": 5
+              "reps": 5,
+              "restTime": 300
             },
             {
               "id": 1,
-              "reps": 5
+              "reps": 5,
+              "restTime": 300
             },
             {
               "id": 1,
-              "reps": 5
+              "reps": 5,
+              "restTime": 300
             }
           ]
         },
@@ -325,15 +379,18 @@
           "sets": [
             {
               "id": 4,
-              "reps": 5
+              "reps": 5,
+              "restTime": 300
             },
             {
               "id": 4,
-              "reps": 5
+              "reps": 5,
+              "restTime": 300
             },
             {
               "id": 4,
-              "reps": 5
+              "reps": 5,
+              "restTime": 300
             }
           ]
         },
@@ -342,23 +399,23 @@
           "sets": [
             {
               "id": 3,
-              "reps": 5
+              "reps": 5,
+              "restTime": 300
             },
             {
               "id": 3,
-              "reps": 5
+              "reps": 5,
+              "restTime": 300
             },
             {
               "id": 3,
-              "reps": 5
+              "reps": 5,
+              "restTime": 300
             }
           ]
         }
       ]
     }
   ],
-  {},
-  {
-    "units": "IMPERIAL"
-  }
+ [] 
 ]

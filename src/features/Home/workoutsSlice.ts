@@ -1,12 +1,14 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { Units, Workout } from './types';
+import { RootState } from '../../app/store';
 
 interface WorkoutsState {
-  workouts: Workout[][];
+  allWorkouts: Workout[][];
   units: Units;
 }
 
 const initialState: WorkoutsState = {
-  workouts: [],
+  allWorkouts: [],
   units: Units.IMPERIAL,
 };
 
@@ -15,10 +17,18 @@ export const workoutsSlice = createSlice({
   initialState,
   reducers: {
     reset: () => initialState,
+    userDataReadFromFile: (state, action: PayloadAction<Workout[][]>) => {
+      state.allWorkouts = action.payload;
+    },
   },
   extraReducers: (builder) => {},
 });
 
-export const {} = workoutsSlice.actions;
+// Selectors
+export const selectWorkouts = (state: RootState) =>
+  state.appData.workouts.allWorkouts;
+
+// Actions
+export const { reset, userDataReadFromFile } = workoutsSlice.actions;
 
 export default workoutsSlice.reducer;

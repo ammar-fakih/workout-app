@@ -2,23 +2,31 @@
 interface ExerciseSet {
   id: number;
   reps: number;
-  weight: number;
-  restTime: number;
+  restTime: number; // in seconds
 }
 
 interface Exercise {
   name: string;
   sets: ExerciseSet[];
+  icon?: string;
 }
 
-interface Workout {
-  startDate: Date;
-  repeatEvery: number; // in weeks
+export interface Workout {
+  name?: string;
+  startDate: string;
+  repeatEvery: RepeatEvery;
+  frequency: number; // in weeks or days
   exercises: Exercise[];
+  icon?: string;
 }
 
 // Enums
-enum Units {
+export enum Units {
   METRIC = 'METRIC',
   IMPERIAL = 'IMPERIAL',
+}
+
+export enum RepeatEvery {
+  WEEK = 'WEEK',
+  DAY = 'DAY',
 }
