@@ -1,7 +1,7 @@
-import * as SecureStore from 'expo-secure-store';
+import * as SecureStore from "expo-secure-store";
 
-export default function createSecureStorage(options: any = {}) {
-  const replaceCharacter = options.replaceCharacter || '_';
+export default function createSecureStorage(options) {
+  const replaceCharacter = options.replaceCharacter || "_";
   const replacer = options.replacer || defaultReplacer;
 
   return {

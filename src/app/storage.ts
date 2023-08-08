@@ -1,20 +1,20 @@
-import { combineReducers } from 'redux';
-import { persistReducer } from 'redux-persist';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { combineReducers } from "redux";
+import { persistReducer } from "redux-persist";
 
-import createSecureStorage from './secureStorage';
-import appDataSlice from './appDataSlice';
-import workoutsSlice from '../features/Home/workoutsSlice';
+import appDataSlice from "./appDataSlice";
+import createSecureStorage from "./secureStorage";
+import workoutsSlice from "../features/Home/workoutsSlice";
 
 const SecureStorage = createSecureStorage();
 
 const securePersistConfig = {
-  key: 'secure',
+  key: "secure",
   storage: SecureStorage,
 };
 
 const workoutsPersistConfig = {
-  key: 'workouts',
+  key: "workouts",
   storage: AsyncStorage,
 };
 

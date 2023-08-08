@@ -1,11 +1,11 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 
 interface AppDataState {}
 
 const initialState: AppDataState = {};
 
 export const appDataSlice = createSlice({
-  name: 'appData',
+  name: "appData",
   initialState,
   reducers: {
     reset: () => initialState,
@@ -13,6 +13,6 @@ export const appDataSlice = createSlice({
   extraReducers: (builder) => {},
 });
 
-export const {} = appDataSlice.actions;
+// export const {} = appDataSlice.actions;
 
 export default appDataSlice.reducer;

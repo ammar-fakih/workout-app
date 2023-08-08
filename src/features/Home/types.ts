@@ -22,11 +22,11 @@ export interface Workout {
 
 // Enums
 export enum Units {
-  METRIC = 'METRIC',
-  IMPERIAL = 'IMPERIAL',
+  METRIC = "METRIC",
+  IMPERIAL = "IMPERIAL",
 }
 
 export enum RepeatEvery {
-  WEEK = 'WEEK',
-  DAY = 'DAY',
+  WEEK = "WEEK",
+  DAY = "DAY",
 }

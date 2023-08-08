@@ -1,6 +1,6 @@
-import { Dimensions } from 'react-native';
-const { width, height } = Dimensions.get('window');
-import Toast from 'react-native-root-toast';
+import { Dimensions } from "react-native";
+import Toast from "react-native-root-toast";
+const { width, height } = Dimensions.get("window");
 
 //Guideline sizes are based on standard ~5" screen mobile device
 const guidelineBaseWidth = 350;
@@ -13,8 +13,8 @@ const moderateScale = (size: number, factor = 0.5) =>
 
 function showToast(
   message: string,
-  backgroundColor: string = '#000',
-  duration = Toast.durations.LONG
+  backgroundColor: string = "#000",
+  duration = Toast.durations.LONG,
 ) {
   Toast.show(message, {
     duration,

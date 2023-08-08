@@ -1,4 +1,4 @@
-import { Box, Text } from 'native-base';
+import { Box, Text } from "native-base";
 
 export default function Calendar() {
   return (

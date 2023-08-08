@@ -1,6 +1,7 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { Units, Workout } from './types';
-import { RootState } from '../../app/store';
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+
+import { Units, Workout } from "./types";
+import { RootState } from "../../app/store";
 
 interface WorkoutsState {
   allWorkouts: Workout[][];
@@ -13,7 +14,7 @@ const initialState: WorkoutsState = {
 };
 
 export const workoutsSlice = createSlice({
-  name: 'workouts',
+  name: "workouts",
   initialState,
   reducers: {
     reset: () => initialState,
