@@ -1,16 +1,16 @@
 import * as SecureStore from "expo-secure-store";
 
-export default function createSecureStorage(options) {
-  const replaceCharacter = options.replaceCharacter || "_";
-  const replacer = options.replacer || defaultReplacer;
+export default function createSecureStorage() {
+  const replaceCharacter = "_";
+  const replacer = defaultReplacer;
 
   return {
     getItem: (key: string) =>
-      SecureStore.getItemAsync(replacer(key, replaceCharacter), options),
+      SecureStore.getItemAsync(replacer(key, replaceCharacter)),
     setItem: (key: string, value: string) =>
-      SecureStore.setItemAsync(replacer(key, replaceCharacter), value, options),
+      SecureStore.setItemAsync(replacer(key, replaceCharacter), value),
     removeItem: (key: string) =>
-      SecureStore.deleteItemAsync(replacer(key, replaceCharacter), options),
+      SecureStore.deleteItemAsync(replacer(key, replaceCharacter)),
   };
 }
 

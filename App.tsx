@@ -1,14 +1,14 @@
-import 'react-native-gesture-handler';
+import "react-native-gesture-handler";
 
-import { RootSiblingParent } from 'react-native-root-siblings';
-import { NavigationContainer } from '@react-navigation/native';
-import { Provider } from 'react-redux';
-import { NativeBaseProvider } from 'native-base';
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
+import { NativeBaseProvider } from "native-base";
+import { RootSiblingParent } from "react-native-root-siblings";
+import { Provider } from "react-redux";
 
-import { store } from './src/app/store';
-import Home from './src/features/Home';
-import { createStackNavigator } from '@react-navigation/stack';
-import Calendar from './src/features/Calendar';
+import { store } from "./src/app/store";
+import Calendar from "./src/features/Calendar";
+import Home from "./src/features/Home";
 
 const Stack = createStackNavigator();
 
