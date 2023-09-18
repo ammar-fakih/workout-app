@@ -5,11 +5,13 @@ import { RootState } from "../../app/store";
 
 interface WorkoutsState {
   allWorkouts: Workout[][];
+  todaysWorkouts: Workout[];
   units: Units;
 }
 
 const initialState: WorkoutsState = {
   allWorkouts: [],
+  todaysWorkouts: [],
   units: Units.IMPERIAL,
 };
 
@@ -21,6 +23,37 @@ export const workoutsSlice = createSlice({
     userDataReadFromFile: (state, action: PayloadAction<Workout[][]>) => {
       state.allWorkouts = action.payload;
     },
+    todaysWorkoutsSet: (state, action: PayloadAction<Date>) => {
+      console.log(action.payload);
+      console.log(action.payload.getDay());
+      console.log(state.allWorkouts);
+
+      state.todaysWorkouts = state.allWorkouts[action.payload.getDay()].filter(
+        (workout) => {
+          const startDate = new Date(workout.startDate);
+
+          const weeksBetween = Math.floor(
+            (action.payload.getTime() - startDate.getTime()) /
+              (1000 * 60 * 60 * 24 * 7),
+          );
+
+          return weeksBetween % workout.frequency === 0;
+        },
+      );
+
+      state.allWorkouts[7].forEach((workout) => {
+        const startDate = new Date(workout.startDate);
+
+        const daysBetween = Math.floor(
+          (action.payload.getTime() - startDate.getTime()) /
+            (1000 * 60 * 60 * 24),
+        );
+
+        if (daysBetween % workout.frequency === 0) {
+          state.todaysWorkouts.push(workout);
+        }
+      });
+    },
   },
   extraReducers: (builder) => {},
 });
@@ -29,7 +62,10 @@ export const workoutsSlice = createSlice({
 export const selectWorkouts = (state: RootState) =>
   state.appData.workouts.allWorkouts;
 
+export const selectTodaysWorkouts = (state: RootState) =>
+  state.appData.workouts.todaysWorkouts;
 // Actions
-export const { reset, userDataReadFromFile } = workoutsSlice.actions;
+export const { reset, userDataReadFromFile, todaysWorkoutsSet } =
+  workoutsSlice.actions;
 
 export default workoutsSlice.reducer;

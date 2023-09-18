@@ -2,9 +2,11 @@ import "react-native-gesture-handler";
 
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import { NativeBaseProvider } from "native-base";
 import { RootSiblingParent } from "react-native-root-siblings";
 import { Provider } from "react-redux";
+import { TamaguiProvider } from "tamagui";
+
+import config from "./tamagui.config";
 
 import { store } from "./src/app/store";
 import Calendar from "./src/features/Calendar";
@@ -17,9 +19,9 @@ export default function () {
     <NavigationContainer>
       <Provider store={store}>
         <RootSiblingParent>
-          <NativeBaseProvider>
+          <TamaguiProvider config={config}>
             <App />
-          </NativeBaseProvider>
+          </TamaguiProvider>
         </RootSiblingParent>
       </Provider>
     </NavigationContainer>

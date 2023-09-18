@@ -1,15 +1,19 @@
-import { Button, FlatList, HStack, Heading, Text, VStack } from "native-base";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
-import { dayNames } from "./constants";
-import { RepeatEvery, Workout } from "./types";
-import { selectWorkouts, userDataReadFromFile } from "./workoutsSlice";
+import { FlatList } from "react-native";
+import { Button, Card, Heading, Text, YStack } from "tamagui";
 import myWorkouts from "../../../myWorkout.json";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { dayNames } from "./constants";
+import { Workout } from "./types";
+import {
+  selectTodaysWorkouts,
+  todaysWorkoutsSet,
+  userDataReadFromFile,
+} from "./workoutsSlice";
 
 export default function HomePage() {
-  const [todaysWorkouts, setTodaysWorkouts] = useState<Workout[] | null>(null);
-  const allWorkouts = useAppSelector(selectWorkouts);
+  const todaysWorkouts = useAppSelector(selectTodaysWorkouts);
   const dispatch = useAppDispatch();
 
   const today = new Date();
@@ -18,17 +22,10 @@ export default function HomePage() {
 
   useEffect(() => {
     // TODO: remove when async storage is working
-    dispatch(userDataReadFromFile(parseEnums(myWorkouts)));
+    dispatch(userDataReadFromFile(myWorkouts));
 
-    setTodaysWorkouts(allWorkouts[today.getDay()]);
+    dispatch(todaysWorkoutsSet(today));
   }, []);
-
-  const parseEnums = (jsonFromFile): Workout[][] => {
-    return jsonFromFile.map((workout) => ({
-      ...workout,
-      repeatEvery: RepeatEvery[workout.repeatEvery],
-    }));
-  };
 
   const renderTodaysWorkout = ({
     item,
@@ -37,45 +34,29 @@ export default function HomePage() {
     item: Workout;
     index: number;
   }) => {
-    console.log(item);
     return (
-      <VStack p={4}>
-        <Text>{item.name ? item.name : index}</Text>
-      </VStack>
+      <Card>
+        <Card.Header>
+          <Heading>{item.name ? item.name : index}</Heading>
+        </Card.Header>
+        <Card.Footer>
+          <Button flex={1}>Start</Button>
+          <Button flex={1}>Log</Button>
+        </Card.Footer>
+      </Card>
     );
   };
-  console.log("today's workouts", todaysWorkouts);
 
   return (
-    <VStack flex={1} pt={16} p={5} space={5}>
-      <VStack justifyContent="space-around" space={1}>
-        <Text>{dayNames[today.getDay()]}</Text>
-        <Heading>Today's Workouts{!todaysWorkouts && ": Rest!"}</Heading>
-      </VStack>
+    <YStack>
+      <Text>{dayNames[today.getDay()]}</Text>
+      <Heading>Today's Workouts{!todaysWorkouts && ": Rest!"}</Heading>
 
       <FlatList
-        flexGrow={0}
-        contentContainerStyle={{ maxHeight: 10 }}
         horizontal
         data={todaysWorkouts}
         renderItem={renderTodaysWorkout}
       />
-
-      <HStack space={3}>
-        <Button shadow={3} flex={1}>
-          <Text color="#fff">Log Workout</Text>
-        </Button>
-        <Button shadow={3} colorScheme="secondary" flex={1}>
-          <Text color="#fff">Start Workout</Text>
-        </Button>
-      </HStack>
-
-      <HStack justifyContent="space-between" alignItems="center">
-        <Heading>Upcoming Workouts</Heading>
-        <Button variant="outline">
-          <Text>Create Workout</Text>
-        </Button>
-      </HStack>
-    </VStack>
+    </YStack>
   );
 }

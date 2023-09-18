@@ -4,7 +4,6 @@
     {
       "name": "Fullbody #1",
       "startDate": "2019-07-24",
-      "repeatEvery": "WEEK",
       "frequency": 2,
       "exercises": [
         {
@@ -72,7 +71,6 @@
     {
       "name": "Fullbody #2",
       "startDate": "2019-07-31",
-      "repeatEvery": "WEEK",
       "frequency": 2,
       "exercises": [
         {
@@ -143,7 +141,6 @@
     {
       "name": "Fullbody #1",
       "startDate": "2019-08-02",
-      "repeatEvery": "WEEK",
       "frequency": 2,
       "exercises": [
         {
@@ -212,7 +209,6 @@
       "name": "Fullbody #2",
       "startDate": "2019-07-26",
       "frequency": 2,
-      "repeatEvery": "WEEK",
       "exercises": [
         {
           "name": "Squat",
@@ -284,7 +280,6 @@
       "name": "Fullbody #1",
       "startDate": "2019-07-28",
       "frequency": 2,
-      "repeatEvery": "WEEK",
       "exercises": [
         {
           "name": "Squat",
@@ -352,7 +347,6 @@
       "name": "Fullbody #2",
       "startDate": "2019-08-04",
       "frequency": 2,
-      "repeatEvery": "WEEK",
       "exercises": [
         {
           "name": "Squat",
@@ -417,5 +411,6 @@
       ]
     }
   ],
- [] 
+ [],
+ []
 ]
