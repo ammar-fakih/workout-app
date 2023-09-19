@@ -23,17 +23,16 @@ export const workoutsSlice = createSlice({
     userDataReadFromFile: (state, action: PayloadAction<Workout[][]>) => {
       state.allWorkouts = action.payload;
     },
-    todaysWorkoutsSet: (state, action: PayloadAction<Date>) => {
-      console.log(action.payload);
-      console.log(action.payload.getDay());
-      console.log(state.allWorkouts);
-
-      state.todaysWorkouts = state.allWorkouts[action.payload.getDay()].filter(
+    todaysWorkoutsSet: (
+      state,
+      action: PayloadAction<{ dayNum: number; time: number }>,
+    ) => {
+      state.todaysWorkouts = state.allWorkouts[action.payload.dayNum].filter(
         (workout) => {
           const startDate = new Date(workout.startDate);
 
           const weeksBetween = Math.floor(
-            (action.payload.getTime() - startDate.getTime()) /
+            (action.payload.time - startDate.getTime()) /
               (1000 * 60 * 60 * 24 * 7),
           );
 
@@ -45,8 +44,7 @@ export const workoutsSlice = createSlice({
         const startDate = new Date(workout.startDate);
 
         const daysBetween = Math.floor(
-          (action.payload.getTime() - startDate.getTime()) /
-            (1000 * 60 * 60 * 24),
+          (action.payload.time - startDate.getTime()) / (1000 * 60 * 60 * 24),
         );
 
         if (daysBetween % workout.frequency === 0) {
