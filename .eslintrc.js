@@ -5,5 +5,11 @@ module.exports = {
   root: true,
   rules: {
     "import/order": "off",
+    "prettier/prettier": [
+      "error",
+      {
+        endOfLine: "auto",
+      },
+    ],
   },
 };
