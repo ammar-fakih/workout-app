@@ -1,32 +1,24 @@
 import { useEffect } from "react";
 
 import { StackScreenProps } from "@react-navigation/stack";
-import { Plus } from "@tamagui/lucide-icons";
 import { FlatList } from "react-native";
-import {
-  Button,
-  Card,
-  Heading,
-  ScrollView,
-  Text,
-  XStack,
-  YStack,
-} from "tamagui";
+import { Button, Card, H3, Separator, Text, View, YStack } from "tamagui";
 import { RootStackParamList } from "../../../App";
 import myWorkouts from "../../../myWorkout.json";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { dayNames, monthNames } from "./constants";
+import { monthNames } from "./constants";
+import { calculateNextDay, getDayName } from "./helperFunctions";
 import { Workout } from "./types";
 import {
-  selectTodaysWorkouts,
-  todaysWorkoutsSet,
+  selectWeeksWorkouts,
   userDataReadFromFile,
+  weeksWorkoutsSet,
 } from "./workoutsSlice";
 
-type Props = StackScreenProps<RootStackParamList, "Home">;
+type Props = StackScreenProps<RootStackParamList, "HomePage">;
 
 export default function HomePage({ navigation }: Props) {
-  const todaysWorkouts = useAppSelector(selectTodaysWorkouts);
+  const weeksWorkouts = useAppSelector(selectWeeksWorkouts);
   const dispatch = useAppDispatch();
 
   const today = new Date();
@@ -38,58 +30,89 @@ export default function HomePage({ navigation }: Props) {
     dispatch(userDataReadFromFile(myWorkouts));
 
     dispatch(
-      todaysWorkoutsSet({ dayNum: today.getDay(), time: today.getTime() }),
+      weeksWorkoutsSet({ dayNum: today.getDay(), time: today.getTime() }),
     );
   }, []);
 
-  const renderTodaysWorkout = ({
+  const renderWeeksWorkouts = ({
     item,
     index,
   }: {
     item: Workout;
     index: number;
   }) => {
+    const startDate = new Date(item.startDate);
+    const nextTime = calculateNextDay(startDate, item.frequency);
     return (
-      <Card p="$3">
-        <Card.Header>
-          <Heading>{item.name ? item.name : index}</Heading>
+      <Card
+        p="$3"
+        m="$2"
+        onPress={() => {
+          navigation.navigate("TrackWorkout");
+        }}
+      >
+        <Card.Header fd="row" jc="space-between">
+          <View>
+            <Text>{item.name ? item.name : index}</Text>
+          </View>
+          <View>
+            <Text>
+              {getDayName(nextTime)}, {monthNames[nextTime.getMonth()]}{" "}
+              {nextTime.getDate()}
+            </Text>
+          </View>
         </Card.Header>
-        <Card.Footer space="$1">
-          <Button
-            f={1}
-            onPress={() => {
-              navigation.navigate("TrackWorkout");
-            }}
-          >
-            Start
-          </Button>
-        </Card.Footer>
+
+        <FlatList
+          data={item.exercises}
+          ItemSeparatorComponent={Separator}
+          renderItem={({ item: exercise, index }) => (
+            <View fd="row" jc="space-between" key={index}>
+              <View>
+                <Text>{exercise.name}</Text>
+              </View>
+              <View>
+                <Text>
+                  {exercise.sets}x{exercise.reps}
+                </Text>
+              </View>
+            </View>
+          )}
+        />
       </Card>
     );
   };
 
   return (
-    <ScrollView flex={1} backgroundColor="$background" p="$4">
-      <YStack w="100%">
-        <Text>
-          {dayNames[today.getDay()]}, {monthNames[today.getMonth()]}{" "}
-          {today.getDate()}{" "}
-        </Text>
-        <XStack jc="space-between">
-          <Heading>
-            Today's Workout{todaysWorkouts?.length > 1 && "s"}
-            {!todaysWorkouts && ": Rest!"}
-          </Heading>
-          <Button icon={Plus} />
-        </XStack>
+    <YStack f={1} bg="$background">
+      <YStack w="100%" ai="center">
+        <H3>AMMARLIFTS</H3>
       </YStack>
 
       <FlatList
-        horizontal
         contentContainerStyle={{ flexGrow: 1 }}
-        data={todaysWorkouts}
-        renderItem={renderTodaysWorkout}
+        data={weeksWorkouts}
+        renderItem={renderWeeksWorkouts}
       />
-    </ScrollView>
+
+      {/* Start Workout Card*/}
+      <Card
+        w="100%"
+        p="$3"
+        m="$2"
+        pos="absolute"
+        bottom="$0"
+        fd="row"
+        jc="space-between"
+      >
+        <YStack>
+          <Text>Start Workout{`\n`}</Text>
+          <Text>Finish in 45min at {}</Text>
+        </YStack>
+        <Button>
+          <Text>Start</Text>
+        </Button>
+      </Card>
+    </YStack>
   );
 }

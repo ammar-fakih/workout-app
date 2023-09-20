@@ -1,13 +1,3 @@
-export const dayNames = [
-  "Sunday",
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-];
-
 // without periods
 export const monthNames = [
   "Jan",

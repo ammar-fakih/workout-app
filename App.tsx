@@ -35,7 +35,7 @@ export default function () {
       <NavigationContainer>
         <Provider store={store}>
           <RootSiblingParent>
-            <TamaguiProvider config={config} defaultTheme="light_blue">
+            <TamaguiProvider config={config} defaultTheme="dark">
               <App />
             </TamaguiProvider>
           </RootSiblingParent>

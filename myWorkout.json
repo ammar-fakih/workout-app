@@ -1,416 +1,152 @@
 [
-  [],
-  [
-    {
-      "name": "Fullbody #1",
-      "startDate": "2019-07-24",
-      "frequency": 2,
-      "exercises": [
-        {
-          "name": "Squat",
-          "sets": [
-            {
-              "id": 1,
-              "reps": 5,
-              "restTime": 300
-            },
-            {
-              "id": 1,
-              "reps": 5,
-              "restTime": 300
-            },
-            {
-              "id": 1,
-              "reps": 5,
-              "restTime": 300
-            }
-          ]
-        },
-        {
-          "name": "Bench Press",
-          "sets": [
-            {
-              "id": 2,
-              "reps": 5,
-              "restTime": 300
-            },
-            {
-              "id": 2,
-              "reps": 5,
-              "restTime": 300
-            },
-            {
-              "id": 2,
-              "reps": 5,
-              "restTime": 300
-            }
-          ]
-        },
-        {
-          "name": "Deadlift",
-          "sets": [
-            {
-              "id": 3,
-              "reps": 5,
-              "restTime": 300
-            },
-            {
-              "id": 3,
-              "reps": 5,
-              "restTime": 300
-            },
-            {
-              "id": 3,
-              "reps": 5,
-              "restTime": 300
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "name": "Fullbody #2",
-      "startDate": "2019-07-31",
-      "frequency": 2,
-      "exercises": [
-        {
-          "name": "Squat",
-          "sets": [
-            {
-              "id": 1,
-              "reps": 5,
-              "restTime": 300
-            },
-            {
-              "id": 1,
-              "reps": 5,
-              "restTime": 300
-            },
-            {
-              "id": 1,
-              "reps": 5,
-              "restTime": 300
-            }
-          ]
-        },
-        {
-          "name": "Overhead Press",
-          "sets": [
-            {
-              "id": 4,
-              "reps": 5,
-              "restTime": 300
-            },
-            {
-              "id": 4,
-              "reps": 5,
-              "restTime": 300
-            },
-            {
-              "id": 4,
-              "reps": 5,
-              "restTime": 300
-            }
-          ]
-        },
-        {
-          "name": "Deadlift",
-          "sets": [
-            {
-              "id": 3,
-              "reps": 5,
-              "restTime": 300
-            },
-            {
-              "id": 3,
-              "reps": 5,
-              "restTime": 300
-            },
-            {
-              "id": 3,
-              "reps": 5,
-              "restTime": 300
-            }
-          ]
-        }
-      ]
-    }
-  ],
-  [],
-  [
-    {
-      "name": "Fullbody #1",
-      "startDate": "2019-08-02",
-      "frequency": 2,
-      "exercises": [
-        {
-          "name": "Squat",
-          "sets": [
-            {
-              "id": 1,
-              "reps": 5,
-              "restTime": 300
-            },
-            {
-              "id": 1,
-              "reps": 5,
-              "restTime": 300
-            },
-            {
-              "id": 1,
-              "reps": 5,
-              "restTime": 300
-            }
-          ]
-        },
-        {
-          "name": "Bench Press",
-          "sets": [
-            {
-              "id": 2,
-              "reps": 5,
-              "restTime": 300
-            },
-            {
-              "id": 2,
-              "reps": 5,
-              "restTime": 300
-            },
-            {
-              "id": 2,
-              "reps": 5,
-              "restTime": 300
-            }
-          ]
-        },
-        {
-          "name": "Deadlift",
-          "sets": [
-            {
-              "id": 3,
-              "reps": 5,
-              "restTime": 300
-            },
-            {
-              "id": 3,
-              "reps": 5,
-              "restTime": 300
-            },
-            {
-              "id": 3,
-              "reps": 5,
-              "restTime": 300
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "name": "Fullbody #2",
-      "startDate": "2019-07-26",
-      "frequency": 2,
-      "exercises": [
-        {
-          "name": "Squat",
-          "sets": [
-            {
-              "id": 1,
-              "reps": 5,
-              "restTime": 300
-            },
-            {
-              "id": 1,
-              "reps": 5,
-              "restTime": 300
-            },
-            {
-              "id": 1,
-              "reps": 5,
-              "restTime": 300
-            }
-          ]
-        },
-        {
-          "name": "Overhead Press",
-          "sets": [
-            {
-              "id": 4,
-              "reps": 5,
-              "restTime": 300
-            },
-            {
-              "id": 4,
-              "reps": 5,
-              "restTime": 300
-            },
-            {
-              "id": 4,
-              "reps": 5,
-              "restTime": 300
-            }
-          ]
-        },
-        {
-          "name": "Deadlift",
-          "sets": [
-            {
-              "id": 3,
-              "reps": 5,
-              "restTime": 300
-            },
-            {
-              "id": 3,
-              "reps": 5,
-              "restTime": 300
-            },
-            {
-              "id": 3,
-              "reps": 5,
-              "restTime": 300
-            }
-          ]
-        }
-      ]
-    }
-  ]
-  ,
-  [],
-  [
-    {
-      "name": "Fullbody #1",
-      "startDate": "2019-07-28",
-      "frequency": 2,
-      "exercises": [
-        {
-          "name": "Squat",
-          "sets": [
-            {
-              "id": 1,
-              "reps": 5,
-              "restTime": 300
-            },
-            {
-              "id": 1,
-              "reps": 5,
-              "restTime": 300
-            },
-            {
-              "id": 1,
-              "reps": 5,
-              "restTime": 300
-            }
-          ]
-        },
-        {
-          "name": "Bench Press",
-          "sets": [
-            {
-              "id": 2,
-              "reps": 5,
-              "restTime": 300
-            },
-            {
-              "id": 2,
-              "reps": 5,
-              "restTime": 300
-            },
-            {
-              "id": 2,
-              "reps": 5,
-              "restTime": 300
-            }
-          ]
-        },
-        {
-          "name": "Deadlift",
-          "sets": [
-            {
-              "id": 3,
-              "reps": 5,
-              "restTime": 300
-            },
-            {
-              "id": 3,
-              "reps": 5,
-              "restTime": 300
-            },
-            {
-              "id": 3,
-              "reps": 5,
-              "restTime": 300
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "name": "Fullbody #2",
-      "startDate": "2019-08-04",
-      "frequency": 2,
-      "exercises": [
-        {
-          "name": "Squat",
-          "sets": [
-            {
-              "id": 1,
-              "reps": 5,
-              "restTime": 300
-            },
-            {
-              "id": 1,
-              "reps": 5,
-              "restTime": 300
-            },
-            {
-              "id": 1,
-              "reps": 5,
-              "restTime": 300
-            }
-          ]
-        },
-        {
-          "name": "Overhead Press",
-          "sets": [
-            {
-              "id": 4,
-              "reps": 5,
-              "restTime": 300
-            },
-            {
-              "id": 4,
-              "reps": 5,
-              "restTime": 300
-            },
-            {
-              "id": 4,
-              "reps": 5,
-              "restTime": 300
-            }
-          ]
-        },
-        {
-          "name": "Deadlift",
-          "sets": [
-            {
-              "id": 3,
-              "reps": 5,
-              "restTime": 300
-            },
-            {
-              "id": 3,
-              "reps": 5,
-              "restTime": 300
-            },
-            {
-              "id": 3,
-              "reps": 5,
-              "restTime": 300
-            }
-          ]
-        }
-      ]
-    }
-  ],
- [],
- []
+  {
+    "name": "Workout A",
+    "startDate": "2019-07-24",
+    "frequency": 2,
+    "exercises": [
+      {
+        "name": "Squat",
+        "id": 1,
+        "sets": 3,
+        "reps": 5
+      },
+      {
+        "name": "Bench Press",
+        "id": 2,
+        "sets": 3,
+        "reps": 5
+      },
+      {
+        "name": "Deadlift",
+        "id": 3,
+        "sets": 3,
+        "reps": 5
+      }
+    ]
+  },
+  {
+    "name": "Workout B",
+    "startDate": "2019-07-31",
+    "frequency": 2,
+    "exercises": [
+      {
+        "name": "Squat",
+        "id": 1,
+        "sets": 3,
+        "reps": 5
+      },
+      {
+        "name": "Overhead Press",
+        "id": 4,
+        "sets": 3,
+        "reps": 5
+      },
+      {
+        "name": "Deadlift",
+        "id": 3,
+        "sets": 3,
+        "reps": 5
+      }
+    ]
+  },
+  {
+    "name": "Workout A",
+    "startDate": "2019-08-02",
+    "frequency": 2,
+    "exercises": [
+      {
+        "name": "Squat",
+        "id": 1,
+        "sets": 3,
+        "reps": 5
+      },
+      {
+        "name": "Bench Press",
+        "id": 2,
+        "sets": 3,
+        "reps": 5
+      },
+      {
+        "name": "Deadlift",
+        "id": 3,
+        "sets": 3,
+        "reps": 5
+      }
+    ]
+  },
+  {
+    "name": "Workout B",
+    "startDate": "2019-07-26",
+    "frequency": 2,
+    "exercises": [
+      {
+        "name": "Squat",
+        "id": 1,
+        "sets": 3,
+        "reps": 5
+      },
+      {
+        "name": "Overhead Press",
+        "id": 4,
+        "sets": 3,
+        "reps": 5
+      },
+      {
+        "name": "Deadlift",
+        "id": 3,
+        "sets": 3,
+        "reps": 5
+      }
+    ]
+  },
+  {
+    "name": "Workout A",
+    "startDate": "2019-07-28",
+    "frequency": 2,
+    "exercises": [
+      {
+        "name": "Squat",
+        "id": 1,
+        "sets": 3,
+        "reps": 5
+      },
+      {
+        "name": "Bench Press",
+        "id": 2,
+        "sets": 3,
+        "reps": 5
+      },
+      {
+        "name": "Deadlift",
+        "id": 3,
+        "sets": 3,
+        "reps": 5
+      }
+    ]
+  },
+  {
+    "name": "Workout B",
+    "startDate": "2019-08-04",
+    "frequency": 2,
+    "exercises": [
+      {
+        "name": "Squat",
+        "id": 1,
+        "sets": 3,
+        "reps": 5
+      },
+      {
+        "name": "Overhead Press",
+        "id": 4,
+        "sets": 3,
+        "reps": 5
+      },
+      {
+        "name": "Deadlift",
+        "id": 3,
+        "sets": 3,
+        "reps": 5
+      }
+    ]
+  }
 ]

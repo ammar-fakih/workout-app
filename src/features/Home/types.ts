@@ -1,13 +1,8 @@
-// Type definitions
-interface ExerciseSet {
+export interface Exercise {
   id: number;
-  reps: number;
-  restTime: number; // in seconds
-}
-
-interface Exercise {
   name: string;
-  sets: ExerciseSet[];
+  sets: number;
+  reps: number;
   icon?: string;
 }
 

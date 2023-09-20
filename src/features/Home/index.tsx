@@ -11,7 +11,7 @@ export default function Home() {
       <Stack.Screen
         name="HomePage"
         component={HomePage}
-        options={{ headerShown: false, headerBackTitle: "" }}
+        options={{ headerShown: false }}
       />
       <Stack.Screen name="TrackWorkout" component={TrackWorkout} />
     </Stack.Navigator>
