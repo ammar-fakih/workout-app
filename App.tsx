@@ -19,6 +19,7 @@ import {
 } from "react-native-safe-area-context";
 import Settings from "./src/features/Settings/Settings";
 import config from "./tamagui.config";
+import { StatusBar } from "expo-status-bar";
 
 export type RootStackParamList = {
   Home: undefined;
@@ -35,12 +36,14 @@ export default function () {
       <NavigationContainer>
         <Provider store={store}>
           <RootSiblingParent>
-            <TamaguiProvider config={config} defaultTheme="dark">
+            <TamaguiProvider config={config} defaultTheme="dark_purple">
               <App />
             </TamaguiProvider>
           </RootSiblingParent>
         </Provider>
       </NavigationContainer>
+
+      <StatusBar style="light" />
     </SafeAreaProvider>
   );
 }

@@ -2,17 +2,28 @@ import { useEffect } from "react";
 
 import { StackScreenProps } from "@react-navigation/stack";
 import { FlatList } from "react-native";
-import { Button, Card, H3, Separator, Text, View, YStack } from "tamagui";
+import {
+  Button,
+  Card,
+  H3,
+  Separator,
+  Text,
+  View,
+  XStack,
+  YStack,
+} from "tamagui";
 import { RootStackParamList } from "../../../App";
-import myWorkouts from "../../../myWorkout.json";
+import startingProgram from "../../../startingProgram.json";
+import startingWorkouts from "../../../startingWorkouts.json";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { monthNames } from "./constants";
-import { calculateNextDay, getDayName } from "./helperFunctions";
+import { getDayName } from "./helperFunctions";
 import { Workout } from "./types";
 import {
+  programReadFromFile,
   selectWeeksWorkouts,
-  userDataReadFromFile,
   weeksWorkoutsSet,
+  workoutsReadFromFiles,
 } from "./workoutsSlice";
 
 type Props = StackScreenProps<RootStackParamList, "HomePage">;
@@ -21,53 +32,45 @@ export default function HomePage({ navigation }: Props) {
   const weeksWorkouts = useAppSelector(selectWeeksWorkouts);
   const dispatch = useAppDispatch();
 
-  const today = new Date();
-  // TODO: for debugging. remove for prod
-  // today.setDate(today.getDate() + 2);
-
   useEffect(() => {
-    // TODO: remove when async storage is working
-    dispatch(userDataReadFromFile(myWorkouts));
+    dispatch(workoutsReadFromFiles(startingWorkouts));
+    dispatch(programReadFromFile(startingProgram));
 
-    dispatch(
-      weeksWorkoutsSet({ dayNum: today.getDay(), time: today.getTime() }),
-    );
+    dispatch(weeksWorkoutsSet());
   }, []);
 
-  const renderWeeksWorkouts = ({
-    item,
-    index,
-  }: {
-    item: Workout;
-    index: number;
-  }) => {
-    const startDate = new Date(item.startDate);
-    const nextTime = calculateNextDay(startDate, item.frequency);
+  const renderWeeksWorkouts = ({ item }: { item: Workout }) => {
+    const nextTime = new Date(item.closestTimeToNow!);
     return (
       <Card
+        key={item.workoutId}
         p="$3"
-        m="$2"
+        marginVertical="$2"
+        marginHorizontal="$4"
         onPress={() => {
           navigation.navigate("TrackWorkout");
         }}
       >
-        <Card.Header fd="row" jc="space-between">
-          <View>
-            <Text>{item.name ? item.name : index}</Text>
-          </View>
-          <View>
-            <Text>
-              {getDayName(nextTime)}, {monthNames[nextTime.getMonth()]}{" "}
-              {nextTime.getDate()}
-            </Text>
-          </View>
-        </Card.Header>
+        <View fd="row" jc="space-between" p="$2" pb="$3">
+          <Text fontSize="$1" fontWeight="bold">
+            {item.name}
+          </Text>
+          <Text fontSize="$1" fontWeight="bold">
+            {getDayName(nextTime)}, {monthNames[nextTime.getMonth()]}{" "}
+            {nextTime.getDate()}
+          </Text>
+        </View>
 
         <FlatList
           data={item.exercises}
           ItemSeparatorComponent={Separator}
-          renderItem={({ item: exercise, index }) => (
-            <View fd="row" jc="space-between" key={index}>
+          renderItem={({ item: exercise, index: exerciseIndex }) => (
+            <View
+              p="$2"
+              fd="row"
+              jc="space-between"
+              key={`${item.workoutId} ${exerciseIndex}`}
+            >
               <View>
                 <Text>{exercise.name}</Text>
               </View>
@@ -85,25 +88,35 @@ export default function HomePage({ navigation }: Props) {
 
   return (
     <YStack f={1} bg="$background">
-      <YStack w="100%" ai="center">
-        <H3>AMMARLIFTS</H3>
-      </YStack>
+      <XStack>
+        <View f={1} />
+        <YStack w="100%" ai="center" f={1}>
+          <H3>GYMER</H3>
+        </YStack>
+        <View f={1} jc="center" ai="center" onPress={() => {}}>
+          <Text>Program</Text>
+        </View>
+      </XStack>
 
       <FlatList
-        contentContainerStyle={{ flexGrow: 1 }}
+        contentContainerStyle={{ flexGrow: 1, paddingBottom: 120 }}
         data={weeksWorkouts}
         renderItem={renderWeeksWorkouts}
       />
 
       {/* Start Workout Card*/}
       <Card
-        w="100%"
-        p="$3"
-        m="$2"
+        h="$10"
+        p="$5"
         pos="absolute"
-        bottom="$0"
+        right="$5"
+        left="$5"
+        bottom="$4"
         fd="row"
         jc="space-between"
+        ai="center"
+        shadowRadius={4}
+        shadowOpacity={0.4}
       >
         <YStack>
           <Text>Start Workout{`\n`}</Text>
