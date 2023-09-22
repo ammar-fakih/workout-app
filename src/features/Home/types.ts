@@ -6,8 +6,13 @@ export interface Exercise {
   icon?: string;
 }
 
+export interface CompletedSet {
+  setCount: number;
+  selected: boolean;
+}
+
 export interface TodaysExercise extends Exercise {
-  completedSets: number[];
+  completedSets: CompletedSet[];
 }
 
 export interface GeneralWorkout {

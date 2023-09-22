@@ -2,6 +2,7 @@ import { useEffect } from "react";
 
 import { StackScreenProps } from "@react-navigation/stack";
 import { FlatList } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
   Button,
   Card,
@@ -18,17 +19,19 @@ import startingWorkouts from "../../../startingWorkouts.json";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { monthNames } from "./constants";
 import { getDayName } from "./helperFunctions";
-import { Workout } from "./types";
+import { TodaysWorkout } from "./types";
 import {
   programReadFromFile,
   selectWeeksWorkouts,
   weeksWorkoutsSet,
+  workoutSelected,
   workoutsReadFromFiles,
 } from "./workoutsSlice";
 
 type Props = StackScreenProps<RootStackParamList, "HomePage">;
 
 export default function HomePage({ navigation }: Props) {
+  const insets = useSafeAreaInsets();
   const weeksWorkouts = useAppSelector(selectWeeksWorkouts);
   const dispatch = useAppDispatch();
 
@@ -39,15 +42,18 @@ export default function HomePage({ navigation }: Props) {
     dispatch(weeksWorkoutsSet());
   }, []);
 
-  const renderWeeksWorkouts = ({ item }: { item: Workout }) => {
+  const renderWeeksWorkouts = ({ item }: { item: TodaysWorkout }) => {
     const nextTime = new Date(item.closestTimeToNow!);
     return (
       <Card
         key={item.workoutId}
         p="$3"
         marginVertical="$2"
+        borderLeftWidth={nextTime.getDay() === new Date().getDay() ? 2 : 0}
+        borderColor="$color8"
         marginHorizontal="$4"
         onPress={() => {
+          dispatch(workoutSelected(item));
           navigation.navigate("TrackWorkout");
         }}
       >
@@ -87,7 +93,7 @@ export default function HomePage({ navigation }: Props) {
   };
 
   return (
-    <YStack f={1} bg="$background">
+    <YStack f={1} bg="$background" pt={insets.top}>
       <XStack>
         <View f={1} />
         <YStack w="100%" ai="center" f={1}>
