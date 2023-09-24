@@ -7,7 +7,7 @@ export interface Exercise {
 }
 
 export interface CompletedSet {
-  setCount: number;
+  repCount: number;
   selected: boolean;
 }
 
@@ -47,6 +47,16 @@ export interface Program {
   id: string;
   name: string;
   workouts: Workout[];
+}
+
+export interface RecordEntry {
+  date: string;
+  weight: number;
+  completedSets: { repCount: number }[];
+}
+
+export interface WorkoutRecords {
+  [id: string]: RecordEntry[];
 }
 
 // Enums

@@ -4,7 +4,7 @@ import { DefaultTheme, NavigationContainer } from "@react-navigation/native";
 import * as SplashScreen from "expo-splash-screen";
 import { RootSiblingParent } from "react-native-root-siblings";
 import { Provider } from "react-redux";
-import { TamaguiProvider, View, useTheme } from "tamagui";
+import { TamaguiProvider, Theme, View, useTheme } from "tamagui";
 
 import { store } from "./src/app/store";
 import Calendar from "./src/features/Calendar";
@@ -33,7 +33,9 @@ export default function () {
       <Provider store={store}>
         <RootSiblingParent>
           <TamaguiProvider config={config} defaultTheme="dark_purple">
-            <App />
+            <Theme name="light">
+              <App />
+            </Theme>
           </TamaguiProvider>
         </RootSiblingParent>
       </Provider>
@@ -46,8 +48,8 @@ export default function () {
 function App() {
   const theme = useTheme();
   const [fontsLoaded] = useFonts({
-    Inter: require("@tamagui/font-inter/otf/Inter-Medium.otf"),
-    InterBold: require("@tamagui/font-inter/otf/Inter-Bold.otf"),
+    // Inter: require("@tamagui/font-inter/otf/Inter-Medium.otf"),
+    // InterBold: require("@tamagui/font-inter/otf/Inter-Bold.otf"),
   });
 
   const BottomBarTheme = {
@@ -77,7 +79,7 @@ function App() {
       //@ts-expect-error onLayout is not defined in ViewProps
       onLayout={onLayoutRootView}
     >
-      <NavigationContainer theme={BottomBarTheme}>
+      <NavigationContainer>
         <Tabs.Navigator>
           <Tabs.Screen
             name="Home"

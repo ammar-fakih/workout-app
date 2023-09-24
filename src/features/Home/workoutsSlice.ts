@@ -9,15 +9,17 @@ import {
   TodaysWorkout,
   Units,
   Workout,
+  WorkoutRecords,
 } from "./types";
 
 interface WorkoutsState {
   allPrograms: Program[];
   allWorkouts: GeneralWorkout[];
   selectedProgram: Program | undefined;
-  weeksWorkouts: TodaysWorkout[];
-  todaysWorkout: TodaysWorkout | undefined;
+  weeksWorkouts: Workout[];
+  todaysWorkout: Workout | undefined;
   selectedWorkout: TodaysWorkout | undefined;
+  workoutRecords: WorkoutRecords;
   units: Units;
 }
 
@@ -28,6 +30,7 @@ const initialState: WorkoutsState = {
   weeksWorkouts: [],
   todaysWorkout: undefined,
   selectedWorkout: undefined,
+  workoutRecords: {},
   units: Units.IMPERIAL,
 };
 
@@ -94,20 +97,13 @@ export const workoutsSlice = createSlice({
               {
                 ...currentWorkout,
                 closestTimeToNow: closestTimeToNow.toISOString(),
-                exercises: currentWorkout.exercises.map((exercise) => {
-                  const completedSets = Array(exercise.sets).fill({
-                    setCount: exercise.reps,
-                    selected: false,
-                  });
-                  return { ...exercise, completedSets };
-                }),
               },
             ];
           } else {
             return accumulator;
           }
         },
-        [] as TodaysWorkout[],
+        [] as Workout[],
       );
     },
     todaysWorkoutsSet: (
@@ -127,10 +123,19 @@ export const workoutsSlice = createSlice({
 
       if (!todaysWorkout) return;
 
-      state.todaysWorkout = todaysWorkout as TodaysWorkout;
+      state.todaysWorkout = todaysWorkout as Workout;
     },
-    workoutSelected: (state, action: PayloadAction<TodaysWorkout>) => {
-      state.selectedWorkout = action.payload;
+    workoutSelected: (state, action: PayloadAction<Workout>) => {
+      state.selectedWorkout = {
+        ...action.payload,
+        exercises: action.payload.exercises.map((exercise) => {
+          const completedSets = Array(exercise.sets).fill({
+            repCount: exercise.reps,
+            selected: false,
+          });
+          return { ...exercise, completedSets };
+        }),
+      };
     },
     exerciseSetClicked: (
       state,
@@ -146,13 +151,13 @@ export const workoutsSlice = createSlice({
       const exercise = state.selectedWorkout.exercises[exerciseIndex];
       const exerciseSet = exercise.completedSets[exerciseSetIndex];
 
-      if (exerciseSet.setCount === exercise.reps && !exerciseSet.selected) {
+      if (exerciseSet.repCount === exercise.reps && !exerciseSet.selected) {
         exerciseSet.selected = true;
-      } else if (exerciseSet.selected && exerciseSet.setCount === 0) {
-        exerciseSet.setCount = exercise.reps;
+      } else if (exerciseSet.selected && exerciseSet.repCount === 0) {
+        exerciseSet.repCount = exercise.reps;
         exerciseSet.selected = false;
       } else {
-        exerciseSet.setCount--;
+        exerciseSet.repCount--;
         exerciseSet.selected = true;
       }
     },

@@ -1,9 +1,9 @@
-import { FlatList } from "react-native";
+import { ArrowRight, Plus } from "@tamagui/lucide-icons";
+import { Animated, FlatList } from "react-native";
 import { Button, Text, View, XStack, YStack } from "tamagui";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import { TodaysExercise } from "../types";
 import { exerciseSetClicked, selectSelectedWorkout } from "../workoutsSlice";
-import { ArrowRight, Plus } from "@tamagui/lucide-icons";
 
 export default function TrackWorkout() {
   const selectedWorkout = useAppSelector(selectSelectedWorkout);
@@ -29,12 +29,12 @@ export default function TrackWorkout() {
           </Button>
         </XStack>
 
-        <FlatList
+        <Animated.FlatList
           horizontal
           data={exercise.completedSets}
           renderItem={({ item: set, index: exerciseSetIndex }) => (
             <Button
-              backgroundColor={set.selected ? "$color8" : "$color1"}
+              backgroundColor={set.selected ? "$color7" : "$color1"}
               borderRadius="$10"
               marginHorizontal="$3"
               onPress={() => {
@@ -46,7 +46,9 @@ export default function TrackWorkout() {
                 );
               }}
             >
-              <Text fontSize="$5">{set.setCount}</Text>
+              <Text fontSize="$5" letterSpacing="$3">
+                {set.repCount}
+              </Text>
             </Button>
           )}
           ListFooterComponent={() => (

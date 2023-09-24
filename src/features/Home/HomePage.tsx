@@ -19,7 +19,7 @@ import startingWorkouts from "../../../startingWorkouts.json";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { monthNames } from "./constants";
 import { getDayName } from "./helperFunctions";
-import { TodaysWorkout } from "./types";
+import { Workout } from "./types";
 import {
   programReadFromFile,
   selectWeeksWorkouts,
@@ -42,7 +42,7 @@ export default function HomePage({ navigation }: Props) {
     dispatch(weeksWorkoutsSet());
   }, []);
 
-  const renderWeeksWorkouts = ({ item }: { item: TodaysWorkout }) => {
+  const renderWeeksWorkouts = ({ item }: { item: Workout }) => {
     const nextTime = new Date(item.closestTimeToNow!);
     return (
       <Card
@@ -50,6 +50,7 @@ export default function HomePage({ navigation }: Props) {
         p="$3"
         marginVertical="$2"
         borderLeftWidth={nextTime.getDay() === new Date().getDay() ? 2 : 0}
+        borderWidth={1}
         borderColor="$color8"
         marginHorizontal="$4"
         onPress={() => {
@@ -97,7 +98,7 @@ export default function HomePage({ navigation }: Props) {
       <XStack>
         <View f={1} />
         <YStack w="100%" ai="center" f={1}>
-          <H3>GYMER</H3>
+          <H3>AMMARLIFT</H3>
         </YStack>
         <View f={1} jc="center" ai="center" onPress={() => {}}>
           <Text>Program</Text>
