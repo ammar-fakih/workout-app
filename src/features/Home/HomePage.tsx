@@ -3,23 +3,14 @@ import { useEffect } from "react";
 import { StackScreenProps } from "@react-navigation/stack";
 import { FlatList } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import {
-  Button,
-  Card,
-  H3,
-  Separator,
-  Text,
-  View,
-  XStack,
-  YStack,
-} from "tamagui";
+import { Card, H3, Separator, Text, View, XStack, YStack } from "tamagui";
 import { RootStackParamList } from "../../../App";
 import startingProgram from "../../../startingProgram.json";
 import startingWorkouts from "../../../startingWorkouts.json";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { monthNames } from "./constants";
-import { getDayName } from "./helperFunctions";
-import { Workout } from "./types";
+import { getDayName, renderExerciseLabel } from "./helperFunctions";
+import { TodaysWorkout } from "./types";
 import {
   programReadFromFile,
   selectWeeksWorkouts,
@@ -32,7 +23,11 @@ type Props = StackScreenProps<RootStackParamList, "HomePage">;
 
 export default function HomePage({ navigation }: Props) {
   const insets = useSafeAreaInsets();
+  const units = useAppSelector((state) => state.appData.workouts.units);
   const weeksWorkouts = useAppSelector(selectWeeksWorkouts);
+  const todaysWorkout = useAppSelector(
+    (state) => state.appData.workouts.todaysWorkout,
+  );
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -42,7 +37,7 @@ export default function HomePage({ navigation }: Props) {
     dispatch(weeksWorkoutsSet());
   }, []);
 
-  const renderWeeksWorkouts = ({ item }: { item: Workout }) => {
+  const renderWeeksWorkouts = ({ item }: { item: TodaysWorkout }) => {
     const nextTime = new Date(item.closestTimeToNow!);
     return (
       <Card
@@ -82,9 +77,7 @@ export default function HomePage({ navigation }: Props) {
                 <Text>{exercise.name}</Text>
               </View>
               <View>
-                <Text>
-                  {exercise.sets}x{exercise.reps}
-                </Text>
+                <Text>{renderExerciseLabel(exercise, units)}</Text>
               </View>
             </View>
           )}
@@ -98,7 +91,7 @@ export default function HomePage({ navigation }: Props) {
       <XStack>
         <View f={1} />
         <YStack w="100%" ai="center" f={1}>
-          <H3>AMMARLIFT</H3>
+          <H3>Monday</H3>
         </YStack>
         <View f={1} jc="center" ai="center" onPress={() => {}}>
           <Text>Program</Text>
@@ -112,27 +105,25 @@ export default function HomePage({ navigation }: Props) {
       />
 
       {/* Start Workout Card*/}
-      <Card
-        h="$10"
-        p="$5"
-        pos="absolute"
-        right="$5"
-        left="$5"
-        bottom="$4"
-        fd="row"
-        jc="space-between"
-        ai="center"
-        shadowRadius={4}
-        shadowOpacity={0.4}
-      >
-        <YStack>
-          <Text>Start Workout{`\n`}</Text>
-          <Text>Finish in 45min at {}</Text>
-        </YStack>
-        <Button>
-          <Text>Start</Text>
-        </Button>
-      </Card>
+      {todaysWorkout && (
+        <Card
+          h="$10"
+          p="$5"
+          pos="absolute"
+          right="$5"
+          left="$5"
+          bottom="$4"
+          fd="row"
+          jc="space-between"
+          ai="center"
+          shadowRadius={4}
+          shadowOpacity={0.4}
+        >
+          <YStack>
+            <Text>Today's Workout: {todaysWorkout.name}</Text>
+          </YStack>
+        </Card>
+      )}
     </YStack>
   );
 }

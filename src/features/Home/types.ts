@@ -1,5 +1,5 @@
 export interface Exercise {
-  id: number;
+  id: string;
   name: string;
   sets: number;
   reps: number;
@@ -13,6 +13,7 @@ export interface CompletedSet {
 
 export interface TodaysExercise extends Exercise {
   completedSets: CompletedSet[];
+  weight: number;
 }
 
 export interface GeneralWorkout {
@@ -35,6 +36,7 @@ export interface Workout extends GeneralWorkout, SpecificWorkout {
 
 export interface TodaysWorkout extends Workout {
   exercises: TodaysExercise[];
+  completed: boolean;
 }
 
 export interface ProgramFromFile {
@@ -52,10 +54,10 @@ export interface Program {
 export interface RecordEntry {
   date: string;
   weight: number;
-  completedSets: { repCount: number }[];
+  completedSets: CompletedSet[];
 }
 
-export interface WorkoutRecords {
+export interface ExerciseRecords {
   [id: string]: RecordEntry[];
 }
 

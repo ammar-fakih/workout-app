@@ -1,25 +1,29 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 import { RootState } from "../../app/store";
-import { getClosestDate, getCurrentWeekRangeTime } from "./helperFunctions";
 import {
+  getClosestDate,
+  getCurrentWeekRangeTime,
+  getDefaultWeight,
+} from "./helperFunctions";
+import {
+  ExerciseRecords,
   GeneralWorkout,
   Program,
   ProgramFromFile,
   TodaysWorkout,
   Units,
   Workout,
-  WorkoutRecords,
 } from "./types";
 
 interface WorkoutsState {
   allPrograms: Program[];
   allWorkouts: GeneralWorkout[];
   selectedProgram: Program | undefined;
-  weeksWorkouts: Workout[];
-  todaysWorkout: Workout | undefined;
+  weeksWorkouts: TodaysWorkout[];
+  todaysWorkout: TodaysWorkout | undefined;
   selectedWorkout: TodaysWorkout | undefined;
-  workoutRecords: WorkoutRecords;
+  exerciseRecords: ExerciseRecords;
   units: Units;
 }
 
@@ -30,7 +34,7 @@ const initialState: WorkoutsState = {
   weeksWorkouts: [],
   todaysWorkout: undefined,
   selectedWorkout: undefined,
-  workoutRecords: {},
+  exerciseRecords: {},
   units: Units.IMPERIAL,
 };
 
@@ -97,13 +101,24 @@ export const workoutsSlice = createSlice({
               {
                 ...currentWorkout,
                 closestTimeToNow: closestTimeToNow.toISOString(),
+                completed: false,
+                exercises: currentWorkout.exercises.map((exercise) => {
+                  return {
+                    ...exercise,
+                    completedSets: Array(exercise.sets).fill({
+                      repCount: exercise.reps,
+                      selected: false,
+                    }),
+                    weight: getNextWeight(state, exercise.id),
+                  };
+                }),
               },
             ];
           } else {
             return accumulator;
           }
         },
-        [] as Workout[],
+        [] as TodaysWorkout[],
       );
     },
     todaysWorkoutsSet: (
@@ -123,19 +138,10 @@ export const workoutsSlice = createSlice({
 
       if (!todaysWorkout) return;
 
-      state.todaysWorkout = todaysWorkout as Workout;
+      state.todaysWorkout = todaysWorkout as TodaysWorkout;
     },
-    workoutSelected: (state, action: PayloadAction<Workout>) => {
-      state.selectedWorkout = {
-        ...action.payload,
-        exercises: action.payload.exercises.map((exercise) => {
-          const completedSets = Array(exercise.sets).fill({
-            repCount: exercise.reps,
-            selected: false,
-          });
-          return { ...exercise, completedSets };
-        }),
-      };
+    workoutSelected: (state, action: PayloadAction<TodaysWorkout>) => {
+      state.selectedWorkout = action.payload;
     },
     exerciseSetClicked: (
       state,
@@ -161,21 +167,63 @@ export const workoutsSlice = createSlice({
         exerciseSet.selected = true;
       }
     },
+    workoutFinished: (state) => {
+      if (!state.selectedWorkout) return;
+
+      const updatedWorkout = state.selectedWorkout.exercises.map((exercise) => {
+        // Update Records
+        if (!state.exerciseRecords[exercise.id]) {
+          state.exerciseRecords[exercise.id] = [];
+        }
+        state.exerciseRecords[exercise.id].push({
+          date: new Date().toISOString(),
+          weight: exercise.weight,
+          completedSets: exercise.completedSets,
+        });
+
+        // Clear completed sets
+        return {
+          ...exercise,
+          completedSets: exercise.completedSets.map((_) => {
+            return {
+              repCount: exercise.reps,
+              selected: false,
+            };
+          }),
+        };
+      });
+
+      state.selectedWorkout = {
+        ...state.selectedWorkout,
+        completed: true,
+        exercises: updatedWorkout,
+      };
+    },
   },
 });
+
+// Private Helper functions
+const getNextWeight = (state: WorkoutsState, exerciseId: string) => {
+  if (!state.exerciseRecords[exerciseId]) {
+    return getDefaultWeight(state.units);
+  }
+
+  return state.exerciseRecords[exerciseId][
+    state.exerciseRecords[exerciseId].length - 1
+  ].weight;
+};
 
 // Selectors
 export const selectWorkouts = (state: RootState) =>
   state.appData.workouts.allWorkouts;
-
 export const selectTodaysWorkouts = (state: RootState) =>
   state.appData.workouts.todaysWorkout;
-
 export const selectWeeksWorkouts = (state: RootState) =>
   state.appData.workouts.weeksWorkouts;
-
 export const selectSelectedWorkout = (state: RootState) =>
   state.appData.workouts.selectedWorkout;
+export const selectExerciseRecords = (state: RootState) =>
+  state.appData.workouts.exerciseRecords;
 
 // Actions
 export const {
@@ -186,6 +234,7 @@ export const {
   weeksWorkoutsSet,
   workoutSelected,
   exerciseSetClicked,
+  workoutFinished,
 } = workoutsSlice.actions;
 
 export default workoutsSlice.reducer;

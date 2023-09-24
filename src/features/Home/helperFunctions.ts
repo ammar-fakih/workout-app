@@ -1,7 +1,17 @@
+import { TodaysExercise, Units } from "./types";
+
 export const getDayName = (date: Date) => {
   const dayNum = date.getDay();
   const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   return days[dayNum];
+};
+
+export const getDefaultWeight = (units: Units) => {
+  return units === Units.IMPERIAL ? 45 : 20;
+};
+
+export const getUnitAbbreviation = (units: Units) => {
+  return units === Units.IMPERIAL ? "lb" : "kg";
 };
 
 export const getCurrentWeekRangeTime = () => {
@@ -20,6 +30,12 @@ export const getCurrentWeekRangeTime = () => {
   return { sunday, saturday };
 };
 
+export const renderExerciseLabel = (exercise: TodaysExercise, units: Units) => {
+  return `${exercise.sets}x${exercise.reps} ${
+    exercise.weight
+  }${getUnitAbbreviation(units)}`;
+};
+
 export const getClosestDate = (
   startDate: string,
   frequency: number,
@@ -36,8 +52,8 @@ export const getClosestDate = (
 
   // round to nearest interval
   const closestTimeToNow = newNumIntervals * interval + workoutStartTime;
-  console.log(new Date(closestTimeToNow));
-  console.log(newNumIntervals * interval);
+  // console.log(new Date(closestTimeToNow));
+  // console.log(newNumIntervals * interval);
 
   return { closestTimeToNow: new Date(closestTimeToNow), newNumIntervals };
 };

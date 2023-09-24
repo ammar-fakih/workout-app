@@ -1,12 +1,18 @@
 import { ArrowRight, Plus } from "@tamagui/lucide-icons";
-import { Animated, FlatList } from "react-native";
+import { FlatList } from "react-native";
 import { Button, Text, View, XStack, YStack } from "tamagui";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
+import { renderExerciseLabel } from "../helperFunctions";
 import { TodaysExercise } from "../types";
-import { exerciseSetClicked, selectSelectedWorkout } from "../workoutsSlice";
+import {
+  exerciseSetClicked,
+  selectSelectedWorkout,
+  workoutFinished,
+} from "../workoutsSlice";
 
 export default function TrackWorkout() {
   const selectedWorkout = useAppSelector(selectSelectedWorkout);
+  const units = useAppSelector((state) => state.appData.workouts.units);
   const dispatch = useAppDispatch();
 
   if (!selectedWorkout) return null;
@@ -23,13 +29,11 @@ export default function TrackWorkout() {
         <XStack jc="space-between" ai="center">
           <Text>{exercise.name}</Text>
           <Button variant="outlined" iconAfter={<ArrowRight />} pr="$0">
-            <Text>
-              {exercise.sets}x{exercise.reps}
-            </Text>
+            <Text>{renderExerciseLabel(exercise, units)}</Text>
           </Button>
         </XStack>
 
-        <Animated.FlatList
+        <FlatList
           horizontal
           data={exercise.completedSets}
           renderItem={({ item: set, index: exerciseSetIndex }) => (
@@ -62,6 +66,13 @@ export default function TrackWorkout() {
   return (
     <View bg="$background" flex={1}>
       <FlatList data={selectedWorkout.exercises} renderItem={renderItem} />
+      <Button
+        onPress={() => {
+          dispatch(workoutFinished());
+        }}
+      >
+        Finish
+      </Button>
     </View>
   );
 }

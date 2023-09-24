@@ -1,4 +1,3 @@
-// without periods
 export const monthNames = [
   "Jan",
   "Feb",

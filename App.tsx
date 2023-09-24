@@ -1,5 +1,6 @@
 import "react-native-gesture-handler";
 
+import { Octicons } from "@expo/vector-icons";
 import { DefaultTheme, NavigationContainer } from "@react-navigation/native";
 import * as SplashScreen from "expo-splash-screen";
 import { RootSiblingParent } from "react-native-root-siblings";
@@ -11,6 +12,7 @@ import Calendar from "./src/features/Calendar";
 import Home from "./src/features/Home";
 
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { Armchair, Settings as SettingsIcon } from "@tamagui/lucide-icons";
 import { useFonts } from "expo-font";
 import { StatusBar } from "expo-status-bar";
 import { useCallback } from "react";
@@ -19,8 +21,8 @@ import Settings from "./src/features/Settings/Settings";
 import config from "./tamagui.config";
 
 export type RootStackParamList = {
-  Home: undefined;
-  History: undefined;
+  Workout: undefined;
+  Progress: undefined;
   Settings: undefined;
   HomePage: undefined;
   TrackWorkout: undefined;
@@ -48,17 +50,14 @@ export default function () {
 function App() {
   const theme = useTheme();
   const [fontsLoaded] = useFonts({
-    // Inter: require("@tamagui/font-inter/otf/Inter-Medium.otf"),
-    // InterBold: require("@tamagui/font-inter/otf/Inter-Bold.otf"),
+    Inter: require("@tamagui/font-inter/otf/Inter-Medium.otf"),
+    InterBold: require("@tamagui/font-inter/otf/Inter-Bold.otf"),
   });
 
-  const BottomBarTheme = {
+  const NavigationTheme = {
     ...DefaultTheme,
     colors: {
       ...DefaultTheme.colors,
-      background: theme.placeholderColor.val,
-      primary: theme.color.val,
-      card: theme.placeholderColor.val,
     },
   };
 
@@ -79,14 +78,30 @@ function App() {
       //@ts-expect-error onLayout is not defined in ViewProps
       onLayout={onLayoutRootView}
     >
-      <NavigationContainer>
-        <Tabs.Navigator>
+      <NavigationContainer theme={NavigationTheme}>
+        <Tabs.Navigator
+          screenOptions={({ route }) => ({
+            tabBarIcon: ({ color, size }) => {
+              let icon;
+
+              if (route.name === "Workout") {
+                icon = <Armchair size={size} color={color} />;
+              } else if (route.name === "Progress") {
+                icon = <Octicons name="graph" size={size} color={color} />;
+              } else if (route.name === "Settings") {
+                icon = <SettingsIcon size={size} color={color} />;
+              }
+
+              return icon;
+            },
+          })}
+        >
           <Tabs.Screen
-            name="Home"
+            name="Workout"
             component={Home}
             options={{ headerShown: false }}
           />
-          <Tabs.Screen name="History" component={Calendar} />
+          <Tabs.Screen name="Progress" component={Calendar} />
           <Tabs.Screen name="Settings" component={Settings} />
         </Tabs.Navigator>
       </NavigationContainer>

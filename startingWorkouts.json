@@ -5,19 +5,19 @@
     "exercises": [
       {
         "name": "Squat",
-        "id": 1,
+        "id": "1",
         "sets": 3,
         "reps": 5
       },
       {
         "name": "Bench Press",
-        "id": 2,
+        "id": "2",
         "sets": 3,
         "reps": 5
       },
       {
         "name": "Deadlift",
-        "id": 3,
+        "id": "3",
         "sets": 3,
         "reps": 5
       }
@@ -29,19 +29,19 @@
     "exercises": [
       {
         "name": "Squat",
-        "id": 1,
+        "id": "1",
         "sets": 3,
         "reps": 5
       },
       {
         "name": "Overhead Press",
-        "id": 4,
+        "id": "4",
         "sets": 3,
         "reps": 5
       },
       {
         "name": "Deadlift",
-        "id": 3,
+        "id": "3",
         "sets": 3,
         "reps": 5
       }
