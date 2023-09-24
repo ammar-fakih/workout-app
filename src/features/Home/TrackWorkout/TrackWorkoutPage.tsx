@@ -61,9 +61,10 @@ export default function TrackWorkout() {
           )}
         </Accordion.Trigger>
 
-        <Accordion.Content>
-          <YStack space="$4">
+        <Accordion.Content m="$5">
+          <YStack space="$6">
             <FlatList
+              contentContainerStyle={{ justifyContent: "center", flex: 1 }}
               horizontal
               data={exercise.completedSets}
               renderItem={({ item: set, index: exerciseSetIndex }) => (
@@ -80,7 +81,7 @@ export default function TrackWorkout() {
                     );
                   }}
                 >
-                  <Text fontSize="$5" letterSpacing="$3">
+                  <Text fontSize="$8" letterSpacing="$3">
                     {set.repCount}
                   </Text>
                 </Button>
