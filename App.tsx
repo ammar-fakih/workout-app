@@ -8,7 +8,7 @@ import { Provider } from "react-redux";
 import { TamaguiProvider, Theme, View, useTheme } from "tamagui";
 
 import { store } from "./src/app/store";
-import Calendar from "./src/features/Calendar";
+import Calendar from "./src/features/Calendar/Calendar";
 import Home from "./src/features/Home";
 
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -42,7 +42,7 @@ export default function () {
         </RootSiblingParent>
       </Provider>
 
-      <StatusBar style="light" />
+      <StatusBar style="dark" />
     </SafeAreaProvider>
   );
 }
@@ -81,6 +81,7 @@ function App() {
       <NavigationContainer theme={NavigationTheme}>
         <Tabs.Navigator
           screenOptions={({ route }) => ({
+            headerShown: false,
             tabBarIcon: ({ color, size }) => {
               let icon;
 
@@ -96,11 +97,7 @@ function App() {
             },
           })}
         >
-          <Tabs.Screen
-            name="Workout"
-            component={Home}
-            options={{ headerShown: false }}
-          />
+          <Tabs.Screen name="Workout" component={Home} />
           <Tabs.Screen name="Progress" component={Calendar} />
           <Tabs.Screen name="Settings" component={Settings} />
         </Tabs.Navigator>

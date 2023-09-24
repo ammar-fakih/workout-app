@@ -199,6 +199,28 @@ export const workoutsSlice = createSlice({
         exercises: updatedWorkout,
       };
     },
+    exerciseWeightChanged: (
+      state: WorkoutsState,
+      action: PayloadAction<{
+        newWeight?: number;
+        weightChange?: number;
+        exerciseId: string;
+      }>,
+    ) => {
+      const { newWeight, weightChange, exerciseId } = action.payload;
+      if (!state.selectedWorkout || (!weightChange && !newWeight)) return;
+
+      const exercise = state.selectedWorkout?.exercises.find(
+        (exercise) => exercise.id === exerciseId,
+      );
+      if (!exercise) return;
+
+      if (weightChange) {
+        exercise.weight += weightChange;
+      } else if (newWeight) {
+        exercise.weight = newWeight;
+      }
+    },
   },
 });
 
@@ -235,6 +257,7 @@ export const {
   workoutSelected,
   exerciseSetClicked,
   workoutFinished,
+  exerciseWeightChanged,
 } = workoutsSlice.actions;
 
 export default workoutsSlice.reducer;
