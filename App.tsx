@@ -1,6 +1,6 @@
 import "react-native-gesture-handler";
 
-import { Octicons } from "@expo/vector-icons";
+import { Octicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { DefaultTheme, NavigationContainer } from "@react-navigation/native";
 import * as SplashScreen from "expo-splash-screen";
 import { RootSiblingParent } from "react-native-root-siblings";
@@ -12,7 +12,7 @@ import Calendar from "./src/features/Calendar/Calendar";
 import Home from "./src/features/Home";
 
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Armchair, Settings as SettingsIcon } from "@tamagui/lucide-icons";
+import { Settings as SettingsIcon } from "@tamagui/lucide-icons";
 import { useFonts } from "expo-font";
 import { StatusBar } from "expo-status-bar";
 import { useCallback } from "react";
@@ -35,14 +35,14 @@ export default function () {
       <Provider store={store}>
         <RootSiblingParent>
           <TamaguiProvider config={config} defaultTheme="dark_purple">
-            <Theme name="light">
+            <Theme name="dark_blue">
               <App />
             </Theme>
           </TamaguiProvider>
         </RootSiblingParent>
       </Provider>
 
-      <StatusBar style="dark" />
+      <StatusBar style="light" />
     </SafeAreaProvider>
   );
 }
@@ -52,6 +52,8 @@ function App() {
   const [fontsLoaded] = useFonts({
     Inter: require("@tamagui/font-inter/otf/Inter-Medium.otf"),
     InterBold: require("@tamagui/font-inter/otf/Inter-Bold.otf"),
+    Gerhaus: require("./assets/fonts/Gerhaus.ttf"),
+    GerhausItalic: require("./assets/fonts/Gerhaus-Italic.ttf"),
   });
 
   const NavigationTheme = {
@@ -86,7 +88,13 @@ function App() {
               let icon;
 
               if (route.name === "Workout") {
-                icon = <Armchair size={size} color={color} />;
+                icon = (
+                  <MaterialCommunityIcons
+                    name="weight-lifter"
+                    size={size}
+                    color={color}
+                  />
+                );
               } else if (route.name === "Progress") {
                 icon = <Octicons name="graph" size={size} color={color} />;
               } else if (route.name === "Settings") {

@@ -31,7 +31,7 @@ export interface SpecificWorkout {
 }
 
 export interface Workout extends GeneralWorkout, SpecificWorkout {
-  closestTimeToNow?: string;
+  closestTimeToNow: string;
 }
 
 export interface TodaysWorkout extends Workout {

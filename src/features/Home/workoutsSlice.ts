@@ -52,6 +52,7 @@ export const workoutsSlice = createSlice({
       let updatedWorkouts: Workout[] = [];
 
       try {
+        // @ts-expect-error Typing is off but its just for development
         updatedWorkouts = action.payload.workouts.map((workout) => {
           const genWorkout = state.allWorkouts.find(
             (w) => w.id === workout.workoutId,
@@ -121,19 +122,14 @@ export const workoutsSlice = createSlice({
         [] as TodaysWorkout[],
       );
     },
-    todaysWorkoutsSet: (
-      state,
-      action: PayloadAction<{ dayNum: number; time: number }>,
-    ) => {
-      if (!state.selectedProgram) return;
+    todaysWorkoutsSet: (state) => {
+      if (!state.weeksWorkouts) return;
+      const day = new Date().getDay();
 
-      const todaysWorkout = state.selectedProgram.workouts.find((workout) => {
-        const startDate = new Date(workout.startDate);
+      const todaysWorkout = state.weeksWorkouts.find((workout) => {
+        const startDate = new Date(workout.closestTimeToNow);
 
-        const daysBetween = Math.floor(
-          (action.payload.time - startDate.getTime()) / (1000 * 60 * 60 * 24),
-        );
-        return daysBetween % workout.frequency === 0;
+        return startDate.getDay() === day;
       });
 
       if (!todaysWorkout) return;

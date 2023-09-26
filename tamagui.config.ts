@@ -7,6 +7,10 @@ const tokens = createTokens({
   zIndex,
   color,
   radius,
+  fontTokens: {
+    Gerhaus: "Gerhaus",
+    GerhausItalic: "GerhausItalic",
+  },
 });
 const tamaguiConfig = createTamagui({ ...config, themes, tokens });
 // this makes typescript properly type everything based on the config

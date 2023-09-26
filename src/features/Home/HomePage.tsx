@@ -3,17 +3,31 @@ import { useEffect } from "react";
 import { StackScreenProps } from "@react-navigation/stack";
 import { FlatList } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { Card, H3, Separator, Text, View, XStack, YStack } from "tamagui";
+import {
+  Button,
+  Card,
+  H3,
+  Separator,
+  Text,
+  View,
+  XStack,
+  YStack,
+} from "tamagui";
 import { RootStackParamList } from "../../../App";
 import startingProgram from "../../../startingProgram.json";
 import startingWorkouts from "../../../startingWorkouts.json";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { monthNames } from "./constants";
-import { getDayName, renderExerciseLabel } from "./helperFunctions";
+import {
+  getDayName,
+  getFullDayName,
+  renderExerciseLabel,
+} from "./helperFunctions";
 import { TodaysWorkout } from "./types";
 import {
   programReadFromFile,
   selectWeeksWorkouts,
+  todaysWorkoutsSet,
   weeksWorkoutsSet,
   workoutSelected,
   workoutsReadFromFiles,
@@ -35,7 +49,13 @@ export default function HomePage({ navigation }: Props) {
     dispatch(programReadFromFile(startingProgram));
 
     dispatch(weeksWorkoutsSet());
+    dispatch(todaysWorkoutsSet());
   }, []);
+
+  const onPressWorkout = (workout: TodaysWorkout) => {
+    dispatch(workoutSelected(workout));
+    navigation.navigate("TrackWorkout");
+  };
 
   const renderWeeksWorkouts = ({ item }: { item: TodaysWorkout }) => {
     const nextTime = new Date(item.closestTimeToNow!);
@@ -49,8 +69,7 @@ export default function HomePage({ navigation }: Props) {
         borderColor="$color8"
         marginHorizontal="$4"
         onPress={() => {
-          dispatch(workoutSelected(item));
-          navigation.navigate("TrackWorkout");
+          onPressWorkout(item);
         }}
       >
         <View fd="row" jc="space-between" p="$2" pb="$3">
@@ -91,11 +110,11 @@ export default function HomePage({ navigation }: Props) {
       <XStack>
         <View f={1} />
         <YStack w="100%" ai="center" f={1}>
-          <H3>Monday</H3>
+          <H3 fontFamily="GerhausItalic">LIFT-IQ</H3>
         </YStack>
-        <View f={1} jc="center" ai="center" onPress={() => {}}>
+        <Button f={1} m="$0" p="$0" onPress={() => {}} variant="outlined">
           <Text>Program</Text>
-        </View>
+        </Button>
       </XStack>
 
       <FlatList
@@ -119,9 +138,21 @@ export default function HomePage({ navigation }: Props) {
           shadowRadius={4}
           shadowOpacity={0.4}
         >
-          <YStack>
-            <Text>Today's Workout: {todaysWorkout.name}</Text>
-          </YStack>
+          <XStack jc="space-between" alignItems="center" flex={1}>
+            <YStack space="$2">
+              <Text fontSize="$1">{getFullDayName()}</Text>
+              <Text>Today's Workout: {todaysWorkout.name}</Text>
+            </YStack>
+
+            <Button
+              onPress={() => {
+                dispatch(workoutSelected(todaysWorkout));
+                navigation.navigate("TrackWorkout");
+              }}
+            >
+              <Text>Start</Text>
+            </Button>
+          </XStack>
         </Card>
       )}
     </YStack>

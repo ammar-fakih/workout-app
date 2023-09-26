@@ -1,5 +1,6 @@
 import { ChevronDown, Plus } from "@tamagui/lucide-icons";
-import { FlatList } from "react-native";
+import { useRef, useState } from "react";
+import { FlatList, Keyboard } from "react-native";
 import {
   Accordion,
   Button,
@@ -11,7 +12,7 @@ import {
   YStack,
 } from "tamagui";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
-import { getUnitAbbreviation, renderExerciseLabel } from "../helperFunctions";
+import { getUnitAbbreviation } from "../helperFunctions";
 import { TodaysExercise } from "../types";
 import {
   exerciseSetClicked,
@@ -19,13 +20,26 @@ import {
   selectSelectedWorkout,
   workoutFinished,
 } from "../workoutsSlice";
-import { useRef } from "react";
+import { isEqual } from "lodash";
 
 export default function TrackWorkout() {
+  const [selectedSet, setSelectedSet] = useState<[number, number] | null>([
+    0, 0,
+  ]);
   const selectedWorkout = useAppSelector(selectSelectedWorkout);
   const units = useAppSelector((state) => state.appData.workouts.units);
   const accordionRef = useRef(null);
   const dispatch = useAppDispatch();
+
+  const onPressNextSet = (exerciseIndex: number, setIndex: number) => {
+    if (!selectedWorkout) return;
+    if (
+      setIndex ===
+      selectedWorkout.exercises[exerciseIndex].completedSets.length - 1
+    ) {
+      setSelectedSet([exerciseIndex + 1, 0]);
+    }
+  };
 
   if (!selectedWorkout) return null;
 
@@ -64,27 +78,37 @@ export default function TrackWorkout() {
         <Accordion.Content m="$5">
           <YStack space="$6">
             <FlatList
-              contentContainerStyle={{ justifyContent: "center", flex: 1 }}
-              horizontal
               data={exercise.completedSets}
               renderItem={({ item: set, index: exerciseSetIndex }) => (
-                <Button
-                  backgroundColor={set.selected ? "$color7" : "$color1"}
-                  borderRadius="$10"
-                  marginHorizontal="$3"
-                  onPress={() => {
-                    dispatch(
-                      exerciseSetClicked({
-                        exerciseIndex: index,
-                        exerciseSetIndex,
-                      }),
-                    );
-                  }}
-                >
-                  <Text fontSize="$8" letterSpacing="$3">
-                    {set.repCount}
-                  </Text>
-                </Button>
+                <XStack>
+                  {isEqual(selectedSet, [index, exerciseSetIndex]) && (
+                    <Button>
+                      <Text>Prev</Text>
+                    </Button>
+                  )}
+                  <Button
+                    backgroundColor={set.selected ? "$color7" : "$color1"}
+                    borderRadius="$10"
+                    marginHorizontal="$3"
+                    onPress={() => {
+                      dispatch(
+                        exerciseSetClicked({
+                          exerciseIndex: index,
+                          exerciseSetIndex,
+                        }),
+                      );
+                    }}
+                  >
+                    <Text fontSize="$8" letterSpacing="$3">
+                      {set.repCount}
+                    </Text>
+                  </Button>
+                  {isEqual(selectedSet, [index, exerciseSetIndex]) && (
+                    <Button>
+                      <Text>Next</Text>
+                    </Button>
+                  )}
+                </XStack>
               )}
               ListFooterComponent={() => (
                 <Button
@@ -108,6 +132,7 @@ export default function TrackWorkout() {
                 <Text>-5</Text>
               </Button>
               <Input
+                keyboardType="numeric"
                 placeholder={`${exercise.weight.toString()} ${getUnitAbbreviation(
                   units,
                 )}`}
@@ -132,7 +157,7 @@ export default function TrackWorkout() {
   };
 
   return (
-    <View bg="$background" flex={1}>
+    <View bg="$background" flex={1} onPress={Keyboard.dismiss}>
       <Accordion type="single" defaultValue="0" ref={accordionRef}>
         {selectedWorkout.exercises.map((exercise, index) => {
           return renderItem({ item: exercise, index });
@@ -141,9 +166,9 @@ export default function TrackWorkout() {
       {/* <FlatList data={selectedWorkout.exercises} renderItem={renderItem} /> */}
       <Button
         pos="absolute"
-        b="$2"
-        r="$2"
-        l="$2"
+        b="$4"
+        r="$4"
+        l="$4"
         onPress={() => {
           dispatch(workoutFinished());
         }}

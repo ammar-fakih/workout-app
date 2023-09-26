@@ -6,6 +6,22 @@ export const getDayName = (date: Date) => {
   return days[dayNum];
 };
 
+export const getFullDayName = () => {
+  const today = new Date();
+  const dayNum = today.getDay();
+  const days = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
+
+  return days[dayNum];
+};
+
 export const getDefaultWeight = (units: Units) => {
   return units === Units.IMPERIAL ? 45 : 20;
 };
