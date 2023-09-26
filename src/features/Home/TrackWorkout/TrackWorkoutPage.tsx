@@ -1,4 +1,5 @@
-import { ChevronDown, Plus } from "@tamagui/lucide-icons";
+import { ChevronDown } from "@tamagui/lucide-icons";
+import { isEqual } from "lodash";
 import { useRef, useState } from "react";
 import { FlatList, Keyboard } from "react-native";
 import {
@@ -20,7 +21,6 @@ import {
   selectSelectedWorkout,
   workoutFinished,
 } from "../workoutsSlice";
-import { isEqual } from "lodash";
 
 export default function TrackWorkout() {
   const [selectedSet, setSelectedSet] = useState<[number, number] | null>([
@@ -37,7 +37,25 @@ export default function TrackWorkout() {
       setIndex ===
       selectedWorkout.exercises[exerciseIndex].completedSets.length - 1
     ) {
-      setSelectedSet([exerciseIndex + 1, 0]);
+      if (exerciseIndex === selectedWorkout.exercises.length - 1) {
+        setSelectedSet(null);
+      } else {
+        setSelectedSet([exerciseIndex + 1, 0]);
+      }
+    } else {
+      setSelectedSet([exerciseIndex, setIndex + 1]);
+    }
+  };
+
+  const onPressPreviousSet = (exerciseIndex: number, setIndex: number) => {
+    if (!selectedWorkout) return;
+    if (setIndex === 0) {
+      setSelectedSet([
+        exerciseIndex - 1,
+        selectedWorkout.exercises[exerciseIndex - 1].completedSets.length - 1,
+      ]);
+    } else {
+      setSelectedSet([exerciseIndex, setIndex - 1]);
     }
   };
 
@@ -51,114 +69,119 @@ export default function TrackWorkout() {
     index: number;
   }) => {
     return (
-      <Accordion.Item value={index.toString()} key={exercise.id}>
-        <Accordion.Trigger
-          flexDirection="row"
+      <YStack>
+        <View
           justifyContent="space-between"
           alignItems="center"
           borderWidth="$0"
           pb="$0"
         >
-          {({ open }: { open: boolean }) => (
-            <>
-              <Text>{exercise.name}</Text>
+          <Text>{exercise.name}</Text>
 
-              <XStack>
-                <Button variant="outlined">
-                  <Text>{`${exercise.sets}x${exercise.reps}`}</Text>
-                </Button>
-                <Square animation="quick" rotate={open ? "180deg" : "0deg"}>
-                  <ChevronDown size="$1" />
-                </Square>
-              </XStack>
-            </>
-          )}
-        </Accordion.Trigger>
+          <XStack>
+            <Button variant="outlined">
+              <Text>{`${exercise.sets}x${exercise.reps}`}</Text>
+            </Button>
+            <Square
+              animation="quick"
+              rotate={index === selectedSet?.[0] ? "180deg" : "0deg"}
+            >
+              <ChevronDown size="$1" />
+            </Square>
+          </XStack>
+        </View>
 
-        <Accordion.Content m="$5">
-          <YStack space="$6">
-            <FlatList
-              data={exercise.completedSets}
-              renderItem={({ item: set, index: exerciseSetIndex }) => {
-                const isItemSelected = isEqual(selectedSet, [
-                  index,
-                  exerciseSetIndex,
-                ]);
-                return (
-                  <XStack
-                    jc="space-around"
-                    p="$3"
-                    borderRadius="$radius.4"
-                    backgroundColor={
-                      isItemSelected ? "$backgroundHover" : undefined
-                    }
-                  >
-                    {isItemSelected && (
-                      <Button>
+        <YStack space="$6">
+          <FlatList
+            data={exercise.completedSets}
+            renderItem={({ item: set, index: exerciseSetIndex }) => {
+              const isItemSelected = isEqual(selectedSet, [
+                index,
+                exerciseSetIndex,
+              ]);
+              return (
+                <XStack
+                  jc="space-around"
+                  p="$3"
+                  borderRadius="$radius.4"
+                  backgroundColor={
+                    isItemSelected ? "$backgroundHover" : undefined
+                  }
+                >
+                  {isItemSelected &&
+                    !(index === 0 && exerciseSetIndex === 0) && (
+                      <Button
+                        onPress={() => {
+                          onPressPreviousSet(index, exerciseSetIndex);
+                        }}
+                      >
                         <Text>Prev</Text>
                       </Button>
                     )}
+                  <Button
+                    backgroundColor={set.selected ? "$color7" : "$color1"}
+                    borderRadius="$10"
+                    marginHorizontal="$3"
+                    onPress={() => {
+                      dispatch(
+                        exerciseSetClicked({
+                          exerciseIndex: index,
+                          exerciseSetIndex,
+                        }),
+                      );
+                    }}
+                  >
+                    <Text fontSize="$8" letterSpacing="$3">
+                      {set.repCount}
+                    </Text>
+                  </Button>
+                  {isItemSelected && ! && (
                     <Button
-                      backgroundColor={set.selected ? "$color7" : "$color1"}
-                      borderRadius="$10"
-                      marginHorizontal="$3"
                       onPress={() => {
-                        dispatch(
-                          exerciseSetClicked({
-                            exerciseIndex: index,
-                            exerciseSetIndex,
-                          }),
-                        );
+                        onPressNextSet(index, exerciseSetIndex);
                       }}
                     >
-                      <Text fontSize="$8" letterSpacing="$3">
-                        {set.repCount}
-                      </Text>
+                      <Text>Next</Text>
                     </Button>
-                    {isItemSelected && (
-                      <Button>
-                        <Text>Next</Text>
-                      </Button>
-                    )}
-                  </XStack>
+                  )}
+                </XStack>
+              );
+            }}
+          />
+          <XStack space="$4" jc="center">
+            <Button
+              onPress={() => {
+                dispatch(
+                  exerciseWeightChanged({
+                    exerciseId: exercise.id,
+                    weightChange: -5,
+                  }),
                 );
               }}
+            >
+              <Text>-5</Text>
+            </Button>
+            <Input
+              keyboardType="numeric"
+              placeholder={`${exercise.weight.toString()} ${getUnitAbbreviation(
+                units,
+              )}`}
             />
-            <XStack space="$4" jc="center">
-              <Button
-                onPress={() => {
-                  dispatch(
-                    exerciseWeightChanged({
-                      exerciseId: exercise.id,
-                      weightChange: -5,
-                    }),
-                  );
-                }}
-              >
-                <Text>-5</Text>
-              </Button>
-              <Input
-                keyboardType="numeric"
-                placeholder={`${exercise.weight.toString()} ${getUnitAbbreviation(
-                  units,
-                )}`}
-              />
-              <Button
-                onPress={() => {
-                  dispatch(
-                    exerciseWeightChanged({
-                      exerciseId: exercise.id,
-                      weightChange: 5,
-                    }),
-                  );
-                }}
-              >
-                <Text>+5</Text>
-              </Button>
-            </XStack>
-          </YStack>
-        </Accordion.Content>
-      </Accordion.Item>
+            <Button
+              onPress={() => {
+                dispatch(
+                  exerciseWeightChanged({
+                    exerciseId: exercise.id,
+                    weightChange: 5,
+                  }),
+                );
+              }}
+            >
+              <Text>+5</Text>
+            </Button>
+          </XStack>
+        </YStack>
+      </YStack>
     );
   };
 
