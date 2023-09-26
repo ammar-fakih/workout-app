@@ -25,6 +25,7 @@ interface WorkoutsState {
   selectedWorkout: TodaysWorkout | undefined;
   exerciseRecords: ExerciseRecords;
   units: Units;
+  selectedSet: [number, number] | null;
 }
 
 const initialState: WorkoutsState = {
@@ -36,6 +37,7 @@ const initialState: WorkoutsState = {
   selectedWorkout: undefined,
   exerciseRecords: {},
   units: Units.IMPERIAL,
+  selectedSet: [0, 0],
 };
 
 export const workoutsSlice = createSlice({
@@ -217,6 +219,49 @@ export const workoutsSlice = createSlice({
         exercise.weight = newWeight;
       }
     },
+    // Track WorkoutPage
+    onPressNextSet: (state) => {
+      if (!state.selectedWorkout || !state.selectedSet) return;
+
+      const [exerciseIndex, setIndex] = state.selectedSet;
+      const exercises = state.selectedWorkout.exercises;
+      const exercise = exercises[exerciseIndex];
+
+      if (setIndex === exercise.sets - 1) {
+        if (exerciseIndex === exercises.length - 1) {
+          state.selectedSet = null;
+        } else {
+          state.selectedSet = [exerciseIndex + 1, 0];
+        }
+      } else {
+        state.selectedSet = [exerciseIndex, setIndex + 1];
+      }
+    },
+    onPressPreviousSet: (state) => {
+      if (!state.selectedWorkout || !state.selectedSet) return;
+
+      const [exerciseIndex, setIndex] = state.selectedSet;
+      const exercises = state.selectedWorkout.exercises;
+      const exercise = exercises[exerciseIndex];
+
+      if (setIndex === 0) {
+        state.selectedSet = [
+          exerciseIndex - 1,
+          exercise.completedSets.length - 1,
+        ];
+      } else {
+        state.selectedSet = [exerciseIndex, setIndex - 1];
+      }
+    },
+    onPressExercise: (state, action: PayloadAction<number>) => {
+      if (!state.selectedWorkout) return;
+
+      const exerciseIndex = action.payload;
+
+      if (exerciseIndex === state.selectedSet?.[0]) return;
+
+      state.selectedSet = [exerciseIndex, 0];
+    },
   },
 });
 
@@ -254,6 +299,9 @@ export const {
   exerciseSetClicked,
   workoutFinished,
   exerciseWeightChanged,
+  onPressNextSet,
+  onPressPreviousSet,
+  onPressExercise,
 } = workoutsSlice.actions;
 
 export default workoutsSlice.reducer;

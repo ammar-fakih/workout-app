@@ -1,6 +1,6 @@
 import "react-native-gesture-handler";
 
-import { Octicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { MaterialCommunityIcons, Octicons } from "@expo/vector-icons";
 import { DefaultTheme, NavigationContainer } from "@react-navigation/native";
 import * as SplashScreen from "expo-splash-screen";
 import { RootSiblingParent } from "react-native-root-siblings";
@@ -16,9 +16,16 @@ import { Settings as SettingsIcon } from "@tamagui/lucide-icons";
 import { useFonts } from "expo-font";
 import { StatusBar } from "expo-status-bar";
 import { useCallback } from "react";
+import { Platform, UIManager } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import Settings from "./src/features/Settings/Settings";
 import config from "./tamagui.config";
+
+if (Platform.OS === "android") {
+  if (UIManager.setLayoutAnimationEnabledExperimental) {
+    UIManager.setLayoutAnimationEnabledExperimental(true);
+  }
+}
 
 export type RootStackParamList = {
   Workout: undefined;
@@ -34,7 +41,7 @@ export default function () {
     <SafeAreaProvider>
       <Provider store={store}>
         <RootSiblingParent>
-          <TamaguiProvider config={config} defaultTheme="dark_purple">
+          <TamaguiProvider config={config} defaultTheme="light">
             <Theme name="dark_blue">
               <App />
             </Theme>

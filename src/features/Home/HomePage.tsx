@@ -109,8 +109,8 @@ export default function HomePage({ navigation }: Props) {
     <YStack f={1} bg="$background" pt={insets.top}>
       <XStack>
         <View f={1} />
-        <YStack w="100%" ai="center" f={1}>
-          <H3 fontFamily="GerhausItalic">LIFT-IQ</H3>
+        <YStack w="100%" ai="center" f={1} p="$2.5">
+          <H3 fontFamily="Gerhaus">LIFT-IQ</H3>
         </YStack>
         <Button f={1} m="$0" p="$0" onPress={() => {}} variant="outlined">
           <Text>Program</Text>
