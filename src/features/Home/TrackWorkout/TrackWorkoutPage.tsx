@@ -79,44 +79,50 @@ export default function TrackWorkout() {
           <YStack space="$6">
             <FlatList
               data={exercise.completedSets}
-              renderItem={({ item: set, index: exerciseSetIndex }) => (
-                <XStack>
-                  {isEqual(selectedSet, [index, exerciseSetIndex]) && (
-                    <Button>
-                      <Text>Prev</Text>
-                    </Button>
-                  )}
-                  <Button
-                    backgroundColor={set.selected ? "$color7" : "$color1"}
-                    borderRadius="$10"
-                    marginHorizontal="$3"
-                    onPress={() => {
-                      dispatch(
-                        exerciseSetClicked({
-                          exerciseIndex: index,
-                          exerciseSetIndex,
-                        }),
-                      );
-                    }}
+              renderItem={({ item: set, index: exerciseSetIndex }) => {
+                const isItemSelected = isEqual(selectedSet, [
+                  index,
+                  exerciseSetIndex,
+                ]);
+                return (
+                  <XStack
+                    jc="space-around"
+                    p="$3"
+                    borderRadius="$radius.4"
+                    backgroundColor={
+                      isItemSelected ? "$backgroundHover" : undefined
+                    }
                   >
-                    <Text fontSize="$8" letterSpacing="$3">
-                      {set.repCount}
-                    </Text>
-                  </Button>
-                  {isEqual(selectedSet, [index, exerciseSetIndex]) && (
-                    <Button>
-                      <Text>Next</Text>
+                    {isItemSelected && (
+                      <Button>
+                        <Text>Prev</Text>
+                      </Button>
+                    )}
+                    <Button
+                      backgroundColor={set.selected ? "$color7" : "$color1"}
+                      borderRadius="$10"
+                      marginHorizontal="$3"
+                      onPress={() => {
+                        dispatch(
+                          exerciseSetClicked({
+                            exerciseIndex: index,
+                            exerciseSetIndex,
+                          }),
+                        );
+                      }}
+                    >
+                      <Text fontSize="$8" letterSpacing="$3">
+                        {set.repCount}
+                      </Text>
                     </Button>
-                  )}
-                </XStack>
-              )}
-              ListFooterComponent={() => (
-                <Button
-                  borderRadius="$10"
-                  marginHorizontal="$3"
-                  icon={<Plus />}
-                />
-              )}
+                    {isItemSelected && (
+                      <Button>
+                        <Text>Next</Text>
+                      </Button>
+                    )}
+                  </XStack>
+                );
+              }}
             />
             <XStack space="$4" jc="center">
               <Button
