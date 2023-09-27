@@ -58,10 +58,6 @@ export interface RecordEntry {
   completedSets: CompletedSet[];
 }
 
-export interface ExerciseRecords {
-  [name: string]: RecordEntry[];
-}
-
 // Enums
 export enum Units {
   METRIC = "METRIC",

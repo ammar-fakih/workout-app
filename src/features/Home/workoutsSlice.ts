@@ -7,10 +7,10 @@ import {
   getDefaultWeight,
 } from "./helperFunctions";
 import {
-  ExerciseRecords,
   GeneralWorkout,
   Program,
   ProgramFromFile,
+  RecordEntry,
   TodaysWorkout,
   Units,
   Workout,
@@ -22,10 +22,19 @@ interface WorkoutsState {
   selectedProgram: Program | undefined;
   weeksWorkouts: TodaysWorkout[];
   todaysWorkout: TodaysWorkout | undefined;
+
+  // TrackWorkoutPage
   selectedWorkout: TodaysWorkout | undefined;
-  exerciseRecords: ExerciseRecords;
-  units: Units;
   selectedSet: [number, number] | null;
+
+  allRecords: RecordEntry[];
+  exerciseRecords: {
+    // Map exercise name to record entries in allRecords
+    [name: string]: number[];
+  };
+  workoutRecords: number[][]; // record of all workouts (groups of exercises); maps to allRecords
+
+  units: Units;
 }
 
 const initialState: WorkoutsState = {
@@ -34,10 +43,15 @@ const initialState: WorkoutsState = {
   selectedProgram: undefined,
   weeksWorkouts: [],
   todaysWorkout: undefined,
+
   selectedWorkout: undefined,
-  exerciseRecords: {},
-  units: Units.IMPERIAL,
   selectedSet: [0, 0],
+
+  allRecords: [],
+  exerciseRecords: {},
+  workoutRecords: [],
+
+  units: Units.IMPERIAL,
 };
 
 export const workoutsSlice = createSlice({
@@ -168,18 +182,26 @@ export const workoutsSlice = createSlice({
     workoutFinished: (state) => {
       if (!state.selectedWorkout) return;
 
+      const workoutRecord: number[] = [];
+
       const updatedWorkout = state.selectedWorkout.exercises.map((exercise) => {
-        // Update Records
-        if (!state.exerciseRecords[exercise.name]) {
-          state.exerciseRecords[exercise.name] = [];
-        }
-        state.exerciseRecords[exercise.name].push({
+        // Push to allrecords
+        state.allRecords.push({
           date: new Date().toISOString(),
           weight: exercise.weight,
           completedSets: exercise.completedSets,
           sets: exercise.sets,
           reps: exercise.reps,
         });
+
+        // Update exercise records
+        if (!state.exerciseRecords[exercise.name]) {
+          state.exerciseRecords[exercise.name] = [];
+        }
+        state.exerciseRecords[exercise.name].push(state.allRecords.length - 1);
+
+        // Save value for workout record
+        workoutRecord.push(state.allRecords.length - 1);
 
         // Clear completed sets
         return {
@@ -192,6 +214,9 @@ export const workoutsSlice = createSlice({
           }),
         };
       });
+
+      // Push to workout records
+      state.workoutRecords.push(workoutRecord);
 
       state.selectedWorkout = {
         ...state.selectedWorkout,
@@ -277,9 +302,12 @@ const getNextWeight = (state: WorkoutsState, exerciseId: string) => {
     return getDefaultWeight(state.units);
   }
 
-  return state.exerciseRecords[exerciseId][
-    state.exerciseRecords[exerciseId].length - 1
-  ].weight;
+  const exerciseIndex =
+    state.exerciseRecords[exerciseId][
+      state.exerciseRecords[exerciseId].length - 1
+    ];
+
+  return state.allRecords[exerciseIndex].weight;
 };
 
 // Selectors

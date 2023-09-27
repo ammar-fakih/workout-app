@@ -106,7 +106,7 @@ export default function HomePage({ navigation }: Props) {
   };
 
   return (
-    <YStack f={1} bg="$background" pt={insets.top}>
+    <YStack f={1} pt={insets.top}>
       <XStack>
         <View f={1} />
         <YStack w="100%" ai="center" f={1} p="$2.5">

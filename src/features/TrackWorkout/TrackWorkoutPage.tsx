@@ -1,5 +1,5 @@
 import { isEqual } from "lodash";
-import { FlatList, Keyboard, LayoutAnimation } from "react-native";
+import { Alert, FlatList, Keyboard, LayoutAnimation } from "react-native";
 import { Accordion, Button, Input, Text, View, XStack, YStack } from "tamagui";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { getUnitAbbreviation } from "../Home/helperFunctions";
@@ -13,8 +13,12 @@ import {
   selectSelectedWorkout,
   workoutFinished,
 } from "../Home/workoutsSlice";
+import { StackScreenProps } from "@react-navigation/stack";
+import { RootStackParamList } from "../../../App";
 
-export default function TrackWorkout() {
+type Props = StackScreenProps<RootStackParamList, "TrackWorkout">;
+
+export default function TrackWorkout({ navigation }: Props) {
   const selectedSet = useAppSelector(
     (state) => state.appData.workouts.selectedSet,
   );
@@ -59,19 +63,12 @@ export default function TrackWorkout() {
         <XStack
           jc="space-between"
           marginHorizontal="$5"
-          marginVertical={isExerciseSelected ? "$4" : "$1"}
+          marginVertical={isExerciseSelected ? "$6" : "$2"}
           alignItems="center"
-          borderWidth="$0"
-          pb="$0"
           onPress={() => handlePressExerciseHeader(index, 0)}
         >
           <Text>{exercise.name}</Text>
-
-          <XStack>
-            <Button variant="outlined">
-              <Text>{`${exercise.sets}x${exercise.reps}`}</Text>
-            </Button>
-          </XStack>
+          <Text>{`${exercise.sets}x${exercise.reps}`}</Text>
         </XStack>
 
         {/* Body */}
@@ -186,7 +183,19 @@ export default function TrackWorkout() {
         r="$4"
         l="$4"
         onPress={() => {
-          dispatch(workoutFinished());
+          Alert.alert("Are you sure you want to finish?", "", [
+            {
+              text: "Cancel",
+              style: "cancel",
+            },
+            {
+              text: "Finish",
+              onPress: () => {
+                dispatch(workoutFinished());
+                navigation.navigate("HomePage");
+              },
+            },
+          ]);
         }}
       >
         Finish
