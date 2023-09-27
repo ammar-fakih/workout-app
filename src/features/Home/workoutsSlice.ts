@@ -170,13 +170,15 @@ export const workoutsSlice = createSlice({
 
       const updatedWorkout = state.selectedWorkout.exercises.map((exercise) => {
         // Update Records
-        if (!state.exerciseRecords[exercise.id]) {
-          state.exerciseRecords[exercise.id] = [];
+        if (!state.exerciseRecords[exercise.name]) {
+          state.exerciseRecords[exercise.name] = [];
         }
-        state.exerciseRecords[exercise.id].push({
+        state.exerciseRecords[exercise.name].push({
           date: new Date().toISOString(),
           weight: exercise.weight,
           completedSets: exercise.completedSets,
+          sets: exercise.sets,
+          reps: exercise.reps,
         });
 
         // Clear completed sets
@@ -253,14 +255,18 @@ export const workoutsSlice = createSlice({
         state.selectedSet = [exerciseIndex, setIndex - 1];
       }
     },
-    onPressExercise: (state, action: PayloadAction<number>) => {
+    onPressExerciseSet: (
+      state,
+      action: PayloadAction<{
+        exerciseIndex: number;
+        exerciseSetIndex: number;
+      }>,
+    ) => {
       if (!state.selectedWorkout) return;
 
-      const exerciseIndex = action.payload;
+      const { exerciseIndex, exerciseSetIndex } = action.payload;
 
-      if (exerciseIndex === state.selectedSet?.[0]) return;
-
-      state.selectedSet = [exerciseIndex, 0];
+      state.selectedSet = [exerciseIndex, exerciseSetIndex];
     },
   },
 });
@@ -301,7 +307,7 @@ export const {
   exerciseWeightChanged,
   onPressNextSet,
   onPressPreviousSet,
-  onPressExercise,
+  onPressExerciseSet,
 } = workoutsSlice.actions;
 
 export default workoutsSlice.reducer;

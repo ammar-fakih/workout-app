@@ -1,7 +1,7 @@
 import "react-native-gesture-handler";
 
 import { MaterialCommunityIcons, Octicons } from "@expo/vector-icons";
-import { DefaultTheme, NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer } from "@react-navigation/native";
 import * as SplashScreen from "expo-splash-screen";
 import { RootSiblingParent } from "react-native-root-siblings";
 import { Provider } from "react-redux";
@@ -64,9 +64,14 @@ function App() {
   });
 
   const NavigationTheme = {
-    ...DefaultTheme,
+    dark: true,
     colors: {
-      ...DefaultTheme.colors,
+      primary: theme.color.val,
+      background: theme.background.val,
+      card: theme.color3.val,
+      text: theme.color.val,
+      border: theme.color2.val,
+      notification: "rgb(255, 59, 48)",
     },
   };
 

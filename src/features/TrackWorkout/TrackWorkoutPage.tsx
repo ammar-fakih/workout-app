@@ -1,18 +1,18 @@
 import { isEqual } from "lodash";
 import { FlatList, Keyboard, LayoutAnimation } from "react-native";
 import { Accordion, Button, Input, Text, View, XStack, YStack } from "tamagui";
-import { useAppDispatch, useAppSelector } from "../../../app/hooks";
-import { getUnitAbbreviation } from "../helperFunctions";
-import { TodaysExercise } from "../types";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { getUnitAbbreviation } from "../Home/helperFunctions";
+import { TodaysExercise } from "../Home/types";
 import {
   exerciseSetClicked,
   exerciseWeightChanged,
-  onPressExercise,
+  onPressExerciseSet,
   onPressNextSet,
   onPressPreviousSet,
   selectSelectedWorkout,
   workoutFinished,
-} from "../workoutsSlice";
+} from "../Home/workoutsSlice";
 
 export default function TrackWorkout() {
   const selectedSet = useAppSelector(
@@ -32,9 +32,12 @@ export default function TrackWorkout() {
     dispatch(onPressPreviousSet());
   };
 
-  const handlePressExerciseHeader = (index: number) => {
+  const handlePressExerciseHeader = (
+    exerciseIndex: number,
+    exerciseSetIndex: number,
+  ) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    dispatch(onPressExercise(index));
+    dispatch(onPressExerciseSet({ exerciseIndex, exerciseSetIndex }));
   };
 
   if (!selectedWorkout) return null;
@@ -50,19 +53,17 @@ export default function TrackWorkout() {
     return (
       <YStack
         key={exercise.id}
-        backgroundColor={
-          isExerciseSelected ? "$background" : "$backgroundStrong"
-        }
+        bg={isExerciseSelected ? "$background" : "$backgroundStrong"}
       >
         {/* Header */}
         <XStack
-          justifyContent="space-between"
+          jc="space-between"
           marginHorizontal="$5"
           marginVertical={isExerciseSelected ? "$4" : "$1"}
           alignItems="center"
           borderWidth="$0"
           pb="$0"
-          onPress={() => handlePressExerciseHeader(index)}
+          onPress={() => handlePressExerciseHeader(index, 0)}
         >
           <Text>{exercise.name}</Text>
 
@@ -88,9 +89,9 @@ export default function TrackWorkout() {
                   <XStack
                     jc="space-around"
                     p="$3"
-                    borderRadius="$radius.4"
-                    backgroundColor={
-                      isItemSelected ? "$backgroundHover" : undefined
+                    bg={isItemSelected ? "$backgroundHover" : undefined}
+                    onPress={() =>
+                      handlePressExerciseHeader(index, exerciseSetIndex)
                     }
                   >
                     {isItemSelected ? (
@@ -102,8 +103,8 @@ export default function TrackWorkout() {
                     )}
                     <Button
                       disabled={!isItemSelected}
-                      backgroundColor={set.selected ? "$color7" : "$color1"}
-                      borderRadius="$10"
+                      bg={set.selected ? "$color7" : "$color1"}
+                      borderRadius="$radius.12"
                       onPress={() => {
                         dispatch(
                           exerciseSetClicked({
@@ -122,11 +123,7 @@ export default function TrackWorkout() {
                       </Text>
                     </Button>
                     {isItemSelected &&
-                    !(
-                      index === selectedWorkout.exercises.length &&
-                      exerciseSetIndex ===
-                        selectedWorkout.exercises[index].completedSets.length
-                    ) ? (
+                    !(index === selectedWorkout.exercises.length) ? (
                       <Button onPress={handlePressNextSet}>
                         <Text>Next</Text>
                       </Button>

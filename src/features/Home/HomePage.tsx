@@ -6,7 +6,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
   Button,
   Card,
-  H3,
+  H1,
   Separator,
   Text,
   View,
@@ -110,7 +110,9 @@ export default function HomePage({ navigation }: Props) {
       <XStack>
         <View f={1} />
         <YStack w="100%" ai="center" f={1} p="$2.5">
-          <H3 fontFamily="Gerhaus">LIFT-IQ</H3>
+          <H1 fontFamily="$gerhaus" size="$5">
+            LIFT-IQ
+          </H1>
         </YStack>
         <Button f={1} m="$0" p="$0" onPress={() => {}} variant="outlined">
           <Text>Program</Text>

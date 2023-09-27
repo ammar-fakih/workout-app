@@ -3,7 +3,6 @@ export interface Exercise {
   name: string;
   sets: number;
   reps: number;
-  icon?: string;
 }
 
 export interface CompletedSet {
@@ -54,11 +53,13 @@ export interface Program {
 export interface RecordEntry {
   date: string;
   weight: number;
+  sets: number;
+  reps: number;
   completedSets: CompletedSet[];
 }
 
 export interface ExerciseRecords {
-  [id: string]: RecordEntry[];
+  [name: string]: RecordEntry[];
 }
 
 // Enums
