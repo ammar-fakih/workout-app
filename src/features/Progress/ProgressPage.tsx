@@ -2,7 +2,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Tabs, Text, YStack } from "tamagui";
 import List from "./List";
 
-export default function Calendar() {
+export default function ProgressPage() {
   const insets = useSafeAreaInsets();
   return (
     <YStack paddingTop={insets.top} f={1}>

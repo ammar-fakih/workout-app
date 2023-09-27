@@ -1,6 +1,8 @@
+import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { isEqual } from "lodash";
 import { Alert, FlatList, Keyboard, LayoutAnimation } from "react-native";
 import { Accordion, Button, Input, Text, View, XStack, YStack } from "tamagui";
+import { RootStackParamList } from "../../../App";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { getUnitAbbreviation } from "../Home/helperFunctions";
 import { TodaysExercise } from "../Home/types";
@@ -13,10 +15,8 @@ import {
   selectSelectedWorkout,
   workoutFinished,
 } from "../Home/workoutsSlice";
-import { StackScreenProps } from "@react-navigation/stack";
-import { RootStackParamList } from "../../../App";
 
-type Props = StackScreenProps<RootStackParamList, "TrackWorkout">;
+type Props = BottomTabScreenProps<RootStackParamList, "TrackWorkout">;
 
 export default function TrackWorkout({ navigation }: Props) {
   const selectedSet = useAppSelector(

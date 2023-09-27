@@ -1,31 +1,33 @@
-import { config } from "@tamagui/config";
+import { config, createGenericFont } from "@tamagui/config";
 import { color, radius, size, space, themes, zIndex } from "@tamagui/themes";
-import { createFont, createTamagui, createTokens } from "tamagui";
+import { createTamagui, createTokens } from "tamagui";
 
-const gerhaus = createFont({
-  family: "Gerhaus, Arial, sans-serif",
-  size: {
-    1: 12,
-    2: 14,
-    3: 15,
-    5: 20,
-  },
-  lineHeight: {
-    2: 22,
-  },
-  weight: {
-    1: "300",
-    3: "600",
-  },
-  letterSpacing: {
-    1: 0,
-    2: -1,
-  },
-  // (native) swap out fonts by face/style
-  face: {
-    300: { normal: "Gerhaus", italic: "GerhausItalic" },
-  },
-});
+// const gerhaus = createFont({
+//   family: "Gerhaus, Arial, sans-serif",
+//   size: {
+//     1: 12,
+//     2: 14,
+//     3: 15,
+//     5: 20,
+//   },
+//   lineHeight: {
+//     2: 22,
+//   },
+//   weight: {
+//     1: "300",
+//     3: "600",
+//   },
+//   letterSpacing: {
+//     1: 0,
+//     2: -1,
+//   },
+//   // (native) swap out fonts by face/style
+//   face: {
+//     300: { normal: "Gerhaus", italic: "GerhausItalic" },
+//   },
+// });
+
+const gerhaus = createGenericFont("Gerhaus");
 
 const tokens = createTokens({
   size,
@@ -37,7 +39,11 @@ const tokens = createTokens({
 
 const tamaguiConfig = createTamagui({
   ...config,
-  themes,
+  themes: {
+    ...themes,
+    light_green: { ...themes.light_green, background: "#fff" },
+    dark_blue: { ...themes.dark_blue, background: "#000" },
+  },
   tokens,
   fonts: { ...config.fonts, gerhaus },
 });

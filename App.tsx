@@ -8,8 +8,8 @@ import { Provider } from "react-redux";
 import { TamaguiProvider, Theme, View, useTheme } from "tamagui";
 
 import { store } from "./src/app/store";
-import Calendar from "./src/features/Calendar/Calendar";
 import Home from "./src/features/Home";
+import Calendar from "./src/features/Progress/ProgressPage";
 
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Settings as SettingsIcon } from "@tamagui/lucide-icons";
@@ -18,7 +18,6 @@ import { StatusBar } from "expo-status-bar";
 import { useCallback } from "react";
 import { Platform, UIManager } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import Settings from "./src/features/Settings/Settings";
 import config from "./tamagui.config";
 
 if (Platform.OS === "android") {
@@ -41,7 +40,7 @@ export default function () {
     <SafeAreaProvider>
       <Provider store={store}>
         <RootSiblingParent>
-          <TamaguiProvider config={config} defaultTheme="light">
+          <TamaguiProvider config={config} defaultTheme="light_green">
             <Theme name="dark_blue">
               <App />
             </Theme>
@@ -60,7 +59,8 @@ function App() {
     Inter: require("@tamagui/font-inter/otf/Inter-Medium.otf"),
     InterBold: require("@tamagui/font-inter/otf/Inter-Bold.otf"),
     Gerhaus: require("./assets/fonts/Gerhaus.ttf"),
-    GerhausItalic: require("./assets/fonts/Gerhaus-Italic.ttf"),
+    OpenSans: require("./assets/fonts/OpenSans-Regular.ttf"),
+    OpenSansBold: require("./assets/fonts/OpenSans-Bold.ttf"),
   });
 
   const NavigationTheme = {
@@ -119,7 +119,6 @@ function App() {
         >
           <Tabs.Screen name="Workout" component={Home} />
           <Tabs.Screen name="Progress" component={Calendar} />
-          <Tabs.Screen name="Settings" component={Settings} />
         </Tabs.Navigator>
       </NavigationContainer>
     </View>
