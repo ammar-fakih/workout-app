@@ -92,12 +92,14 @@ export default function List() {
   return (
     <View f={1}>
       <ScrollView horizontal>
-        <XStack>
-          {tableHeader.map((headerCell, index) =>
-            renderHeaderCell({ item: headerCell, index }),
-          )}
-        </XStack>
-        <FlatList data={workoutRecords} renderItem={renderRow} />
+        <YStack>
+          <XStack>
+            {tableHeader.map((headerCell, index) =>
+              renderHeaderCell({ item: headerCell, index }),
+            )}
+          </XStack>
+          <FlatList data={workoutRecords} renderItem={renderRow} />
+        </YStack>
       </ScrollView>
     </View>
   );

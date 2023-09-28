@@ -4,22 +4,12 @@ import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { Settings2 } from "@tamagui/lucide-icons";
 import { FlatList } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import {
-  Button,
-  Card,
-  H3,
-  Separator,
-  Text,
-  View,
-  XStack,
-  YStack,
-} from "tamagui";
+import { Button, Card, H3, Text, XStack, YStack } from "tamagui";
 import { RootTabsParamList } from "../../../App";
 import startingProgram from "../../../startingProgram.json";
 import startingWorkouts from "../../../startingWorkouts.json";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { monthNames } from "./constants";
-import { getDayName, renderExerciseLabel } from "./helperFunctions";
+import WorkoutCard from "../../Components/WorkoutCard";
 import { TodaysWorkout } from "./types";
 import {
   programReadFromFile,
@@ -36,6 +26,9 @@ export default function HomePage({ navigation }: Props) {
   const insets = useSafeAreaInsets();
   const units = useAppSelector((state) => state.appData.workouts.units);
   const weeksWorkouts = useAppSelector(selectWeeksWorkouts);
+  const todaysWorkout = useAppSelector(
+    (state) => state.appData.workouts.todaysWorkout,
+  );
   const selectedWorkout = useAppSelector(
     (state) => state.appData.workouts.selectedWorkout,
   );
@@ -54,50 +47,26 @@ export default function HomePage({ navigation }: Props) {
     navigation.navigate("TrackWorkout");
   };
 
-  const renderWeeksWorkouts = ({ item }: { item: TodaysWorkout }) => {
-    const nextTime = new Date(item.closestTimeToNow!);
-    return (
-      <Card
-        key={item.workoutId}
-        p="$3"
-        marginVertical="$2"
-        borderLeftWidth={nextTime.getDay() === new Date().getDay() ? 2 : 0}
-        borderColor="$color8"
-        marginHorizontal="$4"
-        onPress={() => {
-          onPressWorkout(item);
-        }}
-      >
-        <View fd="row" jc="space-between" p="$2" pb="$3">
-          <Text fontSize="$1" fontWeight="bold">
-            {item.name}
-          </Text>
-          <Text fontSize="$1" fontWeight="bold">
-            {getDayName(nextTime)}, {monthNames[nextTime.getMonth()]}{" "}
-            {nextTime.getDate()}
-          </Text>
-        </View>
+  const renderTodaysWorkout = () => {
+    if (!todaysWorkout) return null;
 
-        <FlatList
-          data={item.exercises}
-          ItemSeparatorComponent={Separator}
-          renderItem={({ item: exercise, index: exerciseIndex }) => (
-            <View
-              p="$2"
-              fd="row"
-              jc="space-between"
-              key={`${item.workoutId} ${exerciseIndex}`}
-            >
-              <View>
-                <Text>{exercise.name}</Text>
-              </View>
-              <View>
-                <Text>{renderExerciseLabel(exercise, units)}</Text>
-              </View>
-            </View>
-          )}
+    return (
+      <WorkoutCard
+        onPressWorkout={() => onPressWorkout(todaysWorkout)}
+        workout={todaysWorkout}
+      />
+    );
+  };
+
+  const renderWeeksWorkouts = ({ item }: { item: TodaysWorkout }) => {
+    return (
+      <YStack>
+        <WorkoutCard
+          key={item.workoutId}
+          onPressWorkout={() => onPressWorkout(item)}
+          workout={item}
         />
-      </Card>
+      </YStack>
     );
   };
 
@@ -115,6 +84,7 @@ export default function HomePage({ navigation }: Props) {
       </XStack>
 
       <FlatList
+        ListHeaderComponent={renderTodaysWorkout}
         contentContainerStyle={{ paddingBottom: 120 }}
         data={weeksWorkouts}
         renderItem={renderWeeksWorkouts}
