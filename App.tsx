@@ -26,14 +26,14 @@ if (Platform.OS === "android") {
   }
 }
 
-export type RootStackParamList = {
+export type RootTabsParamList = {
   Workout: undefined;
   Progress: undefined;
   Settings: undefined;
   HomePage: undefined;
   TrackWorkout: undefined;
 };
-const Tabs = createBottomTabNavigator<RootStackParamList>();
+const Tabs = createBottomTabNavigator<RootTabsParamList>();
 
 export default function () {
   return (

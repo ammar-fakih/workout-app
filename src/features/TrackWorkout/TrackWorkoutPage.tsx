@@ -1,10 +1,19 @@
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { isEqual } from "lodash";
-import { Alert, FlatList, Keyboard, LayoutAnimation } from "react-native";
-import { Accordion, Button, Input, Text, View, XStack, YStack } from "tamagui";
-import { RootStackParamList } from "../../../App";
+import { Alert, FlatList, Keyboard } from "react-native";
+import {
+  Accordion,
+  AnimatePresence,
+  Button,
+  Input,
+  Text,
+  View,
+  XStack,
+  YStack,
+} from "tamagui";
+import { RootTabsParamList } from "../../../App";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { getUnitAbbreviation } from "../Home/helperFunctions";
+import { getOrdinalNumber, getUnitAbbreviation } from "../Home/helperFunctions";
 import { TodaysExercise } from "../Home/types";
 import {
   exerciseSetClicked,
@@ -16,7 +25,7 @@ import {
   workoutFinished,
 } from "../Home/workoutsSlice";
 
-type Props = BottomTabScreenProps<RootStackParamList, "TrackWorkout">;
+type Props = BottomTabScreenProps<RootTabsParamList, "TrackWorkout">;
 
 export default function TrackWorkout({ navigation }: Props) {
   const selectedSet = useAppSelector(
@@ -27,12 +36,10 @@ export default function TrackWorkout({ navigation }: Props) {
   const dispatch = useAppDispatch();
 
   const handlePressNextSet = () => {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     dispatch(onPressNextSet());
   };
 
   const handlePressPreviousSet = () => {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     dispatch(onPressPreviousSet());
   };
 
@@ -40,7 +47,6 @@ export default function TrackWorkout({ navigation }: Props) {
     exerciseIndex: number,
     exerciseSetIndex: number,
   ) => {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     dispatch(onPressExerciseSet({ exerciseIndex, exerciseSetIndex }));
   };
 
@@ -62,8 +68,8 @@ export default function TrackWorkout({ navigation }: Props) {
         {/* Header */}
         <XStack
           jc="space-between"
-          marginHorizontal="$5"
-          marginVertical={isExerciseSelected ? "$6" : "$2"}
+          paddingHorizontal="$5"
+          paddingVertical={isExerciseSelected ? "$6" : "$2"}
           alignItems="center"
           onPress={() => handlePressExerciseHeader(index, 0)}
         >
@@ -82,53 +88,71 @@ export default function TrackWorkout({ navigation }: Props) {
                   index,
                   exerciseSetIndex,
                 ]);
-                return (
-                  <XStack
-                    jc="space-around"
-                    p="$3"
-                    bg={isItemSelected ? "$backgroundHover" : undefined}
-                    onPress={() =>
-                      handlePressExerciseHeader(index, exerciseSetIndex)
-                    }
-                  >
-                    {isItemSelected ? (
-                      <Button onPress={handlePressPreviousSet}>
-                        <Text>Prev</Text>
-                      </Button>
-                    ) : (
-                      <View />
-                    )}
-                    <Button
-                      disabled={!isItemSelected}
-                      bg={set.selected ? "$color7" : "$color1"}
-                      borderRadius="$radius.12"
-                      onPress={() => {
-                        dispatch(
-                          exerciseSetClicked({
-                            exerciseIndex: index,
-                            exerciseSetIndex,
-                          }),
-                        );
-                      }}
+                let setContent = <></>;
+
+                if (!isItemSelected) {
+                  setContent = (
+                    <XStack
+                      jc="space-around"
+                      alignItems="center"
+                      p="$3"
+                      onPress={() =>
+                        handlePressExerciseHeader(index, exerciseSetIndex)
+                      }
                     >
-                      <Text
-                        fontSize="$8"
-                        letterSpacing="$3"
-                        color={isItemSelected ? "$color" : "$color6"}
+                      <Text>{getOrdinalNumber(exerciseSetIndex + 1)} set</Text>
+                    </XStack>
+                  );
+                } else {
+                  setContent = (
+                    <XStack
+                      jc="space-around"
+                      paddingHorizontal="$3"
+                      paddingVertical="$7"
+                      bg="$backgroundHover"
+                      onPress={() =>
+                        handlePressExerciseHeader(index, exerciseSetIndex)
+                      }
+                    >
+                      <AnimatePresence
+                        enterVariant="fromTop"
+                        exitVariant="fromBottom"
                       >
-                        {set.repCount}
-                      </Text>
-                    </Button>
-                    {isItemSelected &&
-                    !(index === selectedWorkout.exercises.length) ? (
+                        <Button
+                          onPress={handlePressPreviousSet}
+                          animation="bouncy"
+                        >
+                          <Text>Prev</Text>
+                        </Button>
+                      </AnimatePresence>
+                      <Button
+                        size="$5"
+                        bg={set.selected ? "$color7" : "$color1"}
+                        borderRadius="$radius.12"
+                        onPress={() => {
+                          dispatch(
+                            exerciseSetClicked({
+                              exerciseIndex: index,
+                              exerciseSetIndex,
+                            }),
+                          );
+                        }}
+                      >
+                        <Text
+                          fontSize="$8"
+                          letterSpacing="$3"
+                          color={isItemSelected ? "$color" : "$color6"}
+                        >
+                          {set.repCount}
+                        </Text>
+                      </Button>
                       <Button onPress={handlePressNextSet}>
                         <Text>Next</Text>
                       </Button>
-                    ) : (
-                      <View />
-                    )}
-                  </XStack>
-                );
+                    </XStack>
+                  );
+                }
+                return <>{setContent}</>;
               }}
             />
             <XStack space="$4" jc="center">

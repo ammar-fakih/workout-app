@@ -224,6 +224,9 @@ export const workoutsSlice = createSlice({
         exercises: updatedWorkout,
       };
     },
+    workoutCanceled: (state) => {
+      state.selectedWorkout = undefined;
+    },
     exerciseWeightChanged: (
       state: WorkoutsState,
       action: PayloadAction<{
@@ -336,6 +339,7 @@ export const {
   onPressNextSet,
   onPressPreviousSet,
   onPressExerciseSet,
+  workoutCanceled,
 } = workoutsSlice.actions;
 
 export default workoutsSlice.reducer;
