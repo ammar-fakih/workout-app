@@ -1,5 +1,5 @@
 import { FlatList } from "react-native";
-import { Text, View, XStack, YStack } from "tamagui";
+import { ScrollView, Text, View, XStack, YStack } from "tamagui";
 import { useAppSelector } from "../../app/hooks";
 import { RecordEntry } from "../Home/types";
 
@@ -15,7 +15,7 @@ export default function List() {
   const exercises = useAppSelector(
     (state) => state.appData.workouts.exerciseRecords,
   );
-  const tableHeader = ["date", ...Object.keys(exercises)];
+  const tableHeader = [...Object.keys(exercises)];
   const workoutRecords = workoutRecordIds.map((exercise) =>
     exercise.map((exerciseId) => allRecords[exerciseId]),
   );
@@ -48,12 +48,12 @@ export default function List() {
     item: record,
     index,
   }: {
-    item: RecordEntry;
+    item: RecordEntry | undefined;
     index: number;
   }) => {
     return (
       <View f={1} borderWidth="$1" borderColor="$color3" key={index}>
-        <Text textAlign="center">{record.weight}</Text>
+        <Text textAlign="center">{record ? record.weight : "/"}</Text>
       </View>
     );
   };
@@ -65,13 +65,14 @@ export default function List() {
     item: RecordEntry[];
     index: number;
   }) => {
-    let rowData: RecordEntry | null[] = [];
+    const rowData: (RecordEntry | undefined)[] = [];
     tableHeader.forEach((exerciseName) => {
-      // const foundExercise = workout.find((record) => record.) 
+      rowData.push(workout.find((record) => record.name === exerciseName));
     });
+
     return (
       <XStack f={1} key={index}>
-        {workout.map((exerciseId, index) =>
+        {rowData.map((exerciseId, index) =>
           renderCell({ item: exerciseId, index }),
         )}
       </XStack>
@@ -90,12 +91,14 @@ export default function List() {
 
   return (
     <View f={1}>
-      <XStack>
-        {tableHeader.map((headerCell, index) =>
-          renderHeaderCell({ item: headerCell, index }),
-        )}
-      </XStack>
-      <FlatList data={workoutRecords} renderItem={renderRow} />
+      <ScrollView horizontal>
+        <XStack>
+          {tableHeader.map((headerCell, index) =>
+            renderHeaderCell({ item: headerCell, index }),
+          )}
+        </XStack>
+        <FlatList data={workoutRecords} renderItem={renderRow} />
+      </ScrollView>
     </View>
   );
 }
