@@ -13,6 +13,6 @@ export const appDataSlice = createSlice({
   extraReducers: (builder) => {},
 });
 
-// export const {} = appDataSlice.actions;
+export const { reset } = appDataSlice.actions;
 
 export default appDataSlice.reducer;

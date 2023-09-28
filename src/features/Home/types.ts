@@ -55,6 +55,7 @@ export interface RecordEntry {
   weight: number;
   sets: number;
   reps: number;
+  name: string;
   completedSets: CompletedSet[];
 }
 

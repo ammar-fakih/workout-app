@@ -48,6 +48,7 @@ export default function Home({ navigation }: Props) {
                 dispatch(workoutCanceled());
                 navigation.navigate("HomePage");
               }}
+              color="#fff"
               bg="red"
             >
               Cancel Workout

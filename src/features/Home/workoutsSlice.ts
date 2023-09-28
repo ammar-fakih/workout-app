@@ -193,6 +193,7 @@ export const workoutsSlice = createSlice({
           completedSets: exercise.completedSets,
           sets: exercise.sets,
           reps: exercise.reps,
+          name: exercise.name,
         });
 
         // Update exercise records
@@ -207,13 +208,13 @@ export const workoutsSlice = createSlice({
 
       // Push to workout records
       state.workoutRecords.push(workoutRecord);
-      state.selectedSet = null;
+      state.selectedSet = workoutsSlice.getInitialState().selectedSet;
 
-      state.selectedWorkout = undefined;
+      state.selectedWorkout = workoutsSlice.getInitialState().selectedWorkout;
     },
     workoutCanceled: (state) => {
-      state.selectedWorkout = undefined;
-      state.selectedSet = null;
+      state.selectedWorkout = workoutsSlice.getInitialState().selectedWorkout;
+      state.selectedSet = workoutsSlice.getInitialState().selectedSet;
     },
     exerciseWeightChanged: (
       state: WorkoutsState,
