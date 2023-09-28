@@ -42,7 +42,9 @@ const tamaguiConfig = createTamagui({
   themes: {
     ...themes,
     light_green: { ...themes.light_green, background: "#fff" },
+    light_blue: { ...themes.light_blue, background: "#fff" },
     dark_blue: { ...themes.dark_blue, background: "#000" },
+    dark_red: { ...themes.dark_red, background: "#000" },
   },
   tokens,
   fonts: { ...config.fonts, gerhaus },

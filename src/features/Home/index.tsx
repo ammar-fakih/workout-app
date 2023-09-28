@@ -1,4 +1,3 @@
-import { HeaderButtonProps } from "@react-navigation/elements";
 import { createStackNavigator } from "@react-navigation/stack";
 
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
@@ -21,7 +20,7 @@ export default function Home({ navigation }: Props) {
     (state) => state.appData.workouts.selectedWorkout,
   );
 
-  const TrackWorkoutHeaderRight = (props: HeaderButtonProps) => {
+  const TrackWorkoutHeaderRight = () => {
     return (
       <Popover>
         <Popover.Trigger pr="$4">
@@ -71,7 +70,7 @@ export default function Home({ navigation }: Props) {
         component={TrackWorkout}
         options={{
           title: selectedWorkout ? selectedWorkout.name : "",
-          headerRight: (props) => <TrackWorkoutHeaderRight {...props} />,
+          headerRight: () => <TrackWorkoutHeaderRight />,
         }}
       />
       <Stack.Screen name="Settings" component={Settings} />

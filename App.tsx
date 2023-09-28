@@ -16,15 +16,12 @@ import { Settings as SettingsIcon } from "@tamagui/lucide-icons";
 import { useFonts } from "expo-font";
 import { StatusBar } from "expo-status-bar";
 import { useCallback } from "react";
-import { Platform, UIManager } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import persistStore from "redux-persist/es/persistStore";
+import { PersistGate } from "redux-persist/integration/react";
 import config from "./tamagui.config";
 
-if (Platform.OS === "android") {
-  if (UIManager.setLayoutAnimationEnabledExperimental) {
-    UIManager.setLayoutAnimationEnabledExperimental(true);
-  }
-}
+const persistor = persistStore(store);
 
 export type RootTabsParamList = {
   Workout: undefined;
@@ -39,16 +36,18 @@ export default function () {
   return (
     <SafeAreaProvider>
       <Provider store={store}>
-        <RootSiblingParent>
-          <TamaguiProvider config={config} defaultTheme="light_green">
-            <Theme name="dark_blue">
-              <App />
-            </Theme>
-          </TamaguiProvider>
-        </RootSiblingParent>
+        <PersistGate persistor={persistor}>
+          <RootSiblingParent>
+            <TamaguiProvider config={config} defaultTheme="dark_red">
+              <Theme name="light_green">
+                <App />
+              </Theme>
+            </TamaguiProvider>
+          </RootSiblingParent>
+        </PersistGate>
       </Provider>
 
-      <StatusBar style="light" />
+      <StatusBar style="dark" />
     </SafeAreaProvider>
   );
 }

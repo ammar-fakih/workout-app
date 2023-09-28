@@ -27,6 +27,7 @@ interface WorkoutsState {
   selectedWorkout: TodaysWorkout | undefined;
   selectedSet: [number, number] | null;
 
+  // Records
   allRecords: RecordEntry[];
   exerciseRecords: {
     // Map exercise name to record entries in allRecords
@@ -184,7 +185,7 @@ export const workoutsSlice = createSlice({
 
       const workoutRecord: number[] = [];
 
-      const updatedWorkout = state.selectedWorkout.exercises.map((exercise) => {
+      state.selectedWorkout.exercises.forEach((exercise) => {
         // Push to allrecords
         state.allRecords.push({
           date: new Date().toISOString(),
@@ -202,30 +203,17 @@ export const workoutsSlice = createSlice({
 
         // Save value for workout record
         workoutRecord.push(state.allRecords.length - 1);
-
-        // Clear completed sets
-        return {
-          ...exercise,
-          completedSets: exercise.completedSets.map((_) => {
-            return {
-              repCount: exercise.reps,
-              selected: false,
-            };
-          }),
-        };
       });
 
       // Push to workout records
       state.workoutRecords.push(workoutRecord);
+      state.selectedSet = null;
 
-      state.selectedWorkout = {
-        ...state.selectedWorkout,
-        completed: true,
-        exercises: updatedWorkout,
-      };
+      state.selectedWorkout = undefined;
     },
     workoutCanceled: (state) => {
       state.selectedWorkout = undefined;
+      state.selectedSet = null;
     },
     exerciseWeightChanged: (
       state: WorkoutsState,

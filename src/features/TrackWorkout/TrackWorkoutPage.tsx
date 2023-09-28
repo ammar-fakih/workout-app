@@ -10,6 +10,7 @@ import {
   View,
   XStack,
   YStack,
+  styled,
 } from "tamagui";
 import { RootTabsParamList } from "../../../App";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
@@ -24,10 +25,19 @@ import {
   selectSelectedWorkout,
   workoutFinished,
 } from "../Home/workoutsSlice";
+import { useState } from "react";
 
 type Props = BottomTabScreenProps<RootTabsParamList, "TrackWorkout">;
 
+const XStackEnterable = styled(XStack, {
+  variants: {
+    isUp: { true: { y: -10 } },
+    isDown: { true: { y: 10 } },
+  } as const,
+});
+
 export default function TrackWorkout({ navigation }: Props) {
+  const [direction, setDirection] = useState<"isUp" | "isDown">("isUp");
   const selectedSet = useAppSelector(
     (state) => state.appData.workouts.selectedSet,
   );
@@ -36,10 +46,12 @@ export default function TrackWorkout({ navigation }: Props) {
   const dispatch = useAppDispatch();
 
   const handlePressNextSet = () => {
+    setDirection("isUp");
     dispatch(onPressNextSet());
   };
 
   const handlePressPreviousSet = () => {
+    setDirection("isDown");
     dispatch(onPressPreviousSet());
   };
 
@@ -62,8 +74,10 @@ export default function TrackWorkout({ navigation }: Props) {
     const isExerciseSelected = index === selectedSet?.[0];
     return (
       <YStack
+        p="$2"
+        borderRadius={isExerciseSelected ? "$10" : 0}
         key={exercise.id}
-        bg={isExerciseSelected ? "$background" : "$backgroundStrong"}
+        bg={isExerciseSelected ? "$color3" : "$background"}
       >
         {/* Header */}
         <XStack
@@ -73,8 +87,8 @@ export default function TrackWorkout({ navigation }: Props) {
           alignItems="center"
           onPress={() => handlePressExerciseHeader(index, 0)}
         >
-          <Text>{exercise.name}</Text>
-          <Text>{`${exercise.sets}x${exercise.reps}`}</Text>
+          <Text fontWeight="$10">{exercise.name}</Text>
+          <Text fontWeight="$10">{`${exercise.sets}x${exercise.reps}`}</Text>
         </XStack>
 
         {/* Body */}
@@ -105,51 +119,53 @@ export default function TrackWorkout({ navigation }: Props) {
                   );
                 } else {
                   setContent = (
-                    <XStack
-                      jc="space-around"
-                      paddingHorizontal="$3"
-                      paddingVertical="$7"
-                      bg="$backgroundHover"
-                      onPress={() =>
-                        handlePressExerciseHeader(index, exerciseSetIndex)
-                      }
-                    >
-                      <AnimatePresence
-                        enterVariant="fromTop"
-                        exitVariant="fromBottom"
+                    <AnimatePresence enterVariant={direction}>
+                      <XStackEnterable
+                        opacity={1}
+                        y={0}
+                        animation="medium"
+                        jc="space-around"
+                        borderRadius="$radius.3"
+                        ai="center"
+                        paddingHorizontal="$3"
+                        paddingVertical="$7"
+                        bg="$color5"
+                        onPress={() =>
+                          handlePressExerciseHeader(index, exerciseSetIndex)
+                        }
                       >
-                        <Button
-                          onPress={handlePressPreviousSet}
-                          animation="bouncy"
-                        >
+                        <Button onPress={handlePressPreviousSet}>
                           <Text>Prev</Text>
                         </Button>
-                      </AnimatePresence>
-                      <Button
-                        size="$5"
-                        bg={set.selected ? "$color7" : "$color1"}
-                        borderRadius="$radius.12"
-                        onPress={() => {
-                          dispatch(
-                            exerciseSetClicked({
-                              exerciseIndex: index,
-                              exerciseSetIndex,
-                            }),
-                          );
-                        }}
-                      >
-                        <Text
-                          fontSize="$8"
-                          letterSpacing="$3"
-                          color={isItemSelected ? "$color" : "$color6"}
-                        >
-                          {set.repCount}
-                        </Text>
-                      </Button>
-                      <Button onPress={handlePressNextSet}>
-                        <Text>Next</Text>
-                      </Button>
-                    </XStack>
+                        <YStack space="$space.3" ai="center" jc="center">
+                          <Button
+                            size="$5"
+                            circular
+                            bg={set.selected ? "$color7" : "$color1"}
+                            onPress={() => {
+                              dispatch(
+                                exerciseSetClicked({
+                                  exerciseIndex: index,
+                                  exerciseSetIndex,
+                                }),
+                              );
+                            }}
+                          >
+                            <Text
+                              fontSize="$8"
+                              letterSpacing="$3"
+                              color={isItemSelected ? "$color" : "$color6"}
+                            >
+                              {set.repCount}
+                            </Text>
+                          </Button>
+                          <Text>Reps</Text>
+                        </YStack>
+                        <Button onPress={handlePressNextSet}>
+                          <Text>Next</Text>
+                        </Button>
+                      </XStackEnterable>
+                    </AnimatePresence>
                   );
                 }
                 return <>{setContent}</>;
@@ -194,8 +210,8 @@ export default function TrackWorkout({ navigation }: Props) {
   };
 
   return (
-    <View bg="$backgroundStrong" flex={1} onPress={Keyboard.dismiss}>
-      <Accordion type="single" defaultValue="0">
+    <View flex={1} onPress={Keyboard.dismiss}>
+      <Accordion type="single" defaultValue="0" m="$2">
         {selectedWorkout.exercises.map((exercise, index) => {
           return renderItem({ item: exercise, index });
         })}

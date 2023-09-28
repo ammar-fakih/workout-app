@@ -12,7 +12,7 @@ export default function List() {
   const exercises = useAppSelector(
     (state) => state.appData.workouts.exerciseRecords,
   );
-  const tableHeader = ["Date", ...Object.keys(exercises)];
+  const tableHeader = Object.keys(exercises);
 
   const renderHeaderCell = ({ item: headerCell }: { item: string }) => {
     return (

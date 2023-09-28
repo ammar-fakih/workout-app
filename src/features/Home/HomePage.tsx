@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { Settings2 } from "@tamagui/lucide-icons";
-import { Animated, FlatList } from "react-native";
+import { FlatList } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
   Button,
@@ -29,13 +29,11 @@ import {
   workoutSelected,
   workoutsReadFromFiles,
 } from "./workoutsSlice";
-import { FontAwesome5 } from "@expo/vector-icons";
 
 type Props = BottomTabScreenProps<RootTabsParamList, "HomePage">;
 
 export default function HomePage({ navigation }: Props) {
   const insets = useSafeAreaInsets();
-  const [streakFireOpacity] = useState(new Animated.Value(1));
   const units = useAppSelector((state) => state.appData.workouts.units);
   const weeksWorkouts = useAppSelector(selectWeeksWorkouts);
   const selectedWorkout = useAppSelector(
@@ -49,23 +47,6 @@ export default function HomePage({ navigation }: Props) {
 
     dispatch(weeksWorkoutsSet());
     dispatch(todaysWorkoutsSet());
-
-    Animated.loop(
-      Animated.sequence([
-        Animated.timing(streakFireOpacity, {
-          toValue: 0.6,
-          duration: 2000,
-          easing: (x) => Math.sin(x * Math.PI),
-          useNativeDriver: true,
-        }),
-        Animated.timing(streakFireOpacity, {
-          toValue: 1,
-          duration: 2000,
-          easing: (x) => Math.sin(x * Math.PI),
-          useNativeDriver: true,
-        }),
-      ]),
-    ).start();
   }, []);
 
   const onPressWorkout = (workout: TodaysWorkout) => {
@@ -133,24 +114,6 @@ export default function HomePage({ navigation }: Props) {
         />
       </XStack>
 
-      <YStack alignItems="center" space="$3" marginVertical="$5">
-        <Animated.View
-          style={{
-            opacity: streakFireOpacity,
-            shadowColor: "blue",
-            shadowRadius: 8,
-            shadowOffset: {
-              width: 0,
-              height: 0,
-            },
-            shadowOpacity: streakFireOpacity,
-          }}
-        >
-          <FontAwesome5 name="fire-alt" color="blue" size="100" />
-        </Animated.View>
-        <Text fontSize="$8">5 Day Streak</Text>
-        <Text>Keep it up!</Text>
-      </YStack>
       <FlatList
         contentContainerStyle={{ paddingBottom: 120 }}
         data={weeksWorkouts}
