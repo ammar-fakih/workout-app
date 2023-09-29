@@ -100,7 +100,5 @@ export const getWorkoutExercises = (
   workout: number[],
   allRecords: RecordEntry[],
 ) => {
-  return workout.map(
-    (exericseId) => allRecords[exericseId],
-  ) as TodaysExercise[];
+  return workout.map((exericseId) => allRecords[exericseId]);
 };

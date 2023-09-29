@@ -1,12 +1,45 @@
+import { Menu } from "@tamagui/lucide-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { Tabs, Text, YStack } from "tamagui";
-import Table from "./Table";
+import { Button, ListItem, Popover, Tabs, Text, YGroup, YStack } from "tamagui";
 import List from "./List";
+import Table from "./Table";
+
+const dropDownOptions = []
 
 export default function ProgressPage() {
   const insets = useSafeAreaInsets();
   return (
     <YStack paddingTop={insets.top} f={1}>
+      <Popover>
+        <Popover.Trigger pr="$4">
+          <Menu />
+        </Popover.Trigger>
+
+        <Popover.Content
+          borderWidth={1}
+          borderColor="$borderColor"
+          enterStyle={{ y: -10, opacity: 0 }}
+          exitStyle={{ y: -10, opacity: 0 }}
+          elevate
+          animation={[
+            "quick",
+            {
+              opacity: {
+                overshootClamping: true,
+              },
+            },
+          ]}
+        >
+          <Text>Sort By</Text>
+          <YGroup>
+            <YGroup.Item>
+              <ListItem>
+                <Text>Exercise</Text>
+              </ListItem>
+            </YGroup.Item>
+          </YGroup>
+        </Popover.Content>
+      </Popover>
       <Tabs defaultValue="tab1" f={1} flexDirection="column" m="$2" space="$2">
         <Tabs.List>
           <Tabs.Tab f={1} value="tab1" backgroundColor="$color3">

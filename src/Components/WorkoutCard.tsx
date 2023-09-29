@@ -8,16 +8,23 @@ import {
   getDayName,
   renderExerciseLabel,
 } from "../features/Home/helperFunctions";
-import { TodaysWorkout } from "../features/Home/types";
+import { TodaysExercise } from "../features/Home/types";
 
 type Props = {
   onPressWorkout: () => void;
-  workout: TodaysWorkout;
+  name: string;
+  date: string;
+  exercises: TodaysExercise[];
 };
 
-export default function WorkoutCard({ onPressWorkout, workout }: Props) {
+export default function WorkoutCard({
+  onPressWorkout,
+  name,
+  date,
+  exercises,
+}: Props) {
   const units = useAppSelector((state) => state.appData.workouts.units);
-  const nextTimeDate = new Date(workout.closestTimeToNow);
+  const nextTimeDate = new Date(date);
 
   return (
     <Card
@@ -30,7 +37,7 @@ export default function WorkoutCard({ onPressWorkout, workout }: Props) {
     >
       <View fd="row" jc="space-between" p="$2" pb="$3">
         <Text fontSize="$1" fontWeight="bold">
-          {workout.name}
+          {name}
         </Text>
         <Text fontSize="$1" fontWeight="bold">
           {getDayName(nextTimeDate)}, {monthNames[nextTimeDate.getMonth()]}{" "}
@@ -39,16 +46,11 @@ export default function WorkoutCard({ onPressWorkout, workout }: Props) {
       </View>
 
       <FlatList
-        data={workout.exercises}
+        data={exercises}
         scrollEnabled={false}
         ItemSeparatorComponent={Separator}
         renderItem={({ item: exercise, index: exerciseIndex }) => (
-          <View
-            p="$2"
-            fd="row"
-            jc="space-between"
-            key={`${workout.workoutId} ${exerciseIndex}`}
-          >
+          <View p="$2" fd="row" jc="space-between" key={exerciseIndex}>
             <View>
               <Text>{exercise.name}</Text>
             </View>

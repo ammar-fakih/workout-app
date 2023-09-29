@@ -10,6 +10,7 @@ import {
   Card,
   H3,
   H4,
+  Separator,
   Square,
   Text,
   XStack,
@@ -83,7 +84,9 @@ export default function HomePage({ navigation }: Props) {
         </XStack>
         <WorkoutCard
           onPressWorkout={() => onPressWorkout(todaysWorkout)}
-          workout={todaysWorkout}
+          date={todaysWorkout.closestTimeToNow}
+          exercises={todaysWorkout.exercises}
+          name={todaysWorkout.name}
         />
       </YStack>
     );
@@ -94,7 +97,9 @@ export default function HomePage({ navigation }: Props) {
       <WorkoutCard
         key={item.workoutId}
         onPressWorkout={() => onPressWorkout(item)}
-        workout={item}
+        date={item.closestTimeToNow}
+        exercises={item.exercises}
+        name={item.name}
       />
     );
   };
@@ -102,13 +107,7 @@ export default function HomePage({ navigation }: Props) {
   return (
     <YStack f={1}>
       {/* Header */}
-      <XStack
-        jc="space-between"
-        bg="$color2"
-        pt={insets.top}
-        borderBottomColor="$borderColor"
-        borderBottomWidth="$0.5"
-      >
+      <XStack jc="space-between" bg="$color2" pt={insets.top}>
         <Button disabled variant="outlined">
           <H3 fontFamily="$gerhaus">LIFT-IQ</H3>
         </Button>
@@ -118,6 +117,7 @@ export default function HomePage({ navigation }: Props) {
           onPress={() => navigation.navigate("Settings")}
         />
       </XStack>
+      <Separator />
 
       {renderTodaysWorkout()}
 
