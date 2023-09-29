@@ -40,7 +40,7 @@ export default function () {
         <PersistGate persistor={persistor}>
           <RootSiblingParent>
             <TamaguiProvider config={config} defaultTheme="dark_red">
-              <Theme name="dark_blue">
+              <Theme name="light_green">
                 <App />
               </Theme>
             </TamaguiProvider>

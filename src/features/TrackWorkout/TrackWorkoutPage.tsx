@@ -30,13 +30,15 @@ type Props = BottomTabScreenProps<RootTabsParamList, "TrackWorkout">;
 
 const XStackEnterable = styled(XStack, {
   variants: {
-    isUp: { true: { y: -10 } },
-    isDown: { true: { y: 10 } },
+    isUp: { true: { y: 10 } },
+    isDown: { true: { y: -10 } },
   } as const,
 });
 
 export default function TrackWorkout({ navigation }: Props) {
-  const [direction, setDirection] = useState<"isUp" | "isDown">("isUp");
+  const [animationDirection, setAnimationDirection] = useState<
+    "isUp" | "isDown"
+  >("isUp");
   const selectedSet = useAppSelector(
     (state) => state.appData.workouts.selectedSet,
   );
@@ -45,12 +47,12 @@ export default function TrackWorkout({ navigation }: Props) {
   const dispatch = useAppDispatch();
 
   const handlePressNextSet = () => {
-    setDirection("isUp");
+    setAnimationDirection("isDown");
     dispatch(onPressNextSet());
   };
 
   const handlePressPreviousSet = () => {
-    setDirection("isDown");
+    setAnimationDirection("isUp");
     dispatch(onPressPreviousSet());
   };
 
@@ -118,7 +120,7 @@ export default function TrackWorkout({ navigation }: Props) {
                   );
                 } else {
                   setContent = (
-                    <AnimatePresence enterVariant={direction}>
+                    <AnimatePresence enterVariant={animationDirection}>
                       <XStackEnterable
                         opacity={1}
                         y={0}

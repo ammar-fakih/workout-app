@@ -35,7 +35,6 @@ export interface Workout extends GeneralWorkout, SpecificWorkout {
 
 export interface TodaysWorkout extends Workout {
   exercises: TodaysExercise[];
-  completed: boolean;
 }
 
 export interface ProgramFromFile {
@@ -52,11 +51,6 @@ export interface Program {
 
 export interface RecordEntry {
   date: string;
-  weight: number;
-  sets: number;
-  reps: number;
-  name: string;
-  completedSets: CompletedSet[];
 }
 
 // Enums

@@ -1,4 +1,4 @@
-import { TodaysExercise, Units } from "./types";
+import { RecordEntry, TodaysExercise, Units } from "./types";
 
 export const getDayName = (date: Date) => {
   const dayNum = date.getDay();
@@ -87,4 +87,20 @@ export const getOrdinalNumber = (i: number) => {
     return i + "rd";
   }
   return i + "th";
+};
+
+export const getDateString = (date: string) => {
+  const d = new Date(date);
+  return `${getDayName(d)}, ${d.getDate()} ${d.toLocaleString("default", {
+    month: "short",
+  })}`;
+};
+
+export const getWorkoutExercises = (
+  workout: number[],
+  allRecords: RecordEntry[],
+) => {
+  return workout.map(
+    (exericseId) => allRecords[exericseId],
+  ) as TodaysExercise[];
 };

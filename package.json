@@ -24,6 +24,7 @@
     "@tamagui/lucide-icons": "^1.68.2",
     "@types/lodash": "^4.14.199",
     "expo": "~48.0.18",
+    "expo-dev-client": "~2.2.1",
     "expo-device": "~5.2.1",
     "expo-font": "~11.1.1",
     "expo-secure-store": "~12.1.1",

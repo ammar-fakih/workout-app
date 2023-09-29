@@ -198,6 +198,7 @@ export const workoutsSlice = createSlice({
           sets: exercise.sets,
           reps: exercise.reps,
           name: exercise.name,
+          id: exercise.id,
         });
 
         // Update exercise records

@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Iron Pulse",
-    "slug": "iron-pulse",
+    "name": "LiftIQ",
+    "slug": "liftIQ",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -15,7 +15,8 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.liftiq.app"
     },
     "android": {
       "adaptiveIcon": {
@@ -26,6 +27,11 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "jsEngine": "jsc"
+    "jsEngine": "jsc",
+    "extra": {
+      "eas": {
+        "projectId": "7db1303a-4fb3-4bac-9153-1c8bc1243c8a"
+      }
+    }
   }
 }
