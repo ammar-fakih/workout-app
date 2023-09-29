@@ -5,7 +5,7 @@ import { RecordEntry } from "../Home/types";
 
 const borderWidth = "$1";
 
-export default function List() {
+export default function Table() {
   const workoutRecordIds = useAppSelector(
     (state) => state.appData.workouts.workoutRecords,
   );
@@ -36,6 +36,7 @@ export default function List() {
         borderColor="$color5"
         borderWidth={borderWidth}
         borderLeftWidth={index === 0 ? borderWidth : 0}
+        width="$10"
       >
         <Text flexWrap="wrap" textAlign="center">
           {headerCell}
@@ -52,7 +53,13 @@ export default function List() {
     index: number;
   }) => {
     return (
-      <View f={1} borderWidth="$1" borderColor="$color3" key={index}>
+      <View
+        f={1}
+        borderWidth="$1"
+        borderColor="$color3"
+        key={index}
+        width="$10"
+      >
         <Text textAlign="center">{record ? record.weight : "/"}</Text>
       </View>
     );

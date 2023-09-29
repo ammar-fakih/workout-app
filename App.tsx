@@ -29,6 +29,7 @@ export type RootTabsParamList = {
   Settings: undefined;
   HomePage: undefined;
   TrackWorkout: undefined;
+  Programs: undefined;
 };
 const Tabs = createBottomTabNavigator<RootTabsParamList>();
 
@@ -39,7 +40,7 @@ export default function () {
         <PersistGate persistor={persistor}>
           <RootSiblingParent>
             <TamaguiProvider config={config} defaultTheme="dark_red">
-              <Theme name="light_green">
+              <Theme name="dark_blue">
                 <App />
               </Theme>
             </TamaguiProvider>

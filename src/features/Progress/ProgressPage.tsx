@@ -1,6 +1,6 @@
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Tabs, Text, YStack } from "tamagui";
-import List from "./List";
+import Table from "./Table";
 
 export default function ProgressPage() {
   const insets = useSafeAreaInsets();
@@ -23,7 +23,7 @@ export default function ProgressPage() {
         </Tabs.List>
 
         <Tabs.Content value="tab1" f={1}>
-          <List />
+          <Table />
         </Tabs.Content>
       </Tabs>
     </YStack>

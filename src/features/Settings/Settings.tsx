@@ -35,8 +35,10 @@ export default function Settings({ navigation }: Props) {
   };
 
   return (
-    <YStack bg="$background">
-      <Button onPress={reset}>Reset App</Button>
+    <YStack bg="$background" f={1} jc="flex-end">
+      <Button onPress={reset} m="$4">
+        Reset App
+      </Button>
     </YStack>
   );
 }

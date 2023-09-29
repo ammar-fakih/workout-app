@@ -1,8 +1,8 @@
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { isEqual } from "lodash";
+import { useState } from "react";
 import { Alert, FlatList, Keyboard } from "react-native";
 import {
-  Accordion,
   AnimatePresence,
   Button,
   Input,
@@ -25,7 +25,6 @@ import {
   selectSelectedWorkout,
   workoutFinished,
 } from "../Home/workoutsSlice";
-import { useState } from "react";
 
 type Props = BottomTabScreenProps<RootTabsParamList, "TrackWorkout">;
 
@@ -171,38 +170,43 @@ export default function TrackWorkout({ navigation }: Props) {
                 return <>{setContent}</>;
               }}
             />
-            <XStack space="$4" jc="center">
-              <Button
-                onPress={() => {
-                  dispatch(
-                    exerciseWeightChanged({
-                      exerciseId: exercise.id,
-                      weightChange: -5,
-                    }),
-                  );
-                }}
-              >
-                <Text>-5</Text>
-              </Button>
-              <Input
-                keyboardType="numeric"
-                placeholder={`${exercise.weight.toString()} ${getUnitAbbreviation(
-                  units,
-                )}`}
-              />
-              <Button
-                onPress={() => {
-                  dispatch(
-                    exerciseWeightChanged({
-                      exerciseId: exercise.id,
-                      weightChange: 5,
-                    }),
-                  );
-                }}
-              >
-                <Text>+5</Text>
-              </Button>
-            </XStack>
+            {/* Weight Chooser */}
+            <YStack ai="center" space="$2">
+              <XStack space="$4" jc="center">
+                <Button
+                  onPress={() => {
+                    dispatch(
+                      exerciseWeightChanged({
+                        exerciseId: exercise.id,
+                        weightChange: -5,
+                      }),
+                    );
+                  }}
+                >
+                  <Text>-5</Text>
+                </Button>
+                <Input
+                  keyboardType="numeric"
+                  placeholder={`${exercise.weight.toString()} ${getUnitAbbreviation(
+                    units,
+                  )}`}
+                />
+                <Button
+                  onPress={() => {
+                    dispatch(
+                      exerciseWeightChanged({
+                        exerciseId: exercise.id,
+                        weightChange: 5,
+                      }),
+                    );
+                  }}
+                >
+                  <Text>+5</Text>
+                </Button>
+              </XStack>
+
+              <Text fontWeight="200">Last Workout: </Text>
+            </YStack>
           </YStack>
         )}
       </YStack>
@@ -210,13 +214,10 @@ export default function TrackWorkout({ navigation }: Props) {
   };
 
   return (
-    <View flex={1} onPress={Keyboard.dismiss}>
-      <Accordion type="single" defaultValue="0" m="$2">
-        {selectedWorkout.exercises.map((exercise, index) => {
-          return renderItem({ item: exercise, index });
-        })}
-      </Accordion>
-      {/* <FlatList data={selectedWorkout.exercises} renderItem={renderItem} /> */}
+    <View flex={1} onPress={Keyboard.dismiss} m="$2">
+      {selectedWorkout.exercises.map((exercise, index) => {
+        return renderItem({ item: exercise, index });
+      })}
       <Button
         pos="absolute"
         b="$4"

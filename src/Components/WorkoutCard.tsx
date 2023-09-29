@@ -18,6 +18,7 @@ type Props = {
 export default function WorkoutCard({ onPressWorkout, workout }: Props) {
   const units = useAppSelector((state) => state.appData.workouts.units);
   const nextTimeDate = new Date(workout.closestTimeToNow);
+
   return (
     <Card
       p="$3"
@@ -39,6 +40,7 @@ export default function WorkoutCard({ onPressWorkout, workout }: Props) {
 
       <FlatList
         data={workout.exercises}
+        scrollEnabled={false}
         ItemSeparatorComponent={Separator}
         renderItem={({ item: exercise, index: exerciseIndex }) => (
           <View

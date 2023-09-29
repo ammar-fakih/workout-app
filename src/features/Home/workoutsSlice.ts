@@ -141,10 +141,14 @@ export const workoutsSlice = createSlice({
     },
     todaysWorkoutsSet: (state) => {
       if (!state.weeksWorkouts) return;
-      const day = new Date().getDay();
+      const date = new Date();
+      date.setDate(date.getDate() + 3);
+      const day = date.getDay();
+      console.log("today is " + day);
 
       const todaysWorkout = state.weeksWorkouts.find((workout) => {
         const startDate = new Date(workout.closestTimeToNow);
+        console.log(startDate.getDay());
 
         return startDate.getDay() === day;
       });

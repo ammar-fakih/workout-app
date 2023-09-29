@@ -9,6 +9,7 @@ import Settings from "../Settings/Settings";
 import TrackWorkout from "../TrackWorkout/TrackWorkoutPage";
 import HomePage from "./HomePage";
 import { workoutCanceled } from "./workoutsSlice";
+import ProgramsPage from "../Programs/ProgramsPage";
 
 const Stack = createStackNavigator<RootTabsParamList>();
 
@@ -75,6 +76,7 @@ export default function Home({ navigation }: Props) {
         }}
       />
       <Stack.Screen name="Settings" component={Settings} />
+      <Stack.Screen name="Programs" component={ProgramsPage} />
     </Stack.Navigator>
   );
 }
