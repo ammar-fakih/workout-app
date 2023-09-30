@@ -6,6 +6,7 @@ import { FlatList } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
   Accordion,
+  AnimatePresence,
   Button,
   Card,
   H3,
@@ -60,7 +61,7 @@ export default function HomePage({ navigation }: Props) {
     if (!todaysWorkout) {
       return (
         <XStack jc="space-between" ai="center" marginHorizontal="$4">
-          <H4>No Workout Today</H4>
+          <H4>Rest Day</H4>
           <Button
             variant="outlined"
             onPress={() => navigation.navigate("Programs")}
@@ -95,7 +96,6 @@ export default function HomePage({ navigation }: Props) {
   const renderWeeksWorkouts = ({ item }: { item: TodaysWorkout }) => {
     return (
       <WorkoutCard
-        key={item.workoutId}
         onPressWorkout={() => onPressWorkout(item)}
         date={item.closestTimeToNow}
         exercises={item.exercises}
@@ -117,18 +117,16 @@ export default function HomePage({ navigation }: Props) {
           onPress={() => navigation.navigate("Settings")}
         />
       </XStack>
-      <Separator />
 
       {renderTodaysWorkout()}
+      <Separator />
 
       {/* Other Week's Workouts */}
       <Accordion type="multiple">
         <Accordion.Item value="a1">
           <Accordion.Trigger
             flexDirection="row"
-            borderBottomWidth="$0"
-            borderRightWidth="$0"
-            borderLeftWidth="$0"
+            borderWidth="$0"
             marginHorizontal="$2"
             jc="space-between"
             ai="center"
@@ -143,14 +141,22 @@ export default function HomePage({ navigation }: Props) {
             )}
           </Accordion.Trigger>
 
-          <Accordion.Content paddingVertical="$0">
-            <FlatList
-              style={{ paddingBottom: 120 }}
-              data={weeksWorkouts}
-              renderItem={renderWeeksWorkouts}
-              keyExtractor={(item) => item.workoutId}
-            />
-          </Accordion.Content>
+          <AnimatePresence>
+            <Accordion.Content
+              zIndex={-1}
+              paddingVertical="$0"
+              animation="quick"
+              enterStyle={{ opacity: 0, y: -10 }}
+              exitStyle={{ opacity: 0, y: -20 }}
+            >
+              <FlatList
+                style={{ paddingBottom: 120, paddingTop: 20 }}
+                data={weeksWorkouts}
+                renderItem={renderWeeksWorkouts}
+                keyExtractor={(item) => item.workoutId}
+              />
+            </Accordion.Content>
+          </AnimatePresence>
         </Accordion.Item>
       </Accordion>
       {/* Start Workout Card*/}
@@ -167,7 +173,10 @@ export default function HomePage({ navigation }: Props) {
           jc="space-between"
           ai="center"
           shadowRadius={4}
-          shadowOpacity={0.25}
+          shadowOpacity={0.1}
+          onPress={() => {
+            navigation.navigate("TrackWorkout");
+          }}
         >
           <XStack jc="space-between" alignItems="center" f={1}>
             <YStack space="$space.1">

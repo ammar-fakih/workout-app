@@ -6,6 +6,7 @@ import {
   AnimatePresence,
   Button,
   Input,
+  ScrollView,
   Text,
   View,
   XStack,
@@ -32,13 +33,14 @@ const XStackEnterable = styled(XStack, {
   variants: {
     isUp: { true: { y: 10 } },
     isDown: { true: { y: -10 } },
+    isDisabled: { true: { opacity: 1 } },
   } as const,
 });
 
 export default function TrackWorkout({ navigation }: Props) {
   const [animationDirection, setAnimationDirection] = useState<
-    "isUp" | "isDown"
-  >("isUp");
+    "isUp" | "isDown" | "isDisabled"
+  >("isDisabled");
   const selectedSet = useAppSelector(
     (state) => state.appData.workouts.selectedSet,
   );
@@ -60,6 +62,7 @@ export default function TrackWorkout({ navigation }: Props) {
     exerciseIndex: number,
     exerciseSetIndex: number,
   ) => {
+    setAnimationDirection("isDisabled");
     dispatch(onPressExerciseSet({ exerciseIndex, exerciseSetIndex }));
   };
 
@@ -78,7 +81,8 @@ export default function TrackWorkout({ navigation }: Props) {
         p="$2"
         borderRadius={isExerciseSelected ? "$10" : 0}
         key={exercise.id}
-        bg={isExerciseSelected ? "$color3" : "$background"}
+        borderWidth={isExerciseSelected ? "$0.5" : 0}
+        borderColor="$color7"
       >
         {/* Header */}
         <XStack
@@ -216,15 +220,15 @@ export default function TrackWorkout({ navigation }: Props) {
   };
 
   return (
-    <View flex={1} onPress={Keyboard.dismiss} m="$2">
-      {selectedWorkout.exercises.map((exercise, index) => {
-        return renderItem({ item: exercise, index });
-      })}
+    <ScrollView flex={1} onPress={Keyboard.dismiss} m="$2">
+      <View f={1}>
+        {selectedWorkout.exercises.map((exercise, index) => {
+          return renderItem({ item: exercise, index });
+        })}
+      </View>
       <Button
-        pos="absolute"
-        b="$4"
-        r="$4"
-        l="$4"
+        margin="$4"
+        marginTop="$10"
         onPress={() => {
           Alert.alert("Are you sure you want to finish?", "", [
             {
@@ -243,6 +247,6 @@ export default function TrackWorkout({ navigation }: Props) {
       >
         Finish
       </Button>
-    </View>
+    </ScrollView>
   );
 }

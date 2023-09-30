@@ -29,9 +29,14 @@ export default function WorkoutCard({
   return (
     <Card
       p="$3"
+      bg="$background"
       marginVertical="$2"
       borderLeftWidth={nextTimeDate.getDay() === new Date().getDay() ? 2 : 0}
+      borderWidth="$0.5"
+      shadowOpacity={0.1}
+      shadowRadius="$radius.2"
       borderColor="$color8"
+      shadowColor="$color8"
       marginHorizontal="$4"
       onPress={onPressWorkout}
     >

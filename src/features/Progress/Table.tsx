@@ -16,7 +16,7 @@ export default function Table() {
   const exercises = useAppSelector(
     (state) => state.appData.workouts.exerciseRecords,
   );
-  const tableHeader = [...Object.keys(exercises)];
+  const tableHeader = Object.keys(exercises);
   const workoutRecords = workoutRecordIds.map((exercise) =>
     exercise.map((exerciseId) => allRecords[exerciseId]),
   );
@@ -113,7 +113,7 @@ export default function Table() {
     );
 
   return (
-    <View f={1}>
+    <View f={1} scale="$size.0.25">
       <ScrollView horizontal>
         <YStack>
           <XStack>

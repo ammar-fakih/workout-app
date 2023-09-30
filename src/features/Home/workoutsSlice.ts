@@ -142,13 +142,10 @@ export const workoutsSlice = createSlice({
     todaysWorkoutsSet: (state) => {
       if (!state.weeksWorkouts) return;
       const date = new Date();
-      date.setDate(date.getDate() + 3);
       const day = date.getDay();
-      console.log("today is " + day);
 
       const todaysWorkout = state.weeksWorkouts.find((workout) => {
         const startDate = new Date(workout.closestTimeToNow);
-        console.log(startDate.getDay());
 
         return startDate.getDay() === day;
       });
@@ -266,13 +263,14 @@ export const workoutsSlice = createSlice({
 
       const [exerciseIndex, setIndex] = state.selectedSet;
       const exercises = state.selectedWorkout.exercises;
-      const exercise = exercises[exerciseIndex];
 
       if (setIndex === 0) {
-        state.selectedSet = [
-          exerciseIndex - 1,
-          exercise.completedSets.length - 1,
-        ];
+        const previousExercise = exercises[exerciseIndex - 1];
+        if (!previousExercise) {
+          state.selectedSet = null;
+        } else {
+          state.selectedSet = [exerciseIndex - 1, previousExercise.reps - 1];
+        }
       } else {
         state.selectedSet = [exerciseIndex, setIndex - 1];
       }
@@ -288,7 +286,11 @@ export const workoutsSlice = createSlice({
 
       const { exerciseIndex, exerciseSetIndex } = action.payload;
 
-      state.selectedSet = [exerciseIndex, exerciseSetIndex];
+      if (state.selectedSet && state.selectedSet[0] === exerciseIndex) {
+        state.selectedSet = null;
+      } else {
+        state.selectedSet = [exerciseIndex, exerciseSetIndex];
+      }
     },
   },
 });
