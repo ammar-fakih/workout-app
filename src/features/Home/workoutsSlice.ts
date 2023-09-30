@@ -10,10 +10,11 @@ import {
   GeneralWorkout,
   Program,
   ProgramFromFile,
-  RecordEntry,
+  ExerciseRecord,
   TodaysWorkout,
   Units,
   Workout,
+  WorkoutRecord,
 } from "./types";
 
 interface WorkoutsState {
@@ -28,12 +29,12 @@ interface WorkoutsState {
   selectedSet: [number, number] | null;
 
   // Records
-  allRecords: RecordEntry[];
+  allRecords: ExerciseRecord[];
   exerciseRecords: {
     // Map exercise name to record entries in allRecords
     [name: string]: number[];
   };
-  workoutRecords: number[][]; // record of all workouts (groups of exercises); maps to allRecords
+  workoutRecords: WorkoutRecord[]; // record of all workouts (groups of exercises); maps to allRecords
 
   units: Units;
 }
@@ -184,7 +185,7 @@ export const workoutsSlice = createSlice({
     workoutFinished: (state) => {
       if (!state.selectedWorkout) return;
 
-      const workoutRecord: number[] = [];
+      const exerciseRecord: WorkoutRecord["exercises"] = [];
 
       state.selectedWorkout.exercises.forEach((exercise) => {
         // Push to allrecords
@@ -205,11 +206,14 @@ export const workoutsSlice = createSlice({
         state.exerciseRecords[exercise.name].push(state.allRecords.length - 1);
 
         // Save value for workout record
-        workoutRecord.push(state.allRecords.length - 1);
+        exerciseRecord.push(state.allRecords.length - 1);
       });
 
       // Push to workout records
-      state.workoutRecords.push(workoutRecord);
+      state.workoutRecords.push({
+        exercises: exerciseRecord,
+        name: state.selectedWorkout.name,
+      });
       state.selectedSet = workoutsSlice.getInitialState().selectedSet;
 
       state.selectedWorkout = workoutsSlice.getInitialState().selectedWorkout;

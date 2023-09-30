@@ -60,7 +60,12 @@ export default function HomePage({ navigation }: Props) {
   const renderTodaysWorkout = () => {
     if (!todaysWorkout) {
       return (
-        <XStack jc="space-between" ai="center" marginHorizontal="$4">
+        <XStack
+          jc="space-between"
+          ai="center"
+          marginHorizontal="$4"
+          marginVertical="$6"
+        >
           <H4>Rest Day</H4>
           <Button
             variant="outlined"

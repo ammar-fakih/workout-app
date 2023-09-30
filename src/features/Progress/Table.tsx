@@ -1,12 +1,14 @@
 import { FlatList } from "react-native";
 import { ScrollView, Text, View, XStack, YStack } from "tamagui";
 import { useAppSelector } from "../../app/hooks";
-import { RecordEntry } from "../Home/types";
+import { ExerciseRecord, WorkoutRecordData } from "../Home/types";
 import { getDateString } from "../Home/helperFunctions";
+import { useCallback, useEffect, useState } from "react";
 
 const borderWidth = "$1";
 
 export default function Table() {
+  const [workoutRecords, setWorkoutRecords] = useState<WorkoutRecordData[]>();
   const workoutRecordIds = useAppSelector(
     (state) => state.appData.workouts.workoutRecords,
   );
@@ -17,9 +19,17 @@ export default function Table() {
     (state) => state.appData.workouts.exerciseRecords,
   );
   const tableHeader = Object.keys(exercises);
-  const workoutRecords = workoutRecordIds.map((exercise) =>
-    exercise.map((exerciseId) => allRecords[exerciseId]),
-  );
+
+  useEffect(() => {
+    setWorkoutRecords(getWorkoutRecords());
+  }, []);
+
+  const getWorkoutRecords = useCallback(() => {
+    return workoutRecordIds.map((record) => ({
+      exercises: record.exercises.map((exerciseId) => allRecords[exerciseId]),
+      name: record.name,
+    }));
+  }, [workoutRecordIds, allRecords]);
 
   const renderHeaderCell = ({
     item: headerCell,
@@ -58,6 +68,7 @@ export default function Table() {
     return (
       <View
         f={1}
+        paddingVertical="$2"
         borderRightWidth={borderWidth}
         borderLeftWidth={index === 0 ? borderWidth : 0}
         borderBottomWidth={borderWidth}
@@ -75,12 +86,14 @@ export default function Table() {
     item: workout,
     index,
   }: {
-    item: RecordEntry[];
+    item: { exercises: ExerciseRecord[]; name: string };
     index: number;
   }) => {
-    const rowData: (RecordEntry | undefined)[] = [];
+    const rowData: (ExerciseRecord | undefined)[] = [];
     tableHeader.forEach((exerciseName) => {
-      rowData.push(workout.find((record) => record.name === exerciseName));
+      rowData.push(
+        workout.exercises.find((record) => record.name === exerciseName),
+      );
     });
     const date = rowData[0] ? getDateString(rowData[0].date) : "/";
 
@@ -102,7 +115,7 @@ export default function Table() {
     );
   };
 
-  if (!workoutRecords.length)
+  if (!workoutRecords?.length)
     return (
       <YStack ai="center" space="$2" m="$3">
         <Text fontWeight="$8" fontSize="$5">
@@ -113,7 +126,7 @@ export default function Table() {
     );
 
   return (
-    <View f={1} scale="$size.0.25">
+    <View f={1}>
       <ScrollView horizontal>
         <YStack>
           <XStack>

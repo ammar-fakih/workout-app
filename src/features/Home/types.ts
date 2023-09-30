@@ -49,8 +49,18 @@ export interface Program {
   workouts: Workout[];
 }
 
-export interface RecordEntry {
+export interface ExerciseRecord extends TodaysExercise {
   date: string;
+}
+
+export interface WorkoutRecord {
+  exercises: number[]; // maps to indices in allRecords
+  name: string;
+}
+
+export interface WorkoutRecordData {
+  exercises: ExerciseRecord[];
+  name: string;
 }
 
 // Enums
