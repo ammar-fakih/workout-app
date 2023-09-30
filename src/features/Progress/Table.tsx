@@ -1,9 +1,9 @@
+import { useEffect, useState } from "react";
 import { FlatList } from "react-native";
 import { ScrollView, Text, View, XStack, YStack } from "tamagui";
 import { useAppSelector } from "../../app/hooks";
-import { ExerciseRecord, WorkoutRecordData } from "../Home/types";
 import { getDateString } from "../Home/helperFunctions";
-import { useCallback, useEffect, useState } from "react";
+import { ExerciseRecord, WorkoutRecordData } from "../Home/types";
 
 const borderWidth = "$1";
 
@@ -22,14 +22,14 @@ export default function Table() {
 
   useEffect(() => {
     setWorkoutRecords(getWorkoutRecords());
-  }, []);
+  }, [allRecords]);
 
-  const getWorkoutRecords = useCallback(() => {
+  const getWorkoutRecords = () => {
     return workoutRecordIds.map((record) => ({
       exercises: record.exercises.map((exerciseId) => allRecords[exerciseId]),
       name: record.name,
     }));
-  }, [workoutRecordIds, allRecords]);
+  };
 
   const renderHeaderCell = ({
     item: headerCell,
