@@ -269,10 +269,10 @@ export const workoutsSlice = createSlice({
       const exercises = state.selectedWorkout.exercises;
 
       if (setIndex === 0) {
-        const previousExercise = exercises[exerciseIndex - 1];
-        if (!previousExercise) {
+        if (exerciseIndex === 0) {
           state.selectedSet = null;
         } else {
+          const previousExercise = exercises[exerciseIndex - 1];
           state.selectedSet = [exerciseIndex - 1, previousExercise.reps - 1];
         }
       } else {
@@ -290,7 +290,11 @@ export const workoutsSlice = createSlice({
 
       const { exerciseIndex, exerciseSetIndex } = action.payload;
 
-      if (state.selectedSet && state.selectedSet[0] === exerciseIndex) {
+      if (
+        state.selectedSet &&
+        state.selectedSet[0] === exerciseIndex &&
+        state.selectedSet[1] === -1
+      ) {
         state.selectedSet = null;
       } else {
         state.selectedSet = [exerciseIndex, exerciseSetIndex];

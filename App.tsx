@@ -20,6 +20,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import persistStore from "redux-persist/es/persistStore";
 import { PersistGate } from "redux-persist/integration/react";
 import config from "./tamagui.config";
+import { useColorScheme } from "react-native";
 
 const persistor = persistStore(store);
 
@@ -34,13 +35,15 @@ export type RootTabsParamList = {
 const Tabs = createBottomTabNavigator<RootTabsParamList>();
 
 export default function () {
+  const colorScheme = useColorScheme();
+
   return (
     <SafeAreaProvider>
       <Provider store={store}>
         <PersistGate persistor={persistor}>
           <RootSiblingParent>
-            <TamaguiProvider config={config} defaultTheme="dark_red">
-              <Theme name="dark_blue">
+            <TamaguiProvider config={config} defaultTheme="dark_blue">
+              <Theme name={colorScheme === "dark" ? "dark_blue" : "light_blue"}>
                 <App />
               </Theme>
             </TamaguiProvider>
@@ -48,7 +51,7 @@ export default function () {
         </PersistGate>
       </Provider>
 
-      <StatusBar style="light" />
+      <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
     </SafeAreaProvider>
   );
 }
@@ -94,6 +97,7 @@ function App() {
     >
       <NavigationContainer theme={NavigationTheme}>
         <Tabs.Navigator
+          initialRouteName="Progress"
           screenOptions={({ route }) => ({
             headerShown: false,
             tabBarIcon: ({ color, size }) => {

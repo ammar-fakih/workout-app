@@ -90,7 +90,7 @@ export default function TrackWorkout({ navigation }: Props) {
           paddingHorizontal="$5"
           paddingVertical={isExerciseSelected ? "$6" : "$2"}
           alignItems="center"
-          onPress={() => handlePressExerciseHeader(index, 0)}
+          onPress={() => handlePressExerciseHeader(index, -1)}
         >
           <Text fontWeight="$10">{exercise.name}</Text>
           <Text fontWeight="$10">{`${exercise.sets}x${exercise.reps}`}</Text>

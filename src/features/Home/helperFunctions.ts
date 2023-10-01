@@ -64,7 +64,7 @@ export const getClosestDate = (
   const diff = currentTime - workoutStartTime;
   const newNumIntervals = numIntervals
     ? numIntervals
-    : Math.floor(diff / interval);
+    : Math.ceil(diff / interval);
 
   // round to nearest interval
   const closestTimeToNow = newNumIntervals * interval + workoutStartTime;

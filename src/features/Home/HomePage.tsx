@@ -127,7 +127,10 @@ export default function HomePage({ navigation }: Props) {
       <Separator />
 
       {/* Other Week's Workouts */}
-      <Accordion type="multiple">
+      <Accordion
+        type="multiple"
+        defaultValue={todaysWorkout ? undefined : ["a1"]}
+      >
         <Accordion.Item value="a1">
           <Accordion.Trigger
             flexDirection="row"
@@ -138,7 +141,7 @@ export default function HomePage({ navigation }: Props) {
           >
             {({ open }: { open: boolean }) => (
               <>
-                <Text>Other Workouts this Week</Text>
+                <Text>Other Workouts This Week</Text>
                 <Square animation="quick" rotate={open ? "180deg" : "0deg"}>
                   <ChevronDown size="$1" />
                 </Square>

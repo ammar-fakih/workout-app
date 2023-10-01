@@ -134,7 +134,11 @@ export default function Table() {
               renderHeaderCell({ item: headerCell, index }),
             )}
           </XStack>
-          <FlatList data={workoutRecords} renderItem={renderRow} />
+          <FlatList
+            alwaysBounceVertical={false}
+            data={workoutRecords}
+            renderItem={renderRow}
+          />
         </YStack>
       </ScrollView>
     </View>
