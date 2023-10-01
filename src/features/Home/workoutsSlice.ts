@@ -273,7 +273,7 @@ export const workoutsSlice = createSlice({
           state.selectedSet = null;
         } else {
           const previousExercise = exercises[exerciseIndex - 1];
-          state.selectedSet = [exerciseIndex - 1, previousExercise.reps - 1];
+          state.selectedSet = [exerciseIndex - 1, previousExercise.sets - 1];
         }
       } else {
         state.selectedSet = [exerciseIndex, setIndex - 1];
@@ -292,12 +292,16 @@ export const workoutsSlice = createSlice({
 
       if (
         state.selectedSet &&
-        state.selectedSet[0] === exerciseIndex &&
-        state.selectedSet[1] === -1
+        exerciseIndex === state.selectedSet[0] &&
+        exerciseSetIndex === -1
       ) {
         state.selectedSet = null;
       } else {
-        state.selectedSet = [exerciseIndex, exerciseSetIndex];
+        if (exerciseSetIndex === -1) {
+          state.selectedSet = [exerciseIndex, 0];
+        } else {
+          state.selectedSet = [exerciseIndex, exerciseSetIndex];
+        }
       }
     },
   },
