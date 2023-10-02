@@ -28,6 +28,8 @@ interface WorkoutsState {
   // TrackWorkoutPage
   selectedWorkout: SelectedWorkout | undefined;
   selectedSet: [number, number] | null;
+  stopWatchValue: number;
+  nodeTimeout: NodeJS.Timeout | null;
 
   // Records
   allRecords: ExerciseRecord[];
@@ -53,6 +55,8 @@ const initialState: WorkoutsState = {
   allRecords: [],
   exerciseRecords: {},
   workoutRecords: [],
+  stopWatchValue: 0,
+  nodeTimeout: null,
 
   units: Units.IMPERIAL,
 };
@@ -315,6 +319,16 @@ export const workoutsSlice = createSlice({
         }
       }
     },
+    stopWatchToggled: (state) => {
+      if (!state.nodeTimeout) {
+        state.nodeTimeout = setInterval(() => {
+          state.stopWatchValue++;
+        }, 1000);
+      } else {
+        clearInterval(state.nodeTimeout);
+        state.nodeTimeout = null;
+      }
+    },
   },
 });
 
@@ -359,6 +373,7 @@ export const {
   onPressPreviousSet,
   onPressExerciseSet,
   workoutCanceled,
+  stopWatchToggled,
 } = workoutsSlice.actions;
 
 export default workoutsSlice.reducer;
