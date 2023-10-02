@@ -217,6 +217,10 @@ export const workoutsSlice = createSlice({
       state.selectedSet = workoutsSlice.getInitialState().selectedSet;
 
       state.selectedWorkout = workoutsSlice.getInitialState().selectedWorkout;
+
+      // Update frontpage with new weights
+      workoutsSlice.caseReducers.weeksWorkoutsSet(state);
+      workoutsSlice.caseReducers.todaysWorkoutsSet(state);
     },
     workoutCanceled: (state) => {
       state.selectedWorkout = workoutsSlice.getInitialState().selectedWorkout;
