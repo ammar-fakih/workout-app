@@ -15,6 +15,10 @@ export interface TodaysExercise extends Exercise {
   weight: number;
 }
 
+export interface SelectedExercise extends TodaysExercise {
+  startingWeight: number;
+}
+
 export interface GeneralWorkout {
   id: string;
   name: string;
@@ -35,6 +39,10 @@ export interface Workout extends GeneralWorkout, SpecificWorkout {
 
 export interface TodaysWorkout extends Workout {
   exercises: TodaysExercise[];
+}
+
+export interface SelectedWorkout extends Workout {
+  exercises: SelectedExercise[];
 }
 
 export interface ProgramFromFile {

@@ -15,6 +15,7 @@ import {
   Units,
   Workout,
   WorkoutRecord,
+  SelectedWorkout,
 } from "./types";
 
 interface WorkoutsState {
@@ -25,7 +26,7 @@ interface WorkoutsState {
   todaysWorkout: TodaysWorkout | undefined;
 
   // TrackWorkoutPage
-  selectedWorkout: TodaysWorkout | undefined;
+  selectedWorkout: SelectedWorkout | undefined;
   selectedSet: [number, number] | null;
 
   // Records
@@ -156,7 +157,13 @@ export const workoutsSlice = createSlice({
       state.todaysWorkout = todaysWorkout as TodaysWorkout;
     },
     workoutSelected: (state, action: PayloadAction<TodaysWorkout>) => {
-      state.selectedWorkout = action.payload;
+      state.selectedWorkout = {
+        ...action.payload,
+        exercises: action.payload.exercises.map((exercise) => ({
+          ...exercise,
+          startingWeight: exercise.weight,
+        })),
+      };
     },
     exerciseSetClicked: (
       state,

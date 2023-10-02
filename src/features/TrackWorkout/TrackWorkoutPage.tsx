@@ -7,16 +7,16 @@ import {
   Button,
   Input,
   ScrollView,
+  styled,
   Text,
   View,
   XStack,
   YStack,
-  styled,
 } from "tamagui";
 import { RootTabsParamList } from "../../../App";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { getOrdinalNumber, getUnitAbbreviation } from "../Home/helperFunctions";
-import { TodaysExercise } from "../Home/types";
+import { SelectedExercise } from "../Home/types";
 import {
   exerciseSetClicked,
   exerciseWeightChanged,
@@ -72,7 +72,7 @@ export default function TrackWorkout({ navigation }: Props) {
     item: exercise,
     index,
   }: {
-    item: TodaysExercise;
+    item: SelectedExercise;
     index: number;
   }) => {
     const isExerciseSelected = index === selectedSet?.[0];
@@ -193,7 +193,10 @@ export default function TrackWorkout({ navigation }: Props) {
                 </Button>
                 <Input
                   keyboardType="numeric"
-                  placeholder={`${exercise.weight.toString()} ${getUnitAbbreviation(
+                  placeholder={`${exercise.startingWeight.toString()} ${getUnitAbbreviation(
+                    units,
+                  )}`}
+                  value={`${exercise.weight.toString()} ${getUnitAbbreviation(
                     units,
                   )}`}
                 />
@@ -211,7 +214,10 @@ export default function TrackWorkout({ navigation }: Props) {
                 </Button>
               </XStack>
 
-              <Text fontWeight="200">Last Workout: </Text>
+              <Text fontWeight="200">
+                {`Last Workout: ${exercise.startingWeight.toString()} $
+                {getUnitAbbreviation(units)}`}
+              </Text>
             </YStack>
           </YStack>
         )}
