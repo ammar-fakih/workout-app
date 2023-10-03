@@ -28,8 +28,8 @@ interface WorkoutsState {
   // TrackWorkoutPage
   selectedWorkout: SelectedWorkout | undefined;
   selectedSet: [number, number] | null;
-  stopWatchValue: number;
-  nodeTimeout: NodeJS.Timeout | null;
+  stopWatchStartTime: number | null;
+  stopWatchExtraSeconds: number; // When paused, add time to this value
 
   // Records
   allRecords: ExerciseRecord[];
@@ -55,8 +55,8 @@ const initialState: WorkoutsState = {
   allRecords: [],
   exerciseRecords: {},
   workoutRecords: [],
-  stopWatchValue: 0,
-  nodeTimeout: null,
+  stopWatchStartTime: null,
+  stopWatchExtraSeconds: 0,
 
   units: Units.IMPERIAL,
 };
@@ -168,6 +168,8 @@ export const workoutsSlice = createSlice({
           startingWeight: exercise.weight,
         })),
       };
+
+      workoutsSlice.caseReducers.stopWatchStarted(state);
     },
     exerciseSetClicked: (
       state,
@@ -195,6 +197,13 @@ export const workoutsSlice = createSlice({
     },
     workoutFinished: (state) => {
       if (!state.selectedWorkout) return;
+
+      // Calculate total time (seconds)
+      const currentTime = new Date().getTime();
+      const startTime = state.stopWatchStartTime || currentTime;
+      const totalTime = Math.round(
+        (currentTime - startTime) / 1000 + state.stopWatchExtraSeconds,
+      );
 
       const exerciseRecord: WorkoutRecord["exercises"] = [];
 
@@ -224,6 +233,7 @@ export const workoutsSlice = createSlice({
       state.workoutRecords.push({
         exercises: exerciseRecord,
         name: state.selectedWorkout.name,
+        timeToComplete: totalTime,
       });
       state.selectedSet = workoutsSlice.getInitialState().selectedSet;
 
@@ -232,10 +242,16 @@ export const workoutsSlice = createSlice({
       // Update frontpage with new weights
       workoutsSlice.caseReducers.weeksWorkoutsSet(state);
       workoutsSlice.caseReducers.todaysWorkoutsSet(state);
+
+      // Reset stopwatch
+      workoutsSlice.caseReducers.stopWatchStopped(state);
     },
     workoutCanceled: (state) => {
       state.selectedWorkout = workoutsSlice.getInitialState().selectedWorkout;
       state.selectedSet = workoutsSlice.getInitialState().selectedSet;
+
+      // Reset stopwatch
+      workoutsSlice.caseReducers.stopWatchStopped(state);
     },
     exerciseWeightChanged: (
       state: WorkoutsState,
@@ -319,15 +335,22 @@ export const workoutsSlice = createSlice({
         }
       }
     },
-    stopWatchToggled: (state) => {
-      if (!state.nodeTimeout) {
-        state.nodeTimeout = setInterval(() => {
-          state.stopWatchValue++;
-        }, 1000);
-      } else {
-        clearInterval(state.nodeTimeout);
-        state.nodeTimeout = null;
-      }
+    stopWatchStarted: (state) => {
+      state.stopWatchStartTime = Date.now();
+    },
+    stopWatchPaused: (state) => {
+      // Calculate Extra Time
+      const currentTime = new Date().getTime();
+      const startTime = state.stopWatchStartTime || currentTime;
+      state.stopWatchExtraSeconds += Math.round(
+        (currentTime - startTime) / 1000,
+      );
+
+      state.stopWatchStartTime = null;
+    },
+    stopWatchStopped: (state) => {
+      state.stopWatchStartTime = null;
+      state.stopWatchExtraSeconds = 0;
     },
   },
 });
@@ -373,7 +396,8 @@ export const {
   onPressPreviousSet,
   onPressExerciseSet,
   workoutCanceled,
-  stopWatchToggled,
+  stopWatchPaused,
+  stopWatchStarted,
 } = workoutsSlice.actions;
 
 export default workoutsSlice.reducer;

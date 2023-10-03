@@ -1,5 +1,6 @@
 import "react-native-gesture-handler";
 
+import { useEffect } from "react";
 import { MaterialCommunityIcons, Octicons } from "@expo/vector-icons";
 import { NavigationContainer } from "@react-navigation/native";
 import * as SplashScreen from "expo-splash-screen";
@@ -21,6 +22,7 @@ import persistStore from "redux-persist/es/persistStore";
 import { PersistGate } from "redux-persist/integration/react";
 import config from "./tamagui.config";
 import { useColorScheme } from "react-native";
+import { useAppDispatch, useAppSelector } from "./src/app/hooks";
 
 const persistor = persistStore(store);
 
@@ -57,6 +59,10 @@ export default function () {
 }
 
 function App() {
+  const dispatch = useAppDispatch();
+  const nodeTimeout = useAppSelector(
+    (state) => state.appData.workouts.nodeTimeout,
+  );
   const theme = useTheme();
   const [fontsLoaded] = useFonts({
     Inter: require("@tamagui/font-inter/otf/Inter-Medium.otf"),
@@ -77,6 +83,14 @@ function App() {
       notification: "rgb(255, 59, 48)",
     },
   };
+
+  useEffect(() => {
+    if (nodeTimeout) {
+      clearInterval(nodeTimeout);
+      dispatch(stopWatchPaused());
+      dispatch(stopWatchStarted());
+    }
+  }, []);
 
   const onLayoutRootView = useCallback(async () => {
     if (fontsLoaded) {

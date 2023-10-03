@@ -103,6 +103,16 @@ export const getWorkoutExercises = (
   return workout.map((exericseId) => allRecords[exericseId]);
 };
 
+export const calculateStopWatchValue = (
+  startTime: number,
+  extraTime: number,
+) => {
+  const currentTime = new Date().getTime();
+  const diff = currentTime - startTime;
+  const seconds = Math.floor(diff / 1000) + extraTime;
+  return seconds;
+};
+
 export const getStopWatchStringFromSeconds = (seconds: number) => {
   const minutes = Math.floor(seconds / 60);
   const remainingSeconds = seconds % 60;

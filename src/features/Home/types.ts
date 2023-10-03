@@ -64,6 +64,7 @@ export interface ExerciseRecord extends TodaysExercise {
 export interface WorkoutRecord {
   exercises: number[]; // maps to indices in allRecords
   name: string;
+  timeToComplete: number; // in seconds
 }
 
 export interface WorkoutRecordData {

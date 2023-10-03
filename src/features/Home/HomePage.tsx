@@ -57,6 +57,7 @@ export default function HomePage({ navigation }: Props) {
     dispatch(workoutSelected(workout));
     navigation.navigate("TrackWorkout");
   };
+
   const renderTodaysWorkout = () => {
     if (!todaysWorkout) {
       return (
