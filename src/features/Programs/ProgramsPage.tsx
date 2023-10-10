@@ -33,6 +33,7 @@ export default function ProgramsPage() {
     <YStack f={1}>
       <FlatList
         data={programs}
+        keyExtractor={(item) => item.id}
         renderItem={renderItem}
         ItemSeparatorComponent={Separator}
         ListFooterComponent={Separator}
