@@ -1,6 +1,5 @@
 import "react-native-gesture-handler";
 
-import { useEffect } from "react";
 import { MaterialCommunityIcons, Octicons } from "@expo/vector-icons";
 import { NavigationContainer } from "@react-navigation/native";
 import * as SplashScreen from "expo-splash-screen";
@@ -17,16 +16,11 @@ import { Settings as SettingsIcon } from "@tamagui/lucide-icons";
 import { useFonts } from "expo-font";
 import { StatusBar } from "expo-status-bar";
 import { useCallback } from "react";
+import { useColorScheme } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import persistStore from "redux-persist/es/persistStore";
 import { PersistGate } from "redux-persist/integration/react";
 import config from "./tamagui.config";
-import { useColorScheme } from "react-native";
-import { useAppDispatch, useAppSelector } from "./src/app/hooks";
-import {
-  stopWatchPaused,
-  stopWatchStarted,
-} from "./src/features/Home/workoutsSlice";
 
 const persistor = persistStore(store);
 
@@ -63,7 +57,6 @@ export default function () {
 }
 
 function App() {
-  const dispatch = useAppDispatch();
   const theme = useTheme();
   const [fontsLoaded] = useFonts({
     Inter: require("@tamagui/font-inter/otf/Inter-Medium.otf"),
@@ -71,6 +64,7 @@ function App() {
     Gerhaus: require("./assets/fonts/Gerhaus.ttf"),
     OpenSans: require("./assets/fonts/OpenSans-Regular.ttf"),
     OpenSansBold: require("./assets/fonts/OpenSans-Bold.ttf"),
+    SpaceMono: require("./assets/fonts/SpaceMono-Regular.ttf"),
   });
 
   const NavigationTheme = {
@@ -84,15 +78,6 @@ function App() {
       notification: "rgb(255, 59, 48)",
     },
   };
-
-  useEffect(() => {
-    // TODO: set timer to update on app start
-    // if (nodeTimeout) {
-    //   clearInterval(nodeTimeout);
-    //   dispatch(stopWatchPaused());
-    //   dispatch(stopWatchStarted());
-    // }
-  }, []);
 
   const onLayoutRootView = useCallback(async () => {
     if (fontsLoaded) {

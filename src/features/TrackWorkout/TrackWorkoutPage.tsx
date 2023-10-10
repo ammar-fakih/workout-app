@@ -92,8 +92,13 @@ export default function TrackWorkout({ navigation }: Props) {
           alignItems="center"
           onPress={() => handlePressExerciseHeader(index, -1)}
         >
-          <Text fontWeight="$10">{exercise.name}</Text>
-          <Text fontWeight="$10">{`${exercise.sets}x${exercise.reps}`}</Text>
+          <Text fontWeight="$10" fontSize="$6">
+            {exercise.name}
+          </Text>
+          <Text
+            fontWeight="$10"
+            fontSize="$6"
+          >{`${exercise.sets}x${exercise.reps}`}</Text>
         </XStack>
 
         {/* Body */}
@@ -215,8 +220,9 @@ export default function TrackWorkout({ navigation }: Props) {
               </XStack>
 
               <Text fontWeight="200">
-                {`Last Workout: ${exercise.startingWeight.toString()} $
-                {getUnitAbbreviation(units)}`}
+                {`Last Workout: ${exercise.startingWeight.toString()} ${getUnitAbbreviation(
+                  units,
+                )}`}
               </Text>
             </YStack>
           </YStack>

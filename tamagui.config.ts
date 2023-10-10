@@ -4,6 +4,8 @@ import { createTamagui, createTokens } from "tamagui";
 
 const gerhaus = createGenericFont("Gerhaus");
 
+const spaceMono = createGenericFont("SpaceMono");
+
 const tokens = createTokens({
   size,
   space,
@@ -22,7 +24,7 @@ const tamaguiConfig = createTamagui({
     dark_red: { ...themes.dark_red, background: "#000" },
   },
   tokens,
-  fonts: { ...config.fonts, gerhaus },
+  fonts: { ...config.fonts, gerhaus, spaceMono },
 });
 
 type Conf = typeof tamaguiConfig;

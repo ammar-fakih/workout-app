@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useRef, useState } from "react";
 import { Pause, Play } from "@tamagui/lucide-icons";
-import { Button } from "tamagui";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Button, Text } from "tamagui";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import {
   calculateStopWatchValue,
@@ -70,9 +70,9 @@ export default function StopWatch() {
       icon={stopWatchStartTime ? <Pause /> : <Play />}
       onPress={handlePress}
       variant="outlined"
-      p="$0"
+      paddingVertical="$0"
     >
-      {getStopWatchString(stopWatchValue)}
+      <Text fontFamily="$spaceMono">{getStopWatchString(stopWatchValue)}</Text>
     </Button>
   );
 }
