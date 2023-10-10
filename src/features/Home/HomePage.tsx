@@ -31,6 +31,7 @@ import {
   workoutSelected,
   workoutsReadFromFiles,
 } from "./workoutsSlice";
+import StopWatch from "../../Components/StopWatch";
 
 type Props = BottomTabScreenProps<RootTabsParamList, "HomePage">;
 
@@ -188,17 +189,20 @@ export default function HomePage({ navigation }: Props) {
           }}
         >
           <XStack jc="space-between" alignItems="center" f={1}>
-            <YStack space="$space.1">
+            <YStack space="$space.1" f={1}>
               <Text fontSize="$5">Workout in Progress</Text>
               <Text fontWeight="$10">{selectedWorkout.name}</Text>
             </YStack>
-            <Button
-              onPress={() => {
-                navigation.navigate("TrackWorkout");
-              }}
-            >
-              <Text>Continue</Text>
-            </Button>
+            <YStack f={1} ai="flex-end" jc="center">
+              <StopWatch />
+              <Button
+                onPress={() => {
+                  navigation.navigate("TrackWorkout");
+                }}
+              >
+                <Text>Continue</Text>
+              </Button>
+            </YStack>
           </XStack>
         </Card>
       )}

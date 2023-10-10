@@ -104,11 +104,11 @@ export const getWorkoutExercises = (
 };
 
 export const calculateStopWatchValue = (
-  startTime: number,
+  startTime: number | null,
   extraTime: number,
 ) => {
-  const currentTime = new Date().getTime();
-  const diff = currentTime - startTime;
+  const currentTime = Date.now();
+  const diff = startTime ? currentTime - startTime : 0;
   const seconds = Math.floor(diff / 1000) + extraTime;
   return seconds;
 };

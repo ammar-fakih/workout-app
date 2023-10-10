@@ -2,7 +2,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { Menu } from "@tamagui/lucide-icons";
-import { Button, Popover } from "tamagui";
+import { Button, Popover, XStack } from "tamagui";
 import { RootTabsParamList } from "../../../App";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import StopWatch from "../../Components/StopWatch";
@@ -24,7 +24,7 @@ export default function Home({ navigation }: Props) {
 
   const TrackWorkoutHeaderRight = () => {
     return (
-      <>
+      <XStack ai="center">
         <StopWatch />
         <Popover>
           <Popover.Trigger pr="$4">
@@ -60,7 +60,7 @@ export default function Home({ navigation }: Props) {
             </Popover.Close>
           </Popover.Content>
         </Popover>
-      </>
+      </XStack>
     );
   };
 

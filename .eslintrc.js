@@ -11,5 +11,6 @@ module.exports = {
         endOfLine: "auto",
       },
     ],
+    "no-inner-declarations": "off",
   },
 };

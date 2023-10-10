@@ -23,6 +23,10 @@ import { PersistGate } from "redux-persist/integration/react";
 import config from "./tamagui.config";
 import { useColorScheme } from "react-native";
 import { useAppDispatch, useAppSelector } from "./src/app/hooks";
+import {
+  stopWatchPaused,
+  stopWatchStarted,
+} from "./src/features/Home/workoutsSlice";
 
 const persistor = persistStore(store);
 
@@ -60,9 +64,6 @@ export default function () {
 
 function App() {
   const dispatch = useAppDispatch();
-  const nodeTimeout = useAppSelector(
-    (state) => state.appData.workouts.nodeTimeout,
-  );
   const theme = useTheme();
   const [fontsLoaded] = useFonts({
     Inter: require("@tamagui/font-inter/otf/Inter-Medium.otf"),
@@ -85,11 +86,12 @@ function App() {
   };
 
   useEffect(() => {
-    if (nodeTimeout) {
-      clearInterval(nodeTimeout);
-      dispatch(stopWatchPaused());
-      dispatch(stopWatchStarted());
-    }
+    // TODO: set timer to update on app start
+    // if (nodeTimeout) {
+    //   clearInterval(nodeTimeout);
+    //   dispatch(stopWatchPaused());
+    //   dispatch(stopWatchStarted());
+    // }
   }, []);
 
   const onLayoutRootView = useCallback(async () => {
@@ -111,7 +113,6 @@ function App() {
     >
       <NavigationContainer theme={NavigationTheme}>
         <Tabs.Navigator
-          initialRouteName="Progress"
           screenOptions={({ route }) => ({
             headerShown: false,
             tabBarIcon: ({ color, size }) => {
