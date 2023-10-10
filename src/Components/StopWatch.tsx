@@ -58,7 +58,7 @@ export default function StopWatch() {
   );
 
   const handlePress = () => {
-    if (intervalID) {
+    if (stopWatchStartTime) {
       clearInterval(intervalID);
       setIntervalID(undefined);
       dispatch(stopWatchPaused());
