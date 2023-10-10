@@ -340,7 +340,7 @@ export const workoutsSlice = createSlice({
     },
     stopWatchPaused: (state) => {
       // Calculate Extra Time
-      const currentTime = new Date().getTime();
+      const currentTime = Date.now();
       const startTime = state.stopWatchStartTime || currentTime;
       state.stopWatchExtraSeconds += Math.round(
         (currentTime - startTime) / 1000,

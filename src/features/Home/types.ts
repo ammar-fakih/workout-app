@@ -52,6 +52,7 @@ export interface ProgramFromFile {
 }
 
 export interface Program {
+  lucidIcon?: string;
   id: string;
   name: string;
   workouts: Workout[];

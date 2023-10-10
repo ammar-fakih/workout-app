@@ -28,13 +28,20 @@ export default function StopWatch() {
       calculateStopWatchValue(stopWatchStartTime, stopWatchExtraTime),
     );
 
-    if (!intervalID && stopWatchStartTime) {
-      function tick() {
+    clearInterval(intervalID);
+    setIntervalID(undefined);
+
+    if (stopWatchStartTime) {
+      const intervalID = setInterval(function () {
         intervalCallback.current();
-      }
-      const intervalID = setInterval(tick, 1000);
+      }, 1000);
       setIntervalID(intervalID);
     }
+
+    return () => {
+      clearInterval(intervalID);
+      setIntervalID(undefined);
+    };
   }, []);
 
   useEffect(() => {
@@ -56,10 +63,9 @@ export default function StopWatch() {
       setIntervalID(undefined);
       dispatch(stopWatchPaused());
     } else {
-      function tick() {
+      const intervalID = setInterval(function () {
         intervalCallback.current();
-      }
-      const intervalID = setInterval(tick, 1000);
+      }, 1000);
       setIntervalID(intervalID);
       dispatch(stopWatchStarted());
     }

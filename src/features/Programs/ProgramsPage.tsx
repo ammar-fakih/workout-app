@@ -1,33 +1,32 @@
-import { MaterialIcons } from "@expo/vector-icons";
-import { Dumbbell, Plus } from "@tamagui/lucide-icons";
 import { FlatList } from "react-native";
-import { Card, Text, YStack } from "tamagui";
+import { Separator, Text, XStack, YStack } from "tamagui";
+import { useAppSelector } from "../../app/hooks";
+import { Program } from "../Home/types";
 
-// FOR TESTING
-const programs = [
-  {
-    name: "Starting Strength",
-    icon: <Dumbbell />,
-    exercises: ["Squat", "Bench Press", "Deadlift", "Overhead Press"],
-  },
-  {
-    name: "StrongLifts 5x5",
-    icon: <MaterialIcons name="looks-5" size={30} />,
-    exercises: ["Squat", "Bench Press", "Deadlift", "Overhead Press"],
-  },
-  {
-    name: "Make Your Own",
-    icon: <Plus />,
-    exercises: ["Squat", "Bench Press", "Deadlift", "Overhead Press"],
-  },
-];
 export default function ProgramsPage() {
-  const renderItem = ({ item }: { item: (typeof programs)[0] }) => {
+  const programs = useAppSelector(
+    (state) => state.appData.workouts.allPrograms,
+  );
+
+  const renderItem = ({ item }: { item: Program }) => {
+    // Lame version of the above
+    const allExercises = item.workouts.flatMap((workout) => workout.exercises);
+    const exercises = allExercises.filter(
+      (exercise, index) =>
+        allExercises.findIndex((e) => e.name === exercise.name) === index,
+    );
+
     return (
-      <Card jc="center" ai="center" f={1} height="$7" m="$3" bg="$color5">
-        {item.icon}
-        <Text>{item.name}</Text>
-      </Card>
+      <XStack f={1} m="$5" onPress={() => {}}>
+        <Text fontSize="$8" fontWeight="$8">
+          {item.name}
+        </Text>
+        <YStack ai="flex-end" f={1}>
+          {exercises.map((exercise) => (
+            <Text>{exercise.name}</Text>
+          ))}
+        </YStack>
+      </XStack>
     );
   };
   return (
@@ -35,7 +34,8 @@ export default function ProgramsPage() {
       <FlatList
         data={programs}
         renderItem={renderItem}
-        numColumns={2}
+        ItemSeparatorComponent={Separator}
+        ListFooterComponent={Separator}
         contentContainerStyle={{ margin: 10 }}
       />
     </YStack>
