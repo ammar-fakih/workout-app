@@ -9,17 +9,19 @@ import { TamaguiProvider, Theme, View, useTheme } from "tamagui";
 
 import { store } from "./src/app/store";
 import Home from "./src/features/Home";
-import Calendar from "./src/features/Progress/ProgressPage";
 
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Settings as SettingsIcon } from "@tamagui/lucide-icons";
 import { useFonts } from "expo-font";
 import { StatusBar } from "expo-status-bar";
-import { useCallback } from "react";
-import { useColorScheme } from "react-native";
+import { useCallback, useEffect, useState } from "react";
+import { Linking, useColorScheme } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import persistStore from "redux-persist/es/persistStore";
 import { PersistGate } from "redux-persist/integration/react";
+import { navigationStateChanged } from "./src/app/appDataSlice";
+import { useAppDispatch, useAppSelector } from "./src/app/hooks";
+import Progress from "./src/features/Progress";
 import config from "./tamagui.config";
 
 const persistor = persistStore(store);
@@ -57,6 +59,7 @@ export default function () {
 }
 
 function App() {
+  const dispatch = useAppDispatch();
   const theme = useTheme();
   const [fontsLoaded] = useFonts({
     Inter: require("@tamagui/font-inter/otf/Inter-Medium.otf"),
@@ -66,6 +69,11 @@ function App() {
     OpenSansBold: require("./assets/fonts/OpenSans-Bold.ttf"),
     SpaceMono: require("./assets/fonts/SpaceMono-Regular.ttf"),
   });
+  const [isNavReady, setIsNavReady] = useState(false);
+  const [initialState, setInitialState] = useState();
+  const navigationStateStr = useAppSelector(
+    (state) => state.appData.secure.navigationState,
+  );
 
   const NavigationTheme = {
     dark: true,
@@ -79,13 +87,37 @@ function App() {
     },
   };
 
+  useEffect(() => {
+    const restoreState = async () => {
+      try {
+        const initialUrl = await Linking.getInitialURL();
+
+        if (initialUrl === null) {
+          const state = navigationStateStr
+            ? JSON.parse(navigationStateStr)
+            : undefined;
+
+          if (state !== undefined) {
+            setInitialState(state);
+          }
+        }
+      } finally {
+        setIsNavReady(true);
+      }
+    };
+
+    if (!isNavReady) {
+      restoreState();
+    }
+  }, [isNavReady]);
+
   const onLayoutRootView = useCallback(async () => {
-    if (fontsLoaded) {
+    if (fontsLoaded && isNavReady) {
       await SplashScreen.hideAsync();
     }
-  }, [fontsLoaded]);
+  }, [fontsLoaded, isNavReady]);
 
-  if (!fontsLoaded) return null;
+  if (!fontsLoaded || !isNavReady) return null;
 
   return (
     <View
@@ -96,7 +128,13 @@ function App() {
       //@ts-expect-error onLayout is not defined in ViewProps
       onLayout={onLayoutRootView}
     >
-      <NavigationContainer theme={NavigationTheme}>
+      <NavigationContainer
+        theme={NavigationTheme}
+        initialState={initialState}
+        onStateChange={(state) =>
+          dispatch(navigationStateChanged(JSON.stringify(state)))
+        }
+      >
         <Tabs.Navigator
           screenOptions={({ route }) => ({
             headerShown: false,
@@ -122,7 +160,7 @@ function App() {
           })}
         >
           <Tabs.Screen name="Workout" component={Home} />
-          <Tabs.Screen name="Progress" component={Calendar} />
+          <Tabs.Screen name="Progress" component={Progress} />
         </Tabs.Navigator>
       </NavigationContainer>
     </View>

@@ -4,6 +4,7 @@ import { ScrollView, Text, View, XStack, YStack } from "tamagui";
 import { useAppSelector } from "../../app/hooks";
 import { getDateString } from "../Home/helperFunctions";
 import { ExerciseRecord, WorkoutRecordData } from "../Home/types";
+import SortByMenu from "../../Components/SortByMenu";
 
 const borderWidth = "$1";
 
@@ -29,6 +30,30 @@ export default function Table() {
       exercises: record.exercises.map((exerciseId) => allRecords[exerciseId]),
       name: record.name,
     }));
+  };
+
+  const onPressDateAsc = () => {
+    if (!workoutRecords?.length) return;
+
+    const sortedWorkoutRecords = [...workoutRecords];
+    sortedWorkoutRecords.sort((a, b) => {
+      const aDate = a.exercises[0].date;
+      const bDate = b.exercises[0].date;
+      return aDate > bDate ? 1 : -1;
+    });
+    setWorkoutRecords(sortedWorkoutRecords);
+  };
+
+  const onPressDateDesc = () => {
+    if (!workoutRecords?.length) return;
+
+    const sortedWorkoutRecords = [...workoutRecords];
+    sortedWorkoutRecords.sort((a, b) => {
+      const aDate = a.exercises[0].date;
+      const bDate = b.exercises[0].date;
+      return aDate < bDate ? 1 : -1;
+    });
+    setWorkoutRecords(sortedWorkoutRecords);
   };
 
   const renderHeaderCell = ({
@@ -127,6 +152,10 @@ export default function Table() {
 
   return (
     <View f={1}>
+      <SortByMenu
+        onPressDateAsc={onPressDateAsc}
+        onPressDateDesc={onPressDateDesc}
+      />
       <ScrollView horizontal>
         <YStack>
           <XStack>

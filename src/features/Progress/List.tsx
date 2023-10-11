@@ -1,9 +1,11 @@
 import { FlatList } from "react-native-gesture-handler";
-import { YStack } from "tamagui";
+import { View } from "tamagui";
+import SortByMenu from "../../Components/SortByMenu";
 import WorkoutCard from "../../Components/WorkoutCard";
 import { useAppSelector } from "../../app/hooks";
 import { getWorkoutExercises } from "../Home/helperFunctions";
 import { TodaysExercise, WorkoutRecord } from "../Home/types";
+import { useEffect, useState } from "react";
 
 export default function List() {
   const workoutRecords = useAppSelector(
@@ -12,6 +14,37 @@ export default function List() {
   const allRecords = useAppSelector(
     (state) => state.appData.workouts.allRecords,
   );
+  const [sortedWorkoutRecords, setSortedWorkoutRecords] = useState<
+    WorkoutRecord[]
+  >([]);
+
+  useEffect(() => {
+    setSortedWorkoutRecords(workoutRecords);
+  }, [workoutRecords]);
+
+  const onPressDateAsc = () => {
+    if (!workoutRecords?.length) return;
+
+    const sortedWorkoutRecords = [...workoutRecords];
+    sortedWorkoutRecords.sort((a, b) => {
+      const aDate = allRecords[a.exercises[0]].date;
+      const bDate = allRecords[b.exercises[0]].date;
+      return aDate > bDate ? 1 : -1;
+    });
+    setSortedWorkoutRecords(sortedWorkoutRecords);
+  };
+
+  const onPressDateDesc = () => {
+    if (!workoutRecords?.length) return;
+
+    const sortedWorkoutRecords = [...workoutRecords];
+    sortedWorkoutRecords.sort((a, b) => {
+      const aDate = allRecords[a.exercises[0]].date;
+      const bDate = allRecords[b.exercises[0]].date;
+      return aDate < bDate ? 1 : -1;
+    });
+    setSortedWorkoutRecords(sortedWorkoutRecords);
+  };
 
   const renderItem = ({
     item,
@@ -33,8 +66,12 @@ export default function List() {
   };
 
   return (
-    <YStack f={1}>
-      <FlatList data={workoutRecords} renderItem={renderItem} />
-    </YStack>
+    <View f={1}>
+      <SortByMenu
+        onPressDateAsc={onPressDateAsc}
+        onPressDateDesc={onPressDateDesc}
+      />
+      <FlatList data={sortedWorkoutRecords} renderItem={renderItem} />
+    </View>
   );
 }

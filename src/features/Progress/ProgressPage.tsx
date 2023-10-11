@@ -4,27 +4,28 @@ import { Tabs, Text, YStack } from "tamagui";
 import Calendar from "./Calendar";
 import List from "./List";
 import Table from "./Table";
+import { useMemo } from "react";
 
 export default function ProgressPage() {
   const insets = useSafeAreaInsets();
   const colorScheme = useColorScheme();
 
+  const tabsList = useMemo(() => ["Table", "List", "Graphs", "Calendar"], []);
+
   return (
-    <YStack paddingTop={insets.top} f={1}>
-      <Tabs defaultValue="tab4" f={1} flexDirection="column" m="$2" space="$2">
+    <YStack paddingTop={insets.top} f={1} marginHorizontal="$2">
+      <Tabs defaultValue="tab1" f={1} flexDirection="column">
         <Tabs.List>
-          <Tabs.Tab f={1} value="tab1" backgroundColor="$color3">
-            <Text>Table</Text>
-          </Tabs.Tab>
-          <Tabs.Tab f={1} value="tab2" backgroundColor="$color3">
-            <Text>List</Text>
-          </Tabs.Tab>
-          <Tabs.Tab f={1} value="tab3" backgroundColor="$color3">
-            <Text>Graphs</Text>
-          </Tabs.Tab>
-          <Tabs.Tab f={1} value="tab4" backgroundColor="$color3">
-            <Text>Calendar</Text>
-          </Tabs.Tab>
+          {tabsList.map((tab, index) => (
+            <Tabs.Tab
+              f={1}
+              value={`tab${index + 1}`}
+              backgroundColor="$color3"
+              key={index}
+            >
+              <Text>{tab}</Text>
+            </Tabs.Tab>
+          ))}
         </Tabs.List>
 
         <Tabs.Content value="tab1" f={1}>
