@@ -1,5 +1,6 @@
+import { useFocusEffect } from "@react-navigation/native";
 import { Pause, Play } from "@tamagui/lucide-icons";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { Button, Text } from "tamagui";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import {
@@ -11,7 +12,11 @@ import {
   stopWatchStarted,
 } from "../features/Home/workoutsSlice";
 
-export default function StopWatch() {
+type Props = {
+  isFocused: boolean;
+};
+
+export default function StopWatch({ isFocused }: Props) {
   const dispatch = useAppDispatch();
   const intervalCallback = useRef<() => void>(() => {});
   const [stopWatchValue, setStopWatchValue] = useState(0);
@@ -23,34 +28,37 @@ export default function StopWatch() {
     (state) => state.appData.workouts.stopWatchExtraSeconds,
   );
 
-  useEffect(() => {
-    setStopWatchValue(
-      calculateStopWatchValue(stopWatchStartTime, stopWatchExtraTime),
-    );
-
-    clearInterval(intervalID);
-    setIntervalID(undefined);
-
-    if (stopWatchStartTime) {
-      const intervalID = setInterval(function () {
-        intervalCallback.current();
-      }, 1000);
-      setIntervalID(intervalID);
-    }
-
-    return () => {
-      clearInterval(intervalID);
-      setIntervalID(undefined);
-    };
-  }, []);
-
-  useEffect(() => {
-    intervalCallback.current = () => {
+  useFocusEffect(
+    useCallback(() => {
+      console.log(isFocused);
+      // Set initial value so that the stop watch doesn't start at 0
       setStopWatchValue(
         calculateStopWatchValue(stopWatchStartTime, stopWatchExtraTime),
       );
-    };
-  }, [stopWatchStartTime, stopWatchExtraTime]);
+
+      clearInterval(intervalID);
+      setIntervalID(undefined);
+
+      if (stopWatchStartTime) {
+        console.log("start");
+        intervalCallback.current = () => {
+          setStopWatchValue(
+            calculateStopWatchValue(stopWatchStartTime, stopWatchExtraTime),
+          );
+        };
+
+        const intervalID = setInterval(function () {
+          intervalCallback.current();
+        }, 1000);
+        setIntervalID(intervalID);
+      }
+
+      return () => {
+        clearInterval(intervalID);
+        setIntervalID(undefined);
+      };
+    }, [stopWatchStartTime, stopWatchExtraTime]),
+  );
 
   const getStopWatchString = useCallback(
     (stopWatchValue: number) => getStopWatchStringFromSeconds(stopWatchValue),

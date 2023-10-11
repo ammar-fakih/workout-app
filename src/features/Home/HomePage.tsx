@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { ChevronDown, Settings2 } from "@tamagui/lucide-icons";
-import { FlatList } from "react-native";
+import { Alert, FlatList } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
   Accordion,
@@ -55,8 +55,24 @@ export default function HomePage({ navigation }: Props) {
   }, []);
 
   const onPressWorkout = (workout: TodaysWorkout) => {
-    dispatch(workoutSelected(workout));
-    navigation.navigate("TrackWorkout");
+    if (selectedWorkout) {
+      Alert.alert(`Start ${workout.name}?`, "There is a workout in progress.", [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Start",
+          onPress: () => {
+            dispatch(workoutSelected(workout));
+            navigation.navigate("TrackWorkout");
+          },
+        },
+      ]);
+    } else {
+      dispatch(workoutSelected(workout));
+      navigation.navigate("TrackWorkout");
+    }
   };
 
   const renderTodaysWorkout = () => {
@@ -68,7 +84,9 @@ export default function HomePage({ navigation }: Props) {
           marginHorizontal="$4"
           marginVertical="$6"
         >
-          <H4>Rest Day</H4>
+          <Button variant="outlined" disabled>
+            <H3>Rest Day</H3>
+          </Button>
           <Button
             variant="outlined"
             onPress={() => navigation.navigate("Programs")}
@@ -194,7 +212,7 @@ export default function HomePage({ navigation }: Props) {
               <Text fontWeight="$10">{selectedWorkout.name}</Text>
             </YStack>
             <YStack f={1} ai="center" jc="center">
-              <StopWatch />
+              <StopWatch isFocused={navigation.isFocused()} />
               <Button
                 onPress={() => {
                   navigation.navigate("TrackWorkout");

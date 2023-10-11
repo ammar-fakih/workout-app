@@ -25,7 +25,7 @@ export default function Home({ navigation }: Props) {
   const TrackWorkoutHeaderRight = () => {
     return (
       <XStack ai="center">
-        <StopWatch />
+        <StopWatch isFocused={navigation.isFocused()} />
         <Popover>
           <Popover.Trigger pr="$4">
             <Menu />
