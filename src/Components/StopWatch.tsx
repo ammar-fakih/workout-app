@@ -30,7 +30,6 @@ export default function StopWatch({ isFocused }: Props) {
 
   useFocusEffect(
     useCallback(() => {
-      console.log(isFocused);
       // Set initial value so that the stop watch doesn't start at 0
       setStopWatchValue(
         calculateStopWatchValue(stopWatchStartTime, stopWatchExtraTime),
@@ -40,7 +39,6 @@ export default function StopWatch({ isFocused }: Props) {
       setIntervalID(undefined);
 
       if (stopWatchStartTime) {
-        console.log("start");
         intervalCallback.current = () => {
           setStopWatchValue(
             calculateStopWatchValue(stopWatchStartTime, stopWatchExtraTime),

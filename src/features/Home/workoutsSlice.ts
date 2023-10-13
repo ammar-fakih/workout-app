@@ -66,6 +66,24 @@ export const workoutsSlice = createSlice({
   initialState,
   reducers: {
     reset: () => initialState,
+    appOpened: (
+      state,
+      action: PayloadAction<{
+        startingWorkouts: GeneralWorkout[];
+        startingProgram: ProgramFromFile;
+      }>,
+    ) => {
+      workoutsSlice.caseReducers.workoutsReadFromFiles(state, {
+        payload: action.payload.startingWorkouts,
+        type: typeof action.payload.startingWorkouts,
+      });
+      workoutsSlice.caseReducers.programReadFromFile(state, {
+        payload: action.payload.startingProgram,
+        type: typeof action.payload.startingProgram,
+      });
+      workoutsSlice.caseReducers.weeksWorkoutsSet(state);
+      workoutsSlice.caseReducers.todaysWorkoutsSet(state);
+    },
     // !USED FOR DEVELOPMENT ONLY
     workoutsReadFromFiles: (state, action: PayloadAction<GeneralWorkout[]>) => {
       state.allWorkouts = action.payload;
@@ -398,6 +416,7 @@ export const {
   workoutCanceled,
   stopWatchPaused,
   stopWatchStarted,
+  appOpened,
 } = workoutsSlice.actions;
 
 export default workoutsSlice.reducer;

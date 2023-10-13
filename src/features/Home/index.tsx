@@ -1,8 +1,8 @@
 import { createStackNavigator } from "@react-navigation/stack";
 
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
-import { Menu } from "@tamagui/lucide-icons";
-import { Button, Popover, XStack } from "tamagui";
+import { Menu, Plus } from "@tamagui/lucide-icons";
+import { Button, Circle, Popover, Square, XStack } from "tamagui";
 import { RootTabsParamList } from "../../../App";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import StopWatch from "../../Components/StopWatch";
@@ -64,6 +64,20 @@ export default function Home({ navigation }: Props) {
     );
   };
 
+  const ProgramsPageHeaderRight = ({ onPress }: { onPress: () => void }) => {
+    return (
+      <Button
+        icon={
+          <Square bg="$color5" size="$size.2.5" radiused>
+            <Plus size="$2" />
+          </Square>
+        }
+        variant="outlined"
+        onPress={onPress}
+      />
+    );
+  };
+
   return (
     <Stack.Navigator>
       <Stack.Screen
@@ -80,7 +94,19 @@ export default function Home({ navigation }: Props) {
         }}
       />
       <Stack.Screen name="Settings" component={Settings} />
-      <Stack.Screen name="Programs" component={ProgramsPage} />
+      <Stack.Screen
+        name="Programs"
+        component={ProgramsPage}
+        options={({ navigation }) => ({
+          headerRight: () => (
+            <ProgramsPageHeaderRight
+              onPress={() => {
+                // navigation.navigate("");
+              }}
+            />
+          ),
+        })}
+      />
     </Stack.Navigator>
   );
 }

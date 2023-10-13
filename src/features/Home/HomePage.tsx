@@ -20,18 +20,15 @@ import {
 import { RootTabsParamList } from "../../../App";
 import startingProgram from "../../../startingProgram.json";
 import startingWorkouts from "../../../startingWorkouts.json";
+import StopWatch from "../../Components/StopWatch";
 import WorkoutCard from "../../Components/WorkoutCard";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { TodaysWorkout } from "./types";
 import {
-  programReadFromFile,
+  appOpened,
   selectWeeksWorkouts,
-  todaysWorkoutsSet,
-  weeksWorkoutsSet,
   workoutSelected,
-  workoutsReadFromFiles,
 } from "./workoutsSlice";
-import StopWatch from "../../Components/StopWatch";
 
 type Props = BottomTabScreenProps<RootTabsParamList, "HomePage">;
 
@@ -47,28 +44,28 @@ export default function HomePage({ navigation }: Props) {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(workoutsReadFromFiles(startingWorkouts));
-    dispatch(programReadFromFile(startingProgram));
-
-    dispatch(weeksWorkoutsSet());
-    dispatch(todaysWorkoutsSet());
+    dispatch(appOpened({ startingProgram, startingWorkouts }));
   }, []);
 
   const onPressWorkout = (workout: TodaysWorkout) => {
     if (selectedWorkout) {
-      Alert.alert(`Start ${workout.name}?`, "There is a workout in progress.", [
-        {
-          text: "Cancel",
-          style: "cancel",
-        },
-        {
-          text: "Start",
-          onPress: () => {
-            dispatch(workoutSelected(workout));
-            navigation.navigate("TrackWorkout");
+      Alert.alert(
+        `Start ${workout.name}?`,
+        "The current workout will be canceled",
+        [
+          {
+            text: "Cancel",
+            style: "cancel",
           },
-        },
-      ]);
+          {
+            text: "Start",
+            onPress: () => {
+              dispatch(workoutSelected(workout));
+              navigation.navigate("TrackWorkout");
+            },
+          },
+        ],
+      );
     } else {
       dispatch(workoutSelected(workout));
       navigation.navigate("TrackWorkout");
@@ -100,7 +97,9 @@ export default function HomePage({ navigation }: Props) {
     return (
       <YStack>
         <XStack jc="space-between" ai="center" marginHorizontal="$4">
-          <H4>Today's Workout</H4>
+          <Button variant="outlined" disabled>
+            <H4>Today's Workout</H4>
+          </Button>
           <Button
             variant="outlined"
             onPress={() => navigation.navigate("Programs")}

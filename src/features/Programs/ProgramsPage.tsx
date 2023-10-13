@@ -9,7 +9,7 @@ export default function ProgramsPage() {
   );
 
   const renderItem = ({ item }: { item: Program }) => {
-    // Lame version of the above
+    // Filter out duplicate exercises
     const allExercises = item.workouts.flatMap((workout) => workout.exercises);
     const exercises = allExercises.filter(
       (exercise, index) =>
@@ -23,7 +23,7 @@ export default function ProgramsPage() {
         </Text>
         <YStack ai="flex-end" f={1}>
           {exercises.map((exercise) => (
-            <Text>{exercise.name}</Text>
+            <Text key={exercise.name}>{exercise.name}</Text>
           ))}
         </YStack>
       </XStack>
