@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { ChevronDown, Settings2 } from "@tamagui/lucide-icons";
@@ -6,6 +6,7 @@ import { Alert, FlatList } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
   Accordion,
+  AlertDialog,
   AnimatePresence,
   Button,
   Card,
@@ -29,6 +30,7 @@ import {
   selectWeeksWorkouts,
   workoutSelected,
 } from "./workoutsSlice";
+import AlertDialogContainer from "../../Components/AlertDialogContainer";
 
 type Props = BottomTabScreenProps<RootTabsParamList, "HomePage">;
 
@@ -48,24 +50,26 @@ export default function HomePage({ navigation }: Props) {
   }, []);
 
   const onPressWorkout = (workout: TodaysWorkout) => {
-    if (selectedWorkout) {
-      Alert.alert(
-        `Start ${workout.name}?`,
-        "The current workout will be canceled",
-        [
-          {
-            text: "Cancel",
-            style: "cancel",
-          },
-          {
-            text: "Start",
-            onPress: () => {
-              dispatch(workoutSelected(workout));
-              navigation.navigate("TrackWorkout");
-            },
-          },
-        ],
-      );
+    if (workout.name === selectedWorkout?.name) {
+      navigation.navigate("TrackWorkout");
+    } else if (selectedWorkout) {
+      // Alert.alert(
+      //   `Start ${workout.name}?`,
+      //   "The current workout will be canceled",
+      //   [
+      //     {
+      //       text: "Cancel",
+      //       style: "cancel",
+      //     },
+      //     {
+      //       text: "Start",
+      //       onPress: () => {
+      //         dispatch(workoutSelected(workout));
+      //         navigation.navigate("TrackWorkout");
+      //       },
+      //     },
+      //   ],
+      // );
     } else {
       dispatch(workoutSelected(workout));
       navigation.navigate("TrackWorkout");
@@ -107,11 +111,32 @@ export default function HomePage({ navigation }: Props) {
             Program
           </Button>
         </XStack>
-        <WorkoutCard
-          onPressWorkout={() => onPressWorkout(todaysWorkout)}
-          date={todaysWorkout.closestTimeToNow}
-          exercises={todaysWorkout.exercises}
-          name={todaysWorkout.name}
+        <AlertDialogContainer
+          title="Start Today's Workout?"
+          description="The current workout will be canceled"
+          trigger={
+            <Button unstyled onPress={() => onPressWorkout(todaysWorkout)}>
+              <WorkoutCard
+                date={todaysWorkout.closestTimeToNow}
+                exercises={todaysWorkout.exercises}
+                name={todaysWorkout.name}
+              />
+            </Button>
+          }
+          options={[
+            {
+              label: "Cancel",
+              cancel: true,
+            },
+            {
+              label: "Start",
+              onPress: () => {
+                dispatch(workoutSelected(todaysWorkout));
+                navigation.navigate("TrackWorkout");
+              },
+            },
+          ]}
+          triggerOnPress={() => onPressWorkout(todaysWorkout)}
         />
       </YStack>
     );

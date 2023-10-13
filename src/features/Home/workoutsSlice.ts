@@ -122,8 +122,6 @@ export const workoutsSlice = createSlice({
           exercises: workout.exercises.map((exercise) => {
             return {
               ...exercise,
-
-
             };
           }),
         };

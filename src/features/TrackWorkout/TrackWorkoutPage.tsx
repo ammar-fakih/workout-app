@@ -85,21 +85,22 @@ export default function TrackWorkout({ navigation }: Props) {
         borderColor="$color7"
       >
         {/* Header */}
-        <XStack
-          jc="space-between"
-          paddingHorizontal="$5"
-          paddingVertical={isExerciseSelected ? "$6" : "$2"}
-          alignItems="center"
-          onPress={() => handlePressExerciseHeader(index, -1)}
-        >
-          <Text fontWeight="$10" fontSize="$6">
-            {exercise.name}
-          </Text>
-          <Text
-            fontWeight="$10"
-            fontSize="$6"
-          >{`${exercise.sets}x${exercise.reps}`}</Text>
-        </XStack>
+        <Button unstyled onPress={() => handlePressExerciseHeader(index, -1)}>
+          <XStack
+            jc="space-between"
+            paddingHorizontal="$5"
+            paddingVertical={isExerciseSelected ? "$6" : "$2"}
+            alignItems="center"
+          >
+            <Text fontWeight="$10" fontSize="$6">
+              {exercise.name}
+            </Text>
+            <Text
+              fontWeight="$10"
+              fontSize="$6"
+            >{`${exercise.sets}x${exercise.reps}`}</Text>
+          </XStack>
+        </Button>
 
         {/* Body */}
         {isExerciseSelected && (
