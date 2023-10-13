@@ -22,10 +22,6 @@ export const getFullDayName = () => {
   return days[dayNum];
 };
 
-export const getDefaultWeight = (units: Units) => {
-  return units === Units.IMPERIAL ? 45 : 20;
-};
-
 export const getUnitAbbreviation = (units: Units) => {
   return units === Units.IMPERIAL ? "lb" : "kg";
 };

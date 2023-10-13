@@ -2,10 +2,10 @@ import { createStackNavigator } from "@react-navigation/stack";
 
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { Menu, Plus } from "@tamagui/lucide-icons";
-import { Button, Circle, Popover, Square, XStack } from "tamagui";
+import { Button, Popover, Square, XStack } from "tamagui";
 import { RootTabsParamList } from "../../../App";
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import StopWatch from "../../Components/StopWatch";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import ProgramsPage from "../Programs/ProgramsPage";
 import Settings from "../Settings/Settings";
 import TrackWorkout from "../TrackWorkout/TrackWorkoutPage";

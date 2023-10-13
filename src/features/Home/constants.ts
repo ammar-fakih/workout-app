@@ -11,3 +11,6 @@ export const monthNames = [
   "Nov",
   "Dec",
 ];
+
+export const DEFAULT_WEIGHT_IMPERIAL = 45;
+export const DEFAULT_WEIGHT_METRIC = 20;

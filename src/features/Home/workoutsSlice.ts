@@ -1,21 +1,18 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 import { RootState } from "../../app/store";
+import { DEFAULT_WEIGHT_IMPERIAL, DEFAULT_WEIGHT_METRIC } from "./constants";
+import { getClosestDate, getCurrentWeekRangeTime } from "./helperFunctions";
 import {
-  getClosestDate,
-  getCurrentWeekRangeTime,
-  getDefaultWeight,
-} from "./helperFunctions";
-import {
+  ExerciseRecord,
   GeneralWorkout,
   Program,
   ProgramFromFile,
-  ExerciseRecord,
+  SelectedWorkout,
   TodaysWorkout,
   Units,
   Workout,
   WorkoutRecord,
-  SelectedWorkout,
 } from "./types";
 
 interface WorkoutsState {
@@ -115,7 +112,23 @@ export const workoutsSlice = createSlice({
       state.allPrograms = [updatedProgram];
       state.selectedProgram = updatedProgram;
     },
+    unitsSet: (state, action: PayloadAction<Units>) => {
+      state.units = action.payload;
 
+      // Update all workouts with new weights
+      state.allWorkouts = state.allWorkouts.map((workout) => {
+        return {
+          ...workout,
+          exercises: workout.exercises.map((exercise) => {
+            return {
+              ...exercise,
+
+
+            };
+          }),
+        };
+      });
+    },
     weeksWorkoutsSet: (state) => {
       if (!state.selectedProgram) return;
       const { sunday, saturday } = getCurrentWeekRangeTime();
@@ -376,7 +389,9 @@ export const workoutsSlice = createSlice({
 // Private Helper functions
 const getNextWeight = (state: WorkoutsState, exerciseId: string) => {
   if (!state.exerciseRecords[exerciseId]) {
-    return getDefaultWeight(state.units);
+    return state.units === Units.IMPERIAL
+      ? DEFAULT_WEIGHT_IMPERIAL
+      : DEFAULT_WEIGHT_METRIC;
   }
 
   const exerciseIndex =
@@ -417,6 +432,7 @@ export const {
   stopWatchPaused,
   stopWatchStarted,
   appOpened,
+  unitsSet,
 } = workoutsSlice.actions;
 
 export default workoutsSlice.reducer;
