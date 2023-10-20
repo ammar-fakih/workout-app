@@ -47,6 +47,7 @@ export default function Settings({ navigation }: Props) {
       <XStack space="$4" jc="center" ai="center">
         <Text>Units</Text>
         <ToggleGroup
+          disableDeactivation
           type="single"
           size="$5"
           value={units}

@@ -53,7 +53,7 @@ export default function AlertDialogContainer({
             scale={1}
             opacity={1}
             y={0}
-            backgroundColor="$background"
+            backgroundColor="white"
           >
             <YStack space>
               <AlertDialog.Title>{title}</AlertDialog.Title>

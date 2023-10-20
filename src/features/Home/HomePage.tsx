@@ -1,12 +1,10 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { ChevronDown, Settings2 } from "@tamagui/lucide-icons";
 import { Alert, FlatList } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
-  Accordion,
-  AlertDialog,
   AnimatePresence,
   Button,
   Card,
@@ -15,6 +13,7 @@ import {
   Separator,
   Square,
   Text,
+  View,
   XStack,
   YStack,
 } from "tamagui";
@@ -30,12 +29,12 @@ import {
   selectWeeksWorkouts,
   workoutSelected,
 } from "./workoutsSlice";
-import AlertDialogContainer from "../../Components/AlertDialogContainer";
 
 type Props = BottomTabScreenProps<RootTabsParamList, "HomePage">;
 
 export default function HomePage({ navigation }: Props) {
   const insets = useSafeAreaInsets();
+  const [weeksWorkoutsOpen, setWeeksWorkoutsOpen] = useState(false);
   const weeksWorkouts = useAppSelector(selectWeeksWorkouts);
   const todaysWorkout = useAppSelector(
     (state) => state.appData.workouts.todaysWorkout,
@@ -53,23 +52,23 @@ export default function HomePage({ navigation }: Props) {
     if (workout.name === selectedWorkout?.name) {
       navigation.navigate("TrackWorkout");
     } else if (selectedWorkout) {
-      // Alert.alert(
-      //   `Start ${workout.name}?`,
-      //   "The current workout will be canceled",
-      //   [
-      //     {
-      //       text: "Cancel",
-      //       style: "cancel",
-      //     },
-      //     {
-      //       text: "Start",
-      //       onPress: () => {
-      //         dispatch(workoutSelected(workout));
-      //         navigation.navigate("TrackWorkout");
-      //       },
-      //     },
-      //   ],
-      // );
+      Alert.alert(
+        `Start ${workout.name}?`,
+        "The current workout will be canceled",
+        [
+          {
+            text: "Cancel",
+            style: "cancel",
+          },
+          {
+            text: "Start",
+            onPress: () => {
+              dispatch(workoutSelected(workout));
+              navigation.navigate("TrackWorkout");
+            },
+          },
+        ],
+      );
     } else {
       dispatch(workoutSelected(workout));
       navigation.navigate("TrackWorkout");
@@ -111,44 +110,30 @@ export default function HomePage({ navigation }: Props) {
             Program
           </Button>
         </XStack>
-        <AlertDialogContainer
-          title="Start Today's Workout?"
-          description="The current workout will be canceled"
-          trigger={
-            <Button unstyled onPress={() => onPressWorkout(todaysWorkout)}>
-              <WorkoutCard
-                date={todaysWorkout.closestTimeToNow}
-                exercises={todaysWorkout.exercises}
-                name={todaysWorkout.name}
-              />
-            </Button>
-          }
-          options={[
-            {
-              label: "Cancel",
-              cancel: true,
-            },
-            {
-              label: "Start",
-              onPress: () => {
-                dispatch(workoutSelected(todaysWorkout));
-                navigation.navigate("TrackWorkout");
-              },
-            },
-          ]}
-          triggerOnPress={() => onPressWorkout(todaysWorkout)}
+        <WorkoutCard
+          date={todaysWorkout.closestTimeToNow}
+          exercises={todaysWorkout.exercises}
+          name={todaysWorkout.name}
+          onPressWorkout={() => onPressWorkout(todaysWorkout)}
         />
       </YStack>
     );
   };
 
-  const renderWeeksWorkouts = ({ item }: { item: TodaysWorkout }) => {
+  const renderWeeksWorkouts = ({
+    item,
+    index,
+  }: {
+    item: TodaysWorkout;
+    index: number;
+  }) => {
     return (
       <WorkoutCard
         onPressWorkout={() => onPressWorkout(item)}
         date={item.closestTimeToNow}
         exercises={item.exercises}
         name={item.name}
+        key={index}
       />
     );
   };
@@ -171,46 +156,44 @@ export default function HomePage({ navigation }: Props) {
       <Separator />
 
       {/* Other Week's Workouts */}
-      <Accordion
-        type="multiple"
-        defaultValue={todaysWorkout ? undefined : ["a1"]}
+      <Button
+        unstyled
+        flexDirection="row"
+        borderWidth="$0"
+        marginHorizontal="$2"
+        jc="space-between"
+        ai="center"
+        p="$4"
+        onPress={() => setWeeksWorkoutsOpen(!weeksWorkoutsOpen)}
       >
-        <Accordion.Item value="a1">
-          <Accordion.Trigger
-            flexDirection="row"
-            borderWidth="$0"
-            marginHorizontal="$2"
-            jc="space-between"
-            ai="center"
-          >
-            {({ open }: { open: boolean }) => (
-              <>
-                <Text>Other Workouts This Week</Text>
-                <Square animation="quick" rotate={open ? "180deg" : "0deg"}>
-                  <ChevronDown size="$1" />
-                </Square>
-              </>
-            )}
-          </Accordion.Trigger>
+        <Text>Other Workouts This Week</Text>
+        <Square
+          animation="quick"
+          rotate={weeksWorkoutsOpen ? "180deg" : "0deg"}
+        >
+          <ChevronDown size="$1" />
+        </Square>
+      </Button>
 
-          <AnimatePresence>
-            <Accordion.Content
-              zIndex={-1}
-              paddingVertical="$0"
-              animation="quick"
-              enterStyle={{ opacity: 0, y: -10 }}
-              exitStyle={{ opacity: 0, y: -20 }}
-            >
-              <FlatList
-                style={{ paddingBottom: 120, paddingTop: 20 }}
-                data={weeksWorkouts}
-                renderItem={renderWeeksWorkouts}
-                keyExtractor={(item) => item.workoutId}
-              />
-            </Accordion.Content>
-          </AnimatePresence>
-        </Accordion.Item>
-      </Accordion>
+      {weeksWorkoutsOpen && (
+        <AnimatePresence>
+          <View
+            f={1}
+            zIndex={-1}
+            pt="$0"
+            animation="quick"
+            enterStyle={{ opacity: 0, y: -10 }}
+            exitStyle={{ opacity: 0, y: -20 }}
+          >
+            <FlatList
+              style={{ paddingTop: 20 }}
+              contentContainerStyle={{ paddingBottom: 150 }}
+              data={weeksWorkouts}
+              renderItem={renderWeeksWorkouts}
+            />
+          </View>
+        </AnimatePresence>
+      )}
       {/* Start Workout Card*/}
       {selectedWorkout && (
         <Card

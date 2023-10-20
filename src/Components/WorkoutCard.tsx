@@ -14,9 +14,15 @@ type Props = {
   name: string;
   date: string;
   exercises: TodaysExercise[];
+  onPressWorkout: () => void;
 };
 
-export default function WorkoutCard({ name, date, exercises }: Props) {
+export default function WorkoutCard({
+  name,
+  date,
+  exercises,
+  onPressWorkout,
+}: Props) {
   const units = useAppSelector((state) => state.appData.workouts.units);
   const nextTimeDate = new Date(date);
 
@@ -32,6 +38,7 @@ export default function WorkoutCard({ name, date, exercises }: Props) {
       borderColor="$color8"
       shadowColor="$color8"
       marginHorizontal="$4"
+      onPress={onPressWorkout}
     >
       <View fd="row" jc="space-between" p="$2" pb="$3">
         <Text fontSize="$1" fontWeight="bold">

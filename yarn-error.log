@@ -1,0 +1,93 @@
+Arguments: 
+  /usr/local/bin/node /usr/local/bin/yarn
+
+PATH: 
+  /usr/local/bin:/usr/local/bin:/usr/local/bin:/opt/homebrew/opt/mongodb-community@4.4/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Library/Apple/usr/bin:/opt/homebrew/bin:/opt/homebrew/bin
+
+Yarn version: 
+  1.22.19
+
+Node version: 
+  18.18.2
+
+Platform: 
+  darwin arm64
+
+Trace: 
+  Error: ENOENT: no such file or directory, lstat '/Users/ammarfakih/Documents/React Projects/workout-app/node_modules/@ampproject/remapping/package.json'
+
+npm manifest: 
+  {
+    "name": "react-native-template",
+    "version": "1.0.0",
+    "main": "node_modules/expo/AppEntry.js",
+    "scripts": {
+      "start": "npx expo start -c --go",
+      "android": "npx expo start --android",
+      "ios": "npx expo start --ios",
+      "web": "npx expo start --web",
+      "prettify": "prettier --write src",
+      "lint": "eslint src",
+      "redux-devtools": "redux-devtools --hostname=localhost --port=8000"
+    },
+    "dependencies": {
+      "@expo/vector-icons": "^13.0.0",
+      "@expo/webpack-config": "^19.0.0",
+      "@react-native-async-storage/async-storage": "1.18.2",
+      "@react-native-community/netinfo": "9.3.10",
+      "@react-navigation/bottom-tabs": "^6.5.8",
+      "@react-navigation/native": "^6.1.7",
+      "@react-navigation/stack": "^6.3.17",
+      "@redux-devtools/remote": "^0.8.1",
+      "@reduxjs/toolkit": "^1.9.5",
+      "@tamagui/babel-plugin": "^1.74.15",
+      "@tamagui/config": "^1.68.2",
+      "@tamagui/lucide-icons": "^1.68.2",
+      "@tamagui/theme-builder": "^1.74.15",
+      "@types/lodash": "^4.14.199",
+      "babel-plugin-transform-inline-environment-variables": "^0.4.4",
+      "expo": "^49.0.13",
+      "expo-dev-client": "~2.4.11",
+      "expo-device": "~5.4.0",
+      "expo-font": "~11.4.0",
+      "expo-secure-store": "~12.3.1",
+      "expo-splash-screen": "~0.20.5",
+      "expo-sqlite": "~11.3.3",
+      "expo-status-bar": "~1.6.0",
+      "expo-updates": "~0.18.16",
+      "lodash": "^4.17.21",
+      "react": "18.2.0",
+      "react-dom": "18.2.0",
+      "react-native": "0.72.6",
+      "react-native-calendars": "^1.1301.0",
+      "react-native-gesture-handler": "~2.12.0",
+      "react-native-reanimated": "~3.3.0",
+      "react-native-root-toast": "^3.4.1",
+      "react-native-safe-area-context": "4.6.3",
+      "react-native-screens": "~3.22.0",
+      "react-native-svg": "13.9.0",
+      "react-native-web": "~0.19.6",
+      "react-redux": "^8.1.1",
+      "redux-persist": "^6.0.0",
+      "tamagui": "^1.68.2"
+    },
+    "devDependencies": {
+      "@babel/core": "^7.20.0",
+      "@redux-devtools/cli": "^3.0.2",
+      "@types/react": "~18.2.14",
+      "@typescript-eslint/eslint-plugin": "^6.3.0",
+      "@typescript-eslint/parser": "^6.3.0",
+      "eslint": "^8.46.0",
+      "eslint-config-universe": "^11.3.0",
+      "eslint-plugin-prettier": "5.0.0",
+      "prettier": "^3.0.1",
+      "typescript": "^5.1.3"
+    },
+    "private": true
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile

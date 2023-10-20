@@ -7,16 +7,20 @@ import {
   Button,
   Input,
   ScrollView,
-  styled,
   Text,
   View,
   XStack,
   YStack,
+  styled,
 } from "tamagui";
 import { RootTabsParamList } from "../../../App";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import {
+  DEFAULT_ADD_WEIGHT_IMPERIAL,
+  DEFAULT_ADD_WEIGHT_METRIC,
+} from "../Home/constants";
 import { getOrdinalNumber, getUnitAbbreviation } from "../Home/helperFunctions";
-import { SelectedExercise } from "../Home/types";
+import { SelectedExercise, Units } from "../Home/types";
 import {
   exerciseSetClicked,
   exerciseWeightChanged,
@@ -47,6 +51,12 @@ export default function TrackWorkout({ navigation }: Props) {
   const selectedWorkout = useAppSelector(selectSelectedWorkout);
   const units = useAppSelector((state) => state.appData.workouts.units);
   const dispatch = useAppDispatch();
+
+  const getAddWeight = () => {
+    return units === Units.IMPERIAL
+      ? DEFAULT_ADD_WEIGHT_IMPERIAL
+      : DEFAULT_ADD_WEIGHT_METRIC;
+  };
 
   const handlePressNextSet = () => {
     setAnimationDirection("isDown");
@@ -117,16 +127,18 @@ export default function TrackWorkout({ navigation }: Props) {
 
                 if (!isItemSelected) {
                   setContent = (
-                    <XStack
-                      jc="space-around"
-                      alignItems="center"
-                      p="$3"
+                    <Button
+                      unstyled
                       onPress={() =>
                         handlePressExerciseHeader(index, exerciseSetIndex)
                       }
                     >
-                      <Text>{getOrdinalNumber(exerciseSetIndex + 1)} set</Text>
-                    </XStack>
+                      <XStack jc="space-around" alignItems="center" p="$3">
+                        <Text>
+                          {getOrdinalNumber(exerciseSetIndex + 1)} set
+                        </Text>
+                      </XStack>
+                    </Button>
                   );
                 } else {
                   setContent = (
@@ -190,33 +202,40 @@ export default function TrackWorkout({ navigation }: Props) {
                     dispatch(
                       exerciseWeightChanged({
                         exerciseId: exercise.id,
-                        weightChange: -5,
+                        weightChange: -getAddWeight(),
                       }),
                     );
                   }}
                 >
-                  <Text>-5</Text>
+                  <Text>{`-${getAddWeight()}`}</Text>
                 </Button>
-                <Input
-                  keyboardType="numeric"
-                  placeholder={`${exercise.startingWeight.toString()} ${getUnitAbbreviation(
-                    units,
-                  )}`}
-                  value={`${exercise.weight.toString()} ${getUnitAbbreviation(
-                    units,
-                  )}`}
-                />
+                <XStack ai="center" space="$2">
+                  <Input
+                    keyboardType="numeric"
+                    onChangeText={(text) => {
+                      dispatch(
+                        exerciseWeightChanged({
+                          exerciseId: exercise.id,
+                          newWeight: Number(text),
+                        }),
+                      );
+                    }}
+                    value={exercise.weight.toString()}
+                    m="$0"
+                  />
+                  <Text>{getUnitAbbreviation(units)}</Text>
+                </XStack>
                 <Button
                   onPress={() => {
                     dispatch(
                       exerciseWeightChanged({
                         exerciseId: exercise.id,
-                        weightChange: 5,
+                        weightChange: getAddWeight(),
                       }),
                     );
                   }}
                 >
-                  <Text>+5</Text>
+                  <Text>{`+${getAddWeight()}`}</Text>
                 </Button>
               </XStack>
 

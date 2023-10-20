@@ -1,7 +1,12 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 import { RootState } from "../../app/store";
-import { DEFAULT_WEIGHT_IMPERIAL, DEFAULT_WEIGHT_METRIC } from "./constants";
+import {
+  DEFAULT_PLATES_IMPERIAL,
+  DEFAULT_PLATES_METRIC,
+  DEFAULT_WEIGHT_IMPERIAL,
+  DEFAULT_WEIGHT_METRIC,
+} from "./constants";
 import { getClosestDate, getCurrentWeekRangeTime } from "./helperFunctions";
 import {
   ExerciseRecord,
@@ -115,17 +120,33 @@ export const workoutsSlice = createSlice({
     unitsSet: (state, action: PayloadAction<Units>) => {
       state.units = action.payload;
 
-      // Update all workouts with new weights
-      state.allWorkouts = state.allWorkouts.map((workout) => {
-        return {
-          ...workout,
-          exercises: workout.exercises.map((exercise) => {
-            return {
-              ...exercise,
-            };
-          }),
-        };
-      });
+      // Update current workouts
+      state.weeksWorkouts = state.weeksWorkouts.map((workout) => ({
+        ...workout,
+        exercises: workout.exercises.map((exercise) => ({
+          ...exercise,
+          weight: getNextWeight(state, exercise.id),
+        })),
+      }));
+
+      state.todaysWorkout = state.todaysWorkout && {
+        ...state.todaysWorkout,
+        exercises: state.todaysWorkout.exercises.map((exercise) => ({
+          ...exercise,
+          weight: getNextWeight(state, exercise.id),
+        })),
+      };
+
+      state.selectedWorkout = state.selectedWorkout && {
+        ...state.selectedWorkout,
+        exercises: state.selectedWorkout.exercises.map((exercise) => ({
+          ...exercise,
+          weight: roundUnits(
+            convertUnits(exercise.weight, action.payload),
+            action.payload,
+          ),
+        })),
+      };
     },
     weeksWorkoutsSet: (state) => {
       if (!state.selectedProgram) return;
@@ -291,16 +312,14 @@ export const workoutsSlice = createSlice({
       }>,
     ) => {
       const { newWeight, weightChange, exerciseId } = action.payload;
-      if (!state.selectedWorkout || (!weightChange && !newWeight)) return;
-
       const exercise = state.selectedWorkout?.exercises.find(
         (exercise) => exercise.id === exerciseId,
       );
       if (!exercise) return;
 
-      if (weightChange) {
+      if (weightChange && weightChange + exercise.weight >= 0) {
         exercise.weight += weightChange;
-      } else if (newWeight) {
+      } else if (newWeight !== undefined) {
         exercise.weight = newWeight;
       }
     },
@@ -398,6 +417,17 @@ const getNextWeight = (state: WorkoutsState, exerciseId: string) => {
     ];
 
   return state.allRecords[exerciseIndex].weight;
+};
+
+const roundUnits = (weight: number, units: Units) => {
+  const plates =
+    units === Units.IMPERIAL ? DEFAULT_PLATES_IMPERIAL : DEFAULT_PLATES_METRIC;
+  const smallestPlate = plates.sort()[0];
+  return Math.round(weight / (smallestPlate * 2)) * (smallestPlate * 2);
+};
+
+const convertUnits = (weight: number, units: Units) => {
+  return units === Units.IMPERIAL ? weight * 2.20462 : weight / 2.20462;
 };
 
 // Selectors
