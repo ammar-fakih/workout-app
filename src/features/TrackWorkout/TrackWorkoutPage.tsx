@@ -1,12 +1,10 @@
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { isEqual } from "lodash";
 import { useState } from "react";
-import { Alert, FlatList, Keyboard } from "react-native";
+import { Alert, FlatList, Keyboard, TextInput } from "react-native";
 import {
   AnimatePresence,
   Button,
-  Input,
-  ScrollView,
   Text,
   View,
   XStack,
@@ -20,7 +18,7 @@ import {
   DEFAULT_ADD_WEIGHT_METRIC,
 } from "../Home/constants";
 import { getOrdinalNumber, getUnitAbbreviation } from "../Home/helperFunctions";
-import { SelectedExercise, Units } from "../Home/types";
+import { CompletedSet, SelectedExercise, Units } from "../Home/types";
 import {
   exerciseSetClicked,
   exerciseWeightChanged,
@@ -118,7 +116,13 @@ export default function TrackWorkout({ navigation }: Props) {
             <FlatList
               scrollEnabled={false}
               data={exercise.completedSets}
-              renderItem={({ item: set, index: exerciseSetIndex }) => {
+              renderItem={({
+                item: set,
+                index: exerciseSetIndex,
+              }: {
+                item: CompletedSet;
+                index: number;
+              }) => {
                 const isItemSelected = isEqual(selectedSet, [
                   index,
                   exerciseSetIndex,
@@ -210,7 +214,7 @@ export default function TrackWorkout({ navigation }: Props) {
                   <Text>{`-${getAddWeight()}`}</Text>
                 </Button>
                 <XStack ai="center" space="$2">
-                  <Input
+                  <TextInput
                     keyboardType="numeric"
                     onChangeText={(text: string) => {
                       dispatch(
@@ -220,8 +224,8 @@ export default function TrackWorkout({ navigation }: Props) {
                         }),
                       );
                     }}
-                    value={exercise.weight.toString()}
-                    m="$0"
+                    value={exercise.weight.toString() || ""}
+                    // m="$0"
                   />
                   <Text>{getUnitAbbreviation(units)}</Text>
                 </XStack>
@@ -252,33 +256,34 @@ export default function TrackWorkout({ navigation }: Props) {
   };
 
   return (
-    <ScrollView flex={1} onPress={Keyboard.dismiss} m="$2">
-      <View f={1}>
-        {selectedWorkout.exercises.map((exercise, index) => {
-          return renderItem({ item: exercise, index });
-        })}
-      </View>
-      <Button
-        margin="$4"
-        marginTop="$10"
-        onPress={() => {
-          Alert.alert("Are you sure you want to finish?", "", [
-            {
-              text: "Cancel",
-              style: "cancel",
-            },
-            {
-              text: "Finish",
-              onPress: () => {
-                dispatch(workoutFinished());
-                navigation.navigate("HomePage");
-              },
-            },
-          ]);
-        }}
-      >
-        Finish
-      </Button>
-    </ScrollView>
+    <View flex={1} onPress={Keyboard.dismiss} m="$2">
+      <FlatList
+        data={selectedWorkout.exercises}
+        renderItem={renderItem}
+        ListFooterComponent={
+          <Button
+            margin="$4"
+            marginTop="$10"
+            onPress={() => {
+              Alert.alert("Are you sure you want to finish?", "", [
+                {
+                  text: "Cancel",
+                  style: "cancel",
+                },
+                {
+                  text: "Finish",
+                  onPress: () => {
+                    dispatch(workoutFinished());
+                    navigation.navigate("HomePage");
+                  },
+                },
+              ]);
+            }}
+          >
+            Finish
+          </Button>
+        }
+      />
+    </View>
   );
 }
