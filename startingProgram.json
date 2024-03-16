@@ -29,14 +29,14 @@
     },
     {
       "id": "5",
-      "workoutId": "1", 
+      "workoutId": "1",
       "startDate": "2019-07-10",
       "frequency": 2
     },
     {
       "id": "6",
       "workoutId": "2",
-      "startDate": "2020-07-12",
+      "startDate": "2019-07-12",
       "frequency": 2
     }
   ]

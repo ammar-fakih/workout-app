@@ -187,7 +187,10 @@ export default function HomePage({ navigation }: Props) {
           >
             <FlatList
               style={{ paddingTop: 20 }}
-              contentContainerStyle={{ paddingBottom: 150 }}
+              contentContainerStyle={{
+                paddingBottom: 150,
+                paddingHorizontal: 15,
+              }}
               data={weeksWorkouts}
               renderItem={renderWeeksWorkouts}
             />

@@ -111,7 +111,6 @@ function App() {
         flex: 1,
         backgroundColor: theme.background.val,
       }}
-      //@ts-expect-error onLayout is not defined in ViewProps
       onLayout={onLayoutRootView}
     >
       <NavigationContainer theme={NavigationTheme}>

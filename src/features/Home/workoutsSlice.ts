@@ -7,7 +7,6 @@ import {
   DEFAULT_WEIGHT_IMPERIAL,
   DEFAULT_WEIGHT_METRIC,
 } from "./constants";
-import { getClosestDate, getCurrentWeekRangeTime } from "./helperFunctions";
 import {
   ExerciseRecord,
   GeneralWorkout,
@@ -150,50 +149,97 @@ export const workoutsSlice = createSlice({
     },
     weeksWorkoutsSet: (state) => {
       if (!state.selectedProgram) return;
-      const { sunday, saturday } = getCurrentWeekRangeTime();
 
-      let numIntervals: number | undefined = undefined;
+      const todayNum = new Date().getDay();
+
+      // map workouts to days of the week
+      const workoutsPerDay = new Array(7).fill([]) as Workout[][];
+      state.selectedProgram.workouts.forEach((workout) => {
+        const day = new Date(workout.startDate).getDay();
+        workoutsPerDay[day].push(workout);
+      });
+
+      const dates = new Array(7).fill(0).map((_, i) => {
+        const date = new Date();
+        date.setDate(date.getDate() - todayNum + i);
+        return date;
+      });
+
+      const weeksWorkouts = [] as TodaysWorkout[];
+      dates.forEach((date, i) => {
+        workoutsPerDay[i].forEach((workout) => {
+          // calculate number of days between date and workout date
+          const workoutDate = new Date(workout.startDate);
+          const diff = Math.abs(workoutDate.getTime() - date.getTime());
+          const daysBetween = Math.ceil(diff / (1000 * 60 * 60 * 24));
+          const weeks = Math.floor(daysBetween / 7);
+
+          console.log(workout.startDate, weeks);
+
+          if (weeks % workout.frequency === 0) {
+            weeksWorkouts.push({
+              ...workout,
+              closestTimeToNow: date.toISOString(),
+              completed: false,
+              exercises: workout.exercises.map((exercise) => {
+                return {
+                  ...exercise,
+                  completedSets: Array(exercise.sets).fill({
+                    repCount: exercise.reps,
+                    selected: false,
+                  }),
+                  weight: getNextWeight(state, exercise.id),
+                };
+              }),
+            });
+          }
+        });
+      });
+
+      weeksWorkouts.forEach((workout) => {
+        console.log(workout.closestTimeToNow, workout.id);
+      });
 
       // Filter out workouts that are not in the current week and add closestTimeToNow
-      state.weeksWorkouts = state.selectedProgram.workouts.reduce(
-        (accumulator, currentWorkout) => {
-          const { closestTimeToNow, newNumIntervals } = getClosestDate(
-            currentWorkout.startDate,
-            currentWorkout.frequency,
-            numIntervals,
-          );
-          if (!numIntervals) {
-            numIntervals = newNumIntervals;
-          }
-          const closestTime = closestTimeToNow.getTime();
-          if (
-            closestTime >= sunday.getTime() &&
-            closestTime <= saturday.getTime()
-          ) {
-            return [
-              ...accumulator,
-              {
-                ...currentWorkout,
-                closestTimeToNow: closestTimeToNow.toISOString(),
-                completed: false,
-                exercises: currentWorkout.exercises.map((exercise) => {
-                  return {
-                    ...exercise,
-                    completedSets: Array(exercise.sets).fill({
-                      repCount: exercise.reps,
-                      selected: false,
-                    }),
-                    weight: getNextWeight(state, exercise.id),
-                  };
-                }),
-              },
-            ];
-          } else {
-            return accumulator;
-          }
-        },
-        [] as TodaysWorkout[],
-      );
+      // state.weeksWorkouts = state.selectedProgram.workouts.reduce(
+      //   (accumulator, currentWorkout) => {
+      //     const { closestTimeToNow, newNumIntervals } = getClosestDate(
+      //       currentWorkout.startDate,
+      //       currentWorkout.frequency,
+      //       numIntervals,
+      //     );
+      //     if (!numIntervals) {
+      //       numIntervals = newNumIntervals;
+      //     }
+      //     const closestTime = closestTimeToNow.getTime();
+      //     if (
+      //       closestTime >= sunday.getTime() &&
+      //       closestTime <= saturday.getTime()
+      //     ) {
+      //       return [
+      //         ...accumulator,
+      //         {
+      //           ...currentWorkout,
+      //           closestTimeToNow: closestTimeToNow.toISOString(),
+      //           completed: false,
+      //           exercises: currentWorkout.exercises.map((exercise) => {
+      //             return {
+      //               ...exercise,
+      //               completedSets: Array(exercise.sets).fill({
+      //                 repCount: exercise.reps,
+      //                 selected: false,
+      //               }),
+      //               weight: getNextWeight(state, exercise.id),
+      //             };
+      //           }),
+      //         },
+      //       ];
+      //     } else {
+      //       return accumulator;
+      //     }
+      //   },
+      //   [] as TodaysWorkout[],
+      // );
     },
     todaysWorkoutsSet: (state) => {
       if (!state.weeksWorkouts) return;

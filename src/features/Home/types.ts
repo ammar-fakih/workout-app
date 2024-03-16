@@ -38,6 +38,7 @@ export interface Workout extends GeneralWorkout, SpecificWorkout {
 }
 
 export interface TodaysWorkout extends Workout {
+  completed: boolean;
   exercises: TodaysExercise[];
 }
 

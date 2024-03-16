@@ -212,7 +212,7 @@ export default function TrackWorkout({ navigation }: Props) {
                 <XStack ai="center" space="$2">
                   <Input
                     keyboardType="numeric"
-                    onChangeText={(text) => {
+                    onChangeText={(text: string) => {
                       dispatch(
                         exerciseWeightChanged({
                           exerciseId: exercise.id,
