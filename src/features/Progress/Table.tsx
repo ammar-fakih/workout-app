@@ -75,6 +75,10 @@ export default function Table() {
     setSelectedExercises(newSelectedExercises);
   };
 
+  const wasExerciseCompleted = (exercise: ExerciseRecord | undefined) => {
+    return !exercise || exercise.completedSets.find((set) => !set.selected);
+  };
+
   const renderHeaderCell = ({
     item: headerCell,
     index,
@@ -104,10 +108,12 @@ export default function Table() {
     item: text,
     index,
     shouldRenderTopBorder,
+    redBackground,
   }: {
     item: string;
     index: number;
     shouldRenderTopBorder: boolean;
+    redBackground?: boolean;
   }) => {
     return (
       <View
@@ -120,6 +126,8 @@ export default function Table() {
         borderColor="$color3"
         key={index}
         width="$10"
+        bg={redBackground ? "red" : "transparent"}
+        opacity={redBackground ? 0.5 : 1}
       >
         <Text textAlign="center">{text}</Text>
       </View>
@@ -155,6 +163,7 @@ export default function Table() {
               item: record ? record.weight.toString() : "/",
               index: cellIndex + 1,
               shouldRenderTopBorder: !index,
+              redBackground: !wasExerciseCompleted(record),
             }),
         )}
       </XStack>
