@@ -85,7 +85,7 @@ export default function HomePage({ navigation }: Props) {
           marginVertical="$6"
         >
           <Button variant="outlined" disabled>
-            <H3>Rest Day</H3>
+            <H3>☀️ Rest Day</H3>
           </Button>
           <Button
             variant="outlined"
