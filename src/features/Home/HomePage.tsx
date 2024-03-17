@@ -18,8 +18,7 @@ import {
   YStack,
 } from "tamagui";
 import { RootTabsParamList } from "../../../App";
-import startingProgram from "../../../startingProgram.json";
-import startingWorkouts from "../../../startingWorkouts.json";
+import { startingProgram, startingWorkouts } from "../../../startingWorkout";
 import StopWatch from "../../Components/StopWatch";
 import WorkoutCard from "../../Components/WorkoutCard";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
