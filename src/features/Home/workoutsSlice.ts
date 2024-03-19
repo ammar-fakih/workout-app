@@ -206,8 +206,6 @@ export const workoutsSlice = createSlice({
 
       const todaysWorkout = state.weeksWorkouts.find((workout) => {
         const startDate = new Date(workout.closestTimeToNow);
-        console.log(startDate);
-
         return startDate.getDay() === day;
       });
 
@@ -395,7 +393,7 @@ export const workoutsSlice = createSlice({
       // Calculate Extra Time
       const currentTime = Date.now();
       const startTime = state.stopWatchStartTime || currentTime;
-      state.stopWatchExtraSeconds += Math.round(
+      state.stopWatchExtraSeconds += Math.floor(
         (currentTime - startTime) / 1000,
       );
 

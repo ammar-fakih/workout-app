@@ -221,7 +221,7 @@ export default function HomePage({ navigation }: Props) {
               <Text fontWeight="$10">{selectedWorkout.name}</Text>
             </YStack>
             <YStack f={1} ai="center" jc="center">
-              <StopWatch isFocused={navigation.isFocused()} />
+              <StopWatch />
               <Button
                 onPress={() => {
                   navigation.navigate("TrackWorkout");
