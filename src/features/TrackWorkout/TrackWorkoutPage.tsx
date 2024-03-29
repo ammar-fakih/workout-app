@@ -10,6 +10,7 @@ import {
   XStack,
   YStack,
   styled,
+  useTheme,
 } from "tamagui";
 import { RootTabsParamList } from "../../../App";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
@@ -22,6 +23,7 @@ import { CompletedSet, SelectedExercise, Units } from "../Home/types";
 import {
   exerciseSetClicked,
   exerciseWeightChanged,
+  onEditSelectedWorkoutNotes,
   onPressExerciseSet,
   onPressNextSet,
   onPressPreviousSet,
@@ -40,6 +42,7 @@ const XStackEnterable = styled(XStack, {
 });
 
 export default function TrackWorkout({ navigation }: Props) {
+  const theme = useTheme();
   const [animationDirection, setAnimationDirection] = useState<
     "isUp" | "isDown" | "isDisabled"
   >("isDisabled");
@@ -261,27 +264,46 @@ export default function TrackWorkout({ navigation }: Props) {
         data={selectedWorkout.exercises}
         renderItem={renderItem}
         ListFooterComponent={
-          <Button
-            margin="$4"
-            marginTop="$10"
-            onPress={() => {
-              Alert.alert("Are you sure you want to finish?", "", [
-                {
-                  text: "Cancel",
-                  style: "cancel",
-                },
-                {
-                  text: "Finish",
-                  onPress: () => {
-                    dispatch(workoutFinished());
-                    navigation.navigate("HomePage");
+          <View>
+            <TextInput
+              style={{
+                padding: 20,
+                margin: 20,
+                borderColor: theme.color5.val,
+                borderWidth: 2,
+                borderRadius: 10,
+                color: "black",
+              }}
+              placeholder="Notes..."
+              minHeight={70}
+              multiline
+              value={selectedWorkout.notes}
+              onChangeText={(text: string) =>
+                dispatch(onEditSelectedWorkoutNotes(text))
+              }
+            />
+            <Button
+              margin="$4"
+              marginTop="$10"
+              onPress={() => {
+                Alert.alert("Are you sure you want to finish?", "", [
+                  {
+                    text: "Cancel",
+                    style: "cancel",
                   },
-                },
-              ]);
-            }}
-          >
-            Finish
-          </Button>
+                  {
+                    text: "Finish",
+                    onPress: () => {
+                      dispatch(workoutFinished());
+                      navigation.navigate("HomePage");
+                    },
+                  },
+                ]);
+              }}
+            >
+              Finish
+            </Button>
+          </View>
         }
       />
     </View>

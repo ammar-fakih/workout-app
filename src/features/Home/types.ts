@@ -44,6 +44,7 @@ export interface TodaysWorkout extends Workout {
 
 export interface SelectedWorkout extends Workout {
   exercises: SelectedExercise[];
+  notes: string;
 }
 
 export interface ProgramFromFile {
@@ -67,6 +68,7 @@ export interface WorkoutRecord {
   exercises: number[]; // maps to indices in allRecords
   name: string;
   timeToComplete: number; // in seconds
+  notes: string;
 }
 
 export interface WorkoutRecordData {

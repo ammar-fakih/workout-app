@@ -33,6 +33,8 @@ export type RootTabsParamList = {
   HomePage: undefined;
   TrackWorkout: undefined;
   Programs: undefined;
+  CreateProgramPage: undefined;
+  ProgramsPage: undefined;
 };
 const Tabs = createBottomTabNavigator<RootTabsParamList>();
 

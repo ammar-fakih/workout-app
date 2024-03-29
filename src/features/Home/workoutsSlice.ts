@@ -216,6 +216,7 @@ export const workoutsSlice = createSlice({
     workoutSelected: (state, action: PayloadAction<TodaysWorkout>) => {
       state.selectedWorkout = {
         ...action.payload,
+        notes: "",
         exercises: action.payload.exercises.map((exercise) => ({
           ...exercise,
           startingWeight: exercise.weight,
@@ -286,6 +287,7 @@ export const workoutsSlice = createSlice({
       state.workoutRecords.push({
         exercises: exerciseRecord,
         name: state.selectedWorkout.name,
+        notes: state.selectedWorkout.notes,
         timeToComplete: totalTime,
       });
       state.selectedSet = workoutsSlice.getInitialState().selectedSet;
@@ -386,6 +388,12 @@ export const workoutsSlice = createSlice({
         }
       }
     },
+    onEditSelectedWorkoutNotes: (state, action: PayloadAction<string>) => {
+      if (!state.selectedWorkout) return;
+
+      state.selectedWorkout.notes = action.payload;
+    },
+
     stopWatchStarted: (state) => {
       state.stopWatchStartTime = Date.now();
     },
@@ -464,6 +472,7 @@ export const {
   stopWatchStarted,
   appOpened,
   unitsSet,
+  onEditSelectedWorkoutNotes,
 } = workoutsSlice.actions;
 
 export default workoutsSlice.reducer;
