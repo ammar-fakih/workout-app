@@ -48,6 +48,7 @@ export default function () {
           <RootSiblingParent>
             <TamaguiProvider config={config} defaultTheme="dark_blue">
               <Theme name={colorScheme === "dark" ? "dark_blue" : "light_blue"}>
+                {/* <Theme name="dark_blue"> */}
                 <App />
               </Theme>
             </TamaguiProvider>

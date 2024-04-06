@@ -6,6 +6,7 @@ import {
   AnimatePresence,
   Button,
   Text,
+  TextArea,
   View,
   XStack,
   YStack,

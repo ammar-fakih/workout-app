@@ -76,6 +76,11 @@ export interface WorkoutRecordData {
   name: string;
 }
 
+export interface BodyWeightRecord {
+  date: string;
+  weight: number;
+}
+
 // Enums
 export enum Units {
   METRIC = "METRIC",

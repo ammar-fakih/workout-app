@@ -1,4 +1,8 @@
-import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import {
+  PayloadAction,
+  createEntityAdapter,
+  createSlice,
+} from "@reduxjs/toolkit";
 
 import { RootState } from "../../app/store";
 import {
@@ -8,6 +12,7 @@ import {
   DEFAULT_WEIGHT_METRIC,
 } from "./constants";
 import {
+  BodyWeightRecord,
   ExerciseRecord,
   GeneralWorkout,
   Program,
@@ -18,6 +23,11 @@ import {
   Workout,
   WorkoutRecord,
 } from "./types";
+
+const BodyWeightRecordAdapter = createEntityAdapter({
+  selectId: (record: BodyWeightRecord) => record.date,
+  sortComparer: (a, b) => a.date.localeCompare(b.date),
+});
 
 interface WorkoutsState {
   allPrograms: Program[];
@@ -43,7 +53,8 @@ interface WorkoutsState {
   units: Units;
 }
 
-const initialState: WorkoutsState = {
+const initialState: WorkoutsState &
+  ReturnType<typeof BodyWeightRecordAdapter.getInitialState> = {
   allPrograms: [],
   allWorkouts: [],
   selectedProgram: undefined,
@@ -60,6 +71,8 @@ const initialState: WorkoutsState = {
   stopWatchExtraSeconds: 0,
 
   units: Units.IMPERIAL,
+
+  ...BodyWeightRecordAdapter.getInitialState(),
 };
 
 export const workoutsSlice = createSlice({
@@ -411,6 +424,7 @@ export const workoutsSlice = createSlice({
       state.stopWatchStartTime = null;
       state.stopWatchExtraSeconds = 0;
     },
+    bodyWeightRecordAdded: BodyWeightRecordAdapter.addOne,
   },
 });
 
@@ -473,6 +487,7 @@ export const {
   appOpened,
   unitsSet,
   onEditSelectedWorkoutNotes,
+  bodyWeightRecordAdded,
 } = workoutsSlice.actions;
 
 export default workoutsSlice.reducer;

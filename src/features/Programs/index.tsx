@@ -32,10 +32,23 @@ export default function Programs({ navigation }: Props) {
         component={ProgramsPage}
         options={({ navigation }) => ({
           title: "Programs",
-          headerRight: ProgramsPageHeaderRight,
+          headerRight: () => (
+            <ProgramsPageHeaderRight
+              onPress={() => {
+                console.log("Create program");
+                navigation.navigate("CreateProgramPage");
+              }}
+            />
+          ),
         })}
       />
-      <Stack.Screen name="CreateProgramPage" component={CreateProgramPage} />
+      <Stack.Screen
+        name="CreateProgramPage"
+        component={CreateProgramPage}
+        options={{
+          title: "Create Program",
+        }}
+      />
     </Stack.Navigator>
   );
 }

@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
-import { ChevronDown, Settings2 } from "@tamagui/lucide-icons";
-import { Alert, FlatList } from "react-native";
+import { CheckCheck, ChevronDown, Settings2 } from "@tamagui/lucide-icons";
+import { Alert, FlatList, useColorScheme } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
   AnimatePresence,
@@ -33,6 +34,7 @@ type Props = BottomTabScreenProps<RootTabsParamList, "HomePage">;
 
 export default function HomePage({ navigation }: Props) {
   const insets = useSafeAreaInsets();
+  const colorScheme = useColorScheme();
   const [weeksWorkoutsOpen, setWeeksWorkoutsOpen] = useState(false);
   const weeksWorkouts = useAppSelector(selectWeeksWorkouts);
   const todaysWorkout = useAppSelector(
@@ -144,11 +146,28 @@ export default function HomePage({ navigation }: Props) {
         <Button disabled variant="outlined">
           <H3 fontFamily="$gerhaus">LIFT-IQ</H3>
         </Button>
-        <Button
-          icon={<Settings2 size="$2" />}
-          variant="outlined"
-          onPress={() => navigation.navigate("Settings")}
-        />
+
+        <XStack>
+          <Button
+            p="$0"
+            icon={
+              <XStack ai="center">
+                <MaterialCommunityIcons
+                  name="scale-bathroom"
+                  size={24}
+                  color={colorScheme === "dark" ? "#fff" : "#000"}
+                />
+                <CheckCheck color="$green10" />
+              </XStack>
+            }
+            variant="outlined"
+          />
+          <Button
+            icon={<Settings2 size="$2" />}
+            variant="outlined"
+            onPress={() => navigation.navigate("Settings")}
+          />
+        </XStack>
       </XStack>
 
       {renderTodaysWorkout()}
