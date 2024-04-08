@@ -1,4 +1,5 @@
 import "react-native-gesture-handler";
+import React from "react";
 
 import { MaterialCommunityIcons, Octicons } from "@expo/vector-icons";
 import { NavigationContainer } from "@react-navigation/native";
