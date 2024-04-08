@@ -466,7 +466,11 @@ export const selectSelectedWorkout = (state: RootState) =>
   state.appData.workouts.selectedWorkout;
 export const selectExerciseRecords = (state: RootState) =>
   state.appData.workouts.exerciseRecords;
-// export BodyWeightRecordAdapter.getSelectors;
+
+export const bodyWeightRecordSelectors = BodyWeightRecordAdapter.getSelectors(
+  (state: RootState) => state.appData.workouts,
+);
+
 
 // Actions
 export const {

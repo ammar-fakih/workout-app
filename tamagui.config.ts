@@ -1,4 +1,4 @@
-import { config, createGenericFont } from "@tamagui/config";
+import { animations, config, createGenericFont } from "@tamagui/config";
 import { color, radius, size, space, themes, zIndex } from "@tamagui/themes";
 import { createTamagui, createTokens } from "tamagui";
 
@@ -25,6 +25,13 @@ const tamaguiConfig = createTamagui({
   },
   tokens,
   fonts: { ...config.fonts, gerhaus, spaceMono },
+  animations: {
+    ...animations,
+    "150ms": {
+      type: "timing",
+      duration: 150,
+    },
+  },
 });
 
 type Conf = typeof tamaguiConfig;

@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
-import { CheckCheck, ChevronDown, Settings2 } from "@tamagui/lucide-icons";
+import { ChevronDown, Settings2 } from "@tamagui/lucide-icons";
 import { Alert, FlatList, useColorScheme } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
@@ -23,6 +22,7 @@ import { startingProgram, startingWorkouts } from "../../../startingWorkout";
 import StopWatch from "../../Components/StopWatch";
 import WorkoutCard from "../../Components/WorkoutCard";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import LogBodyWeight from "./LogBodyWeight";
 import { TodaysWorkout } from "./types";
 import {
   appOpened,
@@ -34,7 +34,6 @@ type Props = BottomTabScreenProps<RootTabsParamList, "HomePage">;
 
 export default function HomePage({ navigation }: Props) {
   const insets = useSafeAreaInsets();
-  const colorScheme = useColorScheme();
   const [weeksWorkoutsOpen, setWeeksWorkoutsOpen] = useState(false);
   const weeksWorkouts = useAppSelector(selectWeeksWorkouts);
   const todaysWorkout = useAppSelector(
@@ -43,11 +42,14 @@ export default function HomePage({ navigation }: Props) {
   const selectedWorkout = useAppSelector(
     (state) => state.appData.workouts.selectedWorkout,
   );
+  // const bodyWeightRecords = bodyWeightRecordSelectors;
   const dispatch = useAppDispatch();
 
   useEffect(() => {
     dispatch(appOpened({ startingProgram, startingWorkouts }));
   }, []);
+
+  console.log();
 
   const onPressWorkout = (workout: TodaysWorkout) => {
     if (workout.name === selectedWorkout?.name) {
@@ -148,20 +150,7 @@ export default function HomePage({ navigation }: Props) {
         </Button>
 
         <XStack>
-          <Button
-            p="$0"
-            icon={
-              <XStack ai="center">
-                <MaterialCommunityIcons
-                  name="scale-bathroom"
-                  size={24}
-                  color={colorScheme === "dark" ? "#fff" : "#000"}
-                />
-                <CheckCheck color="$green10" />
-              </XStack>
-            }
-            variant="outlined"
-          />
+          <LogBodyWeight />
           <Button
             icon={<Settings2 size="$2" />}
             variant="outlined"
