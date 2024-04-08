@@ -1,17 +1,16 @@
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { isEqual } from "lodash";
 import { useState } from "react";
-import { Alert, FlatList, Keyboard, TextInput } from "react-native";
+import { Alert, FlatList, Keyboard } from "react-native";
 import {
   AnimatePresence,
   Button,
+  Input,
   Text,
-  TextArea,
   View,
   XStack,
   YStack,
   styled,
-  useTheme,
 } from "tamagui";
 import { RootTabsParamList } from "../../../App";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
@@ -43,7 +42,6 @@ const XStackEnterable = styled(XStack, {
 });
 
 export default function TrackWorkout({ navigation }: Props) {
-  const theme = useTheme();
   const [animationDirection, setAnimationDirection] = useState<
     "isUp" | "isDown" | "isDisabled"
   >("isDisabled");
@@ -218,7 +216,7 @@ export default function TrackWorkout({ navigation }: Props) {
                   <Text>{`-${getAddWeight()}`}</Text>
                 </Button>
                 <XStack ai="center" space="$2">
-                  <TextInput
+                  <Input
                     keyboardType="numeric"
                     onChangeText={(text: string) => {
                       dispatch(
@@ -266,15 +264,8 @@ export default function TrackWorkout({ navigation }: Props) {
         renderItem={renderItem}
         ListFooterComponent={
           <View>
-            <TextInput
-              style={{
-                padding: 20,
-                margin: 20,
-                borderColor: theme.color5.val,
-                borderWidth: 2,
-                borderRadius: 10,
-                color: "black",
-              }}
+            <Input
+              m="$4"
               placeholder="Notes..."
               minHeight={70}
               multiline
