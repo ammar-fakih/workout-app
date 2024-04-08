@@ -10,7 +10,7 @@ import Settings from "../Settings/Settings";
 import Programs from "../Programs/index";
 import TrackWorkout from "../TrackWorkout/TrackWorkoutPage";
 import HomePage from "./HomePage";
-import { workoutCanceled } from "./workoutsSlice";
+import { stopWatchStopped, workoutCanceled } from "./workoutsSlice";
 
 const Stack = createStackNavigator<RootTabsParamList>();
 
@@ -46,6 +46,16 @@ export default function Home({ navigation }: Props) {
               },
             ]}
           >
+            <Popover.Close asChild w="100%" mb="$2">
+              <Button
+                onPress={() => {
+                  dispatch(stopWatchStopped());
+                }}
+                textAlign="center"
+              >
+                Restart Timer
+              </Button>
+            </Popover.Close>
             <Popover.Close asChild>
               <Button
                 onPress={() => {

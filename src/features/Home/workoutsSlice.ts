@@ -466,6 +466,7 @@ export const selectSelectedWorkout = (state: RootState) =>
   state.appData.workouts.selectedWorkout;
 export const selectExerciseRecords = (state: RootState) =>
   state.appData.workouts.exerciseRecords;
+// export BodyWeightRecordAdapter.getSelectors;
 
 // Actions
 export const {
@@ -488,6 +489,7 @@ export const {
   unitsSet,
   onEditSelectedWorkoutNotes,
   bodyWeightRecordAdded,
+  stopWatchStopped,
 } = workoutsSlice.actions;
 
 export default workoutsSlice.reducer;
