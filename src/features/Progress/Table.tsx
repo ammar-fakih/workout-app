@@ -1,6 +1,13 @@
 import { useEffect, useState } from "react";
 import { FlatList } from "react-native";
-import { ScrollView, Text, View, XStack, YStack } from "tamagui";
+import {
+  ScrollView,
+  Text,
+  TextParentStyles,
+  View,
+  XStack,
+  YStack,
+} from "tamagui";
 import FilterMenu from "../../Components/FilterMenu";
 import SortByMenu from "../../Components/SortByMenu";
 import { useAppSelector } from "../../app/hooks";
@@ -8,6 +15,63 @@ import { getDateString } from "../Home/helperFunctions";
 import { ExerciseRecord, WorkoutRecordData } from "../Home/types";
 
 const borderWidth = "$1";
+
+export const HeaderCell = ({
+  item: headerCell,
+  index,
+  textStyles,
+}: {
+  item: string;
+  index: number;
+  textStyles?: TextParentStyles;
+}) => {
+  return (
+    <View
+      key={index}
+      f={1}
+      alignItems="center"
+      jc="center"
+      borderColor="$color5"
+      borderWidth={borderWidth}
+      borderLeftWidth={index === 0 ? borderWidth : 0}
+      width="$8"
+    >
+      <Text flexWrap="wrap" textAlign="center" style={textStyles}>
+        {headerCell}
+      </Text>
+    </View>
+  );
+};
+
+export const TableCell = ({
+  item: text,
+  index,
+  renderTopBorder,
+  redBackground,
+}: {
+  item: string;
+  index: number;
+  renderTopBorder: boolean;
+  redBackground?: boolean;
+}) => {
+  return (
+    <View
+      f={1}
+      paddingVertical="$2"
+      borderRightWidth={borderWidth}
+      borderLeftWidth={index === 0 ? borderWidth : 0}
+      borderBottomWidth={borderWidth}
+      borderTopWidth={renderTopBorder ? borderWidth : 0}
+      borderColor="$color3"
+      key={index}
+      width="$10"
+      bg={redBackground ? "red" : "transparent"}
+      opacity={redBackground ? 0.5 : 1}
+    >
+      <Text textAlign="center">{text}</Text>
+    </View>
+  );
+};
 
 export default function Table() {
   const [workoutRecords, setWorkoutRecords] = useState<WorkoutRecordData[]>();
@@ -79,61 +143,6 @@ export default function Table() {
     return !exercise || exercise.completedSets.find((set) => !set.selected);
   };
 
-  const renderHeaderCell = ({
-    item: headerCell,
-    index,
-  }: {
-    item: string;
-    index: number;
-  }) => {
-    return (
-      <View
-        key={index}
-        f={1}
-        alignItems="center"
-        jc="center"
-        borderColor="$color5"
-        borderWidth={borderWidth}
-        borderLeftWidth={index === 0 ? borderWidth : 0}
-        width="$10"
-      >
-        <Text flexWrap="wrap" textAlign="center">
-          {headerCell}
-        </Text>
-      </View>
-    );
-  };
-
-  const renderCell = ({
-    item: text,
-    index,
-    shouldRenderTopBorder,
-    redBackground,
-  }: {
-    item: string;
-    index: number;
-    shouldRenderTopBorder: boolean;
-    redBackground?: boolean;
-  }) => {
-    return (
-      <View
-        f={1}
-        paddingVertical="$2"
-        borderRightWidth={borderWidth}
-        borderLeftWidth={index === 0 ? borderWidth : 0}
-        borderBottomWidth={borderWidth}
-        borderTopWidth={shouldRenderTopBorder ? borderWidth : 0}
-        borderColor="$color3"
-        key={index}
-        width="$10"
-        bg={redBackground ? "red" : "transparent"}
-        opacity={redBackground ? 0.5 : 1}
-      >
-        <Text textAlign="center">{text}</Text>
-      </View>
-    );
-  };
-
   const renderRow = ({
     item: workout,
     index,
@@ -151,20 +160,18 @@ export default function Table() {
 
     return (
       <XStack f={1} key={index}>
-        {renderCell({
-          item: date,
-          index: 0,
-          shouldRenderTopBorder: !index,
-        })}
+        <TableCell item={date} index={0} renderTopBorder={!index} />
         {rowData.map(
           (record, cellIndex) =>
-            (!record || selectedExercises.has(record.name)) &&
-            renderCell({
-              item: record ? record.weight.toString() : "/",
-              index: cellIndex + 1,
-              shouldRenderTopBorder: !index,
-              redBackground: !wasExerciseCompleted(record),
-            }),
+            (!record || selectedExercises.has(record.name)) && (
+              <TableCell
+                item={record ? record.weight.toString() : "/"}
+                key={cellIndex + 1}
+                index={cellIndex + 1}
+                renderTopBorder={!index}
+                redBackground={!wasExerciseCompleted(record)}
+              />
+            ),
         )}
       </XStack>
     );
@@ -197,11 +204,16 @@ export default function Table() {
       <ScrollView horizontal>
         <YStack>
           <XStack>
-            {renderHeaderCell({ item: "Date", index: 0 })}
+            <HeaderCell item="Date" index={0} />
             {tableHeader.map(
               (headerCell, index) =>
-                selectedExercises.has(headerCell) &&
-                renderHeaderCell({ item: headerCell, index: index + 1 }),
+                selectedExercises.has(headerCell) && (
+                  <HeaderCell
+                    item={headerCell}
+                    index={index + 1}
+                    key={index + 1}
+                  />
+                ),
             )}
           </XStack>
           <FlatList

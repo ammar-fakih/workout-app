@@ -20997,7 +20997,11 @@
       "useAnimatedNumberReaction": "Function",
       "useAnimatedNumberStyle": "Function",
       "usePresence": "Function",
-      "useAnimations": "Function"
+      "useAnimations": "Function",
+      "150ms": {
+        "type": "timing",
+        "duration": 150
+      }
     },
     "media": {
       "xl": {

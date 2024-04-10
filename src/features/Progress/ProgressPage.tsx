@@ -5,12 +5,17 @@ import Calendar from "./Calendar";
 import List from "./List";
 import Table from "./Table";
 import { useMemo } from "react";
+import BodyWeight from "./BodyWeight";
+import Graphs from "./Graphs";
 
 export default function ProgressPage() {
   const insets = useSafeAreaInsets();
   const colorScheme = useColorScheme();
 
-  const tabsList = useMemo(() => ["Table", "List", "Graphs", "Calendar"], []);
+  const tabsList = useMemo(
+    () => ["Table", "List", "Graphs", "Calendar", "Body Weight"],
+    [],
+  );
 
   return (
     <YStack paddingTop={insets.top} f={1} marginHorizontal="$2">
@@ -23,7 +28,9 @@ export default function ProgressPage() {
               backgroundColor="$color3"
               key={index}
             >
-              <Text>{tab}</Text>
+              <Text fontSize="$1" textAlign="center">
+                {tab}
+              </Text>
             </Tabs.Tab>
           ))}
         </Tabs.List>
@@ -34,8 +41,14 @@ export default function ProgressPage() {
         <Tabs.Content value="tab2" f={1}>
           <List />
         </Tabs.Content>
+        <Tabs.Content value="tab3" f={1}>
+          <Graphs />
+        </Tabs.Content>
         <Tabs.Content value="tab4" f={1} key={colorScheme}>
           <Calendar />
+        </Tabs.Content>
+        <Tabs.Content value="tab5" f={1}>
+          <BodyWeight />
         </Tabs.Content>
       </Tabs>
     </YStack>
