@@ -1,22 +1,33 @@
-import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import {
+  PayloadAction,
+  createEntityAdapter,
+  createSlice,
+} from "@reduxjs/toolkit";
 
 import { RootState } from "../../app/store";
 import {
-  getClosestDate,
-  getCurrentWeekRangeTime,
-  getDefaultWeight,
-} from "./helperFunctions";
+  DEFAULT_PLATES_IMPERIAL,
+  DEFAULT_PLATES_METRIC,
+  DEFAULT_WEIGHT_IMPERIAL,
+  DEFAULT_WEIGHT_METRIC,
+} from "./constants";
 import {
+  BodyWeightRecord,
+  ExerciseRecord,
   GeneralWorkout,
   Program,
   ProgramFromFile,
-  ExerciseRecord,
+  SelectedWorkout,
   TodaysWorkout,
   Units,
   Workout,
   WorkoutRecord,
-  SelectedWorkout,
 } from "./types";
+
+const BodyWeightRecordAdapter = createEntityAdapter({
+  selectId: (record: BodyWeightRecord) => record.date,
+  sortComparer: (a, b) => a.date.localeCompare(b.date),
+});
 
 interface WorkoutsState {
   allPrograms: Program[];
@@ -40,6 +51,7 @@ interface WorkoutsState {
   workoutRecords: WorkoutRecord[]; // record of all workouts (groups of exercises); maps to allRecords
 
   units: Units;
+  bodyWeightRecords: ReturnType<typeof BodyWeightRecordAdapter.getInitialState>;
 }
 
 const initialState: WorkoutsState = {
@@ -59,6 +71,8 @@ const initialState: WorkoutsState = {
   stopWatchExtraSeconds: 0,
 
   units: Units.IMPERIAL,
+
+  bodyWeightRecords: BodyWeightRecordAdapter.getInitialState(),
 };
 
 export const workoutsSlice = createSlice({
@@ -115,62 +129,96 @@ export const workoutsSlice = createSlice({
       state.allPrograms = [updatedProgram];
       state.selectedProgram = updatedProgram;
     },
+    unitsSet: (state, action: PayloadAction<Units>) => {
+      state.units = action.payload;
 
+      // Update current workouts
+      state.weeksWorkouts = state.weeksWorkouts.map((workout) => ({
+        ...workout,
+        exercises: workout.exercises.map((exercise) => ({
+          ...exercise,
+          weight: getNextWeight(state, exercise.id),
+        })),
+      }));
+
+      state.todaysWorkout = state.todaysWorkout && {
+        ...state.todaysWorkout,
+        exercises: state.todaysWorkout.exercises.map((exercise) => ({
+          ...exercise,
+          weight: getNextWeight(state, exercise.id),
+        })),
+      };
+
+      state.selectedWorkout = state.selectedWorkout && {
+        ...state.selectedWorkout,
+        exercises: state.selectedWorkout.exercises.map((exercise) => ({
+          ...exercise,
+          weight: roundUnits(
+            convertUnits(exercise.weight, action.payload),
+            action.payload,
+          ),
+        })),
+      };
+    },
     weeksWorkoutsSet: (state) => {
       if (!state.selectedProgram) return;
-      const { sunday, saturday } = getCurrentWeekRangeTime();
 
-      let numIntervals: number | undefined = undefined;
+      const todayNum = new Date().getDay();
 
-      // Filter out workouts that are not in the current week and add closestTimeToNow
-      state.weeksWorkouts = state.selectedProgram.workouts.reduce(
-        (accumulator, currentWorkout) => {
-          const { closestTimeToNow, newNumIntervals } = getClosestDate(
-            currentWorkout.startDate,
-            currentWorkout.frequency,
-            numIntervals,
-          );
-          if (!numIntervals) {
-            numIntervals = newNumIntervals;
+      // map workouts to days of the week
+      const workoutsPerDay = Array.from(
+        { length: 7 },
+        (_) => [],
+      ) as Workout[][];
+      state.selectedProgram.workouts.forEach((workout) => {
+        const day = new Date(workout.startDate).getUTCDay();
+        workoutsPerDay[day].push(workout);
+      });
+
+      // Create a date object for each day of the week
+      const daysOfThisWeek = new Array(7).fill(0).map((_, i) => {
+        const date = new Date();
+        date.setDate(date.getDate() - todayNum + i);
+        return date;
+      });
+
+      const weeksWorkouts = [] as TodaysWorkout[];
+      daysOfThisWeek.forEach((date, i) => {
+        workoutsPerDay[i].forEach((workout) => {
+          // calculate number of days between date and workout date
+          const workoutDate = new Date(workout.startDate);
+          const diff = Math.abs(workoutDate.getTime() - date.getTime());
+          const daysBetween = Math.ceil(diff / (1000 * 60 * 60 * 24));
+          const weeks = Math.floor(daysBetween / 7);
+
+          if (weeks % workout.frequency === 0) {
+            weeksWorkouts.push({
+              ...workout,
+              closestTimeToNow: date.toISOString(),
+              completed: false,
+              exercises: workout.exercises.map((exercise) => {
+                return {
+                  ...exercise,
+                  completedSets: Array(exercise.sets).fill({
+                    repCount: exercise.reps,
+                    selected: false,
+                  }),
+                  weight: getNextWeight(state, exercise.id),
+                };
+              }),
+            });
           }
-          const closestTime = closestTimeToNow.getTime();
-          if (
-            closestTime >= sunday.getTime() &&
-            closestTime <= saturday.getTime()
-          ) {
-            return [
-              ...accumulator,
-              {
-                ...currentWorkout,
-                closestTimeToNow: closestTimeToNow.toISOString(),
-                completed: false,
-                exercises: currentWorkout.exercises.map((exercise) => {
-                  return {
-                    ...exercise,
-                    completedSets: Array(exercise.sets).fill({
-                      repCount: exercise.reps,
-                      selected: false,
-                    }),
-                    weight: getNextWeight(state, exercise.id),
-                  };
-                }),
-              },
-            ];
-          } else {
-            return accumulator;
-          }
-        },
-        [] as TodaysWorkout[],
-      );
+        });
+      });
+
+      state.weeksWorkouts = weeksWorkouts;
     },
     todaysWorkoutsSet: (state) => {
       if (!state.weeksWorkouts) return;
-      const date = new Date();
-      const day = date.getDay();
+      const day = new Date().getDay();
 
       const todaysWorkout = state.weeksWorkouts.find((workout) => {
         const startDate = new Date(workout.closestTimeToNow);
-
         return startDate.getDay() === day;
       });
 
@@ -181,6 +229,7 @@ export const workoutsSlice = createSlice({
     workoutSelected: (state, action: PayloadAction<TodaysWorkout>) => {
       state.selectedWorkout = {
         ...action.payload,
+        notes: "",
         exercises: action.payload.exercises.map((exercise) => ({
           ...exercise,
           startingWeight: exercise.weight,
@@ -251,6 +300,7 @@ export const workoutsSlice = createSlice({
       state.workoutRecords.push({
         exercises: exerciseRecord,
         name: state.selectedWorkout.name,
+        notes: state.selectedWorkout.notes,
         timeToComplete: totalTime,
       });
       state.selectedSet = workoutsSlice.getInitialState().selectedSet;
@@ -280,16 +330,14 @@ export const workoutsSlice = createSlice({
       }>,
     ) => {
       const { newWeight, weightChange, exerciseId } = action.payload;
-      if (!state.selectedWorkout || (!weightChange && !newWeight)) return;
-
       const exercise = state.selectedWorkout?.exercises.find(
         (exercise) => exercise.id === exerciseId,
       );
       if (!exercise) return;
 
-      if (weightChange) {
+      if (weightChange && weightChange + exercise.weight >= 0) {
         exercise.weight += weightChange;
-      } else if (newWeight) {
+      } else if (newWeight !== undefined) {
         exercise.weight = newWeight;
       }
     },
@@ -353,6 +401,12 @@ export const workoutsSlice = createSlice({
         }
       }
     },
+    onEditSelectedWorkoutNotes: (state, action: PayloadAction<string>) => {
+      if (!state.selectedWorkout) return;
+
+      state.selectedWorkout.notes = action.payload;
+    },
+
     stopWatchStarted: (state) => {
       state.stopWatchStartTime = Date.now();
     },
@@ -360,7 +414,7 @@ export const workoutsSlice = createSlice({
       // Calculate Extra Time
       const currentTime = Date.now();
       const startTime = state.stopWatchStartTime || currentTime;
-      state.stopWatchExtraSeconds += Math.round(
+      state.stopWatchExtraSeconds += Math.floor(
         (currentTime - startTime) / 1000,
       );
 
@@ -370,13 +424,21 @@ export const workoutsSlice = createSlice({
       state.stopWatchStartTime = null;
       state.stopWatchExtraSeconds = 0;
     },
+    todayBodyWeightRecordAdded: (
+      state,
+      action: PayloadAction<BodyWeightRecord>,
+    ) => {
+      BodyWeightRecordAdapter.setOne(state.bodyWeightRecords, action.payload);
+    },
   },
 });
 
 // Private Helper functions
 const getNextWeight = (state: WorkoutsState, exerciseId: string) => {
   if (!state.exerciseRecords[exerciseId]) {
-    return getDefaultWeight(state.units);
+    return state.units === Units.IMPERIAL
+      ? DEFAULT_WEIGHT_IMPERIAL
+      : DEFAULT_WEIGHT_METRIC;
   }
 
   const exerciseIndex =
@@ -385,6 +447,17 @@ const getNextWeight = (state: WorkoutsState, exerciseId: string) => {
     ];
 
   return state.allRecords[exerciseIndex].weight;
+};
+
+const roundUnits = (weight: number, units: Units) => {
+  const plates =
+    units === Units.IMPERIAL ? DEFAULT_PLATES_IMPERIAL : DEFAULT_PLATES_METRIC;
+  const smallestPlate = plates.sort()[0];
+  return Math.round(weight / (smallestPlate * 2)) * (smallestPlate * 2);
+};
+
+const convertUnits = (weight: number, units: Units) => {
+  return units === Units.IMPERIAL ? weight * 2.20462 : weight / 2.20462;
 };
 
 // Selectors
@@ -398,6 +471,13 @@ export const selectSelectedWorkout = (state: RootState) =>
   state.appData.workouts.selectedWorkout;
 export const selectExerciseRecords = (state: RootState) =>
   state.appData.workouts.exerciseRecords;
+
+export const {
+  selectById: selectBodyWeightRecordByID,
+  selectAll: selectAllBodyWeightRecords,
+} = BodyWeightRecordAdapter.getSelectors<RootState>(
+  (state) => state.appData.workouts.bodyWeightRecords,
+);
 
 // Actions
 export const {
@@ -417,6 +497,10 @@ export const {
   stopWatchPaused,
   stopWatchStarted,
   appOpened,
+  unitsSet,
+  onEditSelectedWorkoutNotes,
+  todayBodyWeightRecordAdded,
+  stopWatchStopped,
 } = workoutsSlice.actions;
 
 export default workoutsSlice.reducer;

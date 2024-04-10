@@ -38,11 +38,13 @@ export interface Workout extends GeneralWorkout, SpecificWorkout {
 }
 
 export interface TodaysWorkout extends Workout {
+  completed: boolean;
   exercises: TodaysExercise[];
 }
 
 export interface SelectedWorkout extends Workout {
   exercises: SelectedExercise[];
+  notes: string;
 }
 
 export interface ProgramFromFile {
@@ -66,11 +68,17 @@ export interface WorkoutRecord {
   exercises: number[]; // maps to indices in allRecords
   name: string;
   timeToComplete: number; // in seconds
+  notes: string;
 }
 
 export interface WorkoutRecordData {
   exercises: ExerciseRecord[];
   name: string;
+}
+
+export interface BodyWeightRecord {
+  date: string;
+  weight: number;
 }
 
 // Enums

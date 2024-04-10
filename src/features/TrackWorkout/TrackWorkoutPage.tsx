@@ -6,20 +6,24 @@ import {
   AnimatePresence,
   Button,
   Input,
-  ScrollView,
-  styled,
   Text,
   View,
   XStack,
   YStack,
+  styled,
 } from "tamagui";
 import { RootTabsParamList } from "../../../App";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import {
+  DEFAULT_ADD_WEIGHT_IMPERIAL,
+  DEFAULT_ADD_WEIGHT_METRIC,
+} from "../Home/constants";
 import { getOrdinalNumber, getUnitAbbreviation } from "../Home/helperFunctions";
-import { SelectedExercise } from "../Home/types";
+import { CompletedSet, SelectedExercise, Units } from "../Home/types";
 import {
   exerciseSetClicked,
   exerciseWeightChanged,
+  onEditSelectedWorkoutNotes,
   onPressExerciseSet,
   onPressNextSet,
   onPressPreviousSet,
@@ -47,6 +51,12 @@ export default function TrackWorkout({ navigation }: Props) {
   const selectedWorkout = useAppSelector(selectSelectedWorkout);
   const units = useAppSelector((state) => state.appData.workouts.units);
   const dispatch = useAppDispatch();
+
+  const getAddWeight = () => {
+    return units === Units.IMPERIAL
+      ? DEFAULT_ADD_WEIGHT_IMPERIAL
+      : DEFAULT_ADD_WEIGHT_METRIC;
+  };
 
   const handlePressNextSet = () => {
     setAnimationDirection("isDown");
@@ -85,21 +95,22 @@ export default function TrackWorkout({ navigation }: Props) {
         borderColor="$color7"
       >
         {/* Header */}
-        <XStack
-          jc="space-between"
-          paddingHorizontal="$5"
-          paddingVertical={isExerciseSelected ? "$6" : "$2"}
-          alignItems="center"
-          onPress={() => handlePressExerciseHeader(index, -1)}
-        >
-          <Text fontWeight="$10" fontSize="$6">
-            {exercise.name}
-          </Text>
-          <Text
-            fontWeight="$10"
-            fontSize="$6"
-          >{`${exercise.sets}x${exercise.reps}`}</Text>
-        </XStack>
+        <Button unstyled onPress={() => handlePressExerciseHeader(index, -1)}>
+          <XStack
+            jc="space-between"
+            paddingHorizontal="$5"
+            paddingVertical={isExerciseSelected ? "$6" : "$2"}
+            alignItems="center"
+          >
+            <Text fontWeight="$10" fontSize="$6">
+              {exercise.name}
+            </Text>
+            <Text
+              fontWeight="$10"
+              fontSize="$6"
+            >{`${exercise.sets}x${exercise.reps}`}</Text>
+          </XStack>
+        </Button>
 
         {/* Body */}
         {isExerciseSelected && (
@@ -107,7 +118,13 @@ export default function TrackWorkout({ navigation }: Props) {
             <FlatList
               scrollEnabled={false}
               data={exercise.completedSets}
-              renderItem={({ item: set, index: exerciseSetIndex }) => {
+              renderItem={({
+                item: set,
+                index: exerciseSetIndex,
+              }: {
+                item: CompletedSet;
+                index: number;
+              }) => {
                 const isItemSelected = isEqual(selectedSet, [
                   index,
                   exerciseSetIndex,
@@ -116,16 +133,18 @@ export default function TrackWorkout({ navigation }: Props) {
 
                 if (!isItemSelected) {
                   setContent = (
-                    <XStack
-                      jc="space-around"
-                      alignItems="center"
-                      p="$3"
+                    <Button
+                      unstyled
                       onPress={() =>
                         handlePressExerciseHeader(index, exerciseSetIndex)
                       }
                     >
-                      <Text>{getOrdinalNumber(exerciseSetIndex + 1)} set</Text>
-                    </XStack>
+                      <XStack jc="space-around" alignItems="center" p="$3">
+                        <Text>
+                          {getOrdinalNumber(exerciseSetIndex + 1)} set
+                        </Text>
+                      </XStack>
+                    </Button>
                   );
                 } else {
                   setContent = (
@@ -189,33 +208,40 @@ export default function TrackWorkout({ navigation }: Props) {
                     dispatch(
                       exerciseWeightChanged({
                         exerciseId: exercise.id,
-                        weightChange: -5,
+                        weightChange: -getAddWeight(),
                       }),
                     );
                   }}
                 >
-                  <Text>-5</Text>
+                  <Text>{`-${getAddWeight()}`}</Text>
                 </Button>
-                <Input
-                  keyboardType="numeric"
-                  placeholder={`${exercise.startingWeight.toString()} ${getUnitAbbreviation(
-                    units,
-                  )}`}
-                  value={`${exercise.weight.toString()} ${getUnitAbbreviation(
-                    units,
-                  )}`}
-                />
+                <XStack ai="center" space="$2">
+                  <Input
+                    keyboardType="numeric"
+                    onChangeText={(text: string) => {
+                      dispatch(
+                        exerciseWeightChanged({
+                          exerciseId: exercise.id,
+                          newWeight: Number(text),
+                        }),
+                      );
+                    }}
+                    value={exercise.weight.toString() || ""}
+                    // m="$0"
+                  />
+                  <Text>{getUnitAbbreviation(units)}</Text>
+                </XStack>
                 <Button
                   onPress={() => {
                     dispatch(
                       exerciseWeightChanged({
                         exerciseId: exercise.id,
-                        weightChange: 5,
+                        weightChange: getAddWeight(),
                       }),
                     );
                   }}
                 >
-                  <Text>+5</Text>
+                  <Text>{`+${getAddWeight()}`}</Text>
                 </Button>
               </XStack>
 
@@ -232,33 +258,46 @@ export default function TrackWorkout({ navigation }: Props) {
   };
 
   return (
-    <ScrollView flex={1} onPress={Keyboard.dismiss} m="$2">
-      <View f={1}>
-        {selectedWorkout.exercises.map((exercise, index) => {
-          return renderItem({ item: exercise, index });
-        })}
-      </View>
-      <Button
-        margin="$4"
-        marginTop="$10"
-        onPress={() => {
-          Alert.alert("Are you sure you want to finish?", "", [
-            {
-              text: "Cancel",
-              style: "cancel",
-            },
-            {
-              text: "Finish",
-              onPress: () => {
-                dispatch(workoutFinished());
-                navigation.navigate("HomePage");
-              },
-            },
-          ]);
-        }}
-      >
-        Finish
-      </Button>
-    </ScrollView>
+    <View flex={1} onPress={Keyboard.dismiss} m="$2">
+      <FlatList
+        data={selectedWorkout.exercises}
+        renderItem={renderItem}
+        ListFooterComponent={
+          <View>
+            <Input
+              m="$4"
+              placeholder="Notes..."
+              minHeight={70}
+              multiline
+              value={selectedWorkout.notes}
+              onChangeText={(text: string) =>
+                dispatch(onEditSelectedWorkoutNotes(text))
+              }
+            />
+            <Button
+              margin="$4"
+              marginTop="$10"
+              onPress={() => {
+                Alert.alert("Are you sure you want to finish?", "", [
+                  {
+                    text: "Cancel",
+                    style: "cancel",
+                  },
+                  {
+                    text: "Finish",
+                    onPress: () => {
+                      dispatch(workoutFinished());
+                      navigation.navigate("HomePage");
+                    },
+                  },
+                ]);
+              }}
+            >
+              Finish
+            </Button>
+          </View>
+        }
+      />
+    </View>
   );
 }

@@ -1,16 +1,16 @@
 import { createStackNavigator } from "@react-navigation/stack";
 
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
-import { Menu, Plus } from "@tamagui/lucide-icons";
-import { Button, Circle, Popover, Square, XStack } from "tamagui";
+import { Menu } from "@tamagui/lucide-icons";
+import { Button, Popover, XStack } from "tamagui";
 import { RootTabsParamList } from "../../../App";
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import StopWatch from "../../Components/StopWatch";
-import ProgramsPage from "../Programs/ProgramsPage";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import Settings from "../Settings/Settings";
+import Programs from "../Programs/index";
 import TrackWorkout from "../TrackWorkout/TrackWorkoutPage";
 import HomePage from "./HomePage";
-import { workoutCanceled } from "./workoutsSlice";
+import { stopWatchStopped, workoutCanceled } from "./workoutsSlice";
 
 const Stack = createStackNavigator<RootTabsParamList>();
 
@@ -25,7 +25,7 @@ export default function Home({ navigation }: Props) {
   const TrackWorkoutHeaderRight = () => {
     return (
       <XStack ai="center">
-        <StopWatch isFocused={navigation.isFocused()} />
+        <StopWatch />
         <Popover>
           <Popover.Trigger pr="$4">
             <Menu />
@@ -46,6 +46,16 @@ export default function Home({ navigation }: Props) {
               },
             ]}
           >
+            <Popover.Close asChild w="100%" mb="$2">
+              <Button
+                onPress={() => {
+                  dispatch(stopWatchStopped());
+                }}
+                textAlign="center"
+              >
+                Restart Timer
+              </Button>
+            </Popover.Close>
             <Popover.Close asChild>
               <Button
                 onPress={() => {
@@ -61,20 +71,6 @@ export default function Home({ navigation }: Props) {
           </Popover.Content>
         </Popover>
       </XStack>
-    );
-  };
-
-  const ProgramsPageHeaderRight = ({ onPress }: { onPress: () => void }) => {
-    return (
-      <Button
-        icon={
-          <Square bg="$color5" size="$size.2.5" radiused>
-            <Plus size="$2" />
-          </Square>
-        }
-        variant="outlined"
-        onPress={onPress}
-      />
     );
   };
 
@@ -96,16 +92,10 @@ export default function Home({ navigation }: Props) {
       <Stack.Screen name="Settings" component={Settings} />
       <Stack.Screen
         name="Programs"
-        component={ProgramsPage}
-        options={({ navigation }) => ({
-          headerRight: () => (
-            <ProgramsPageHeaderRight
-              onPress={() => {
-                // navigation.navigate("");
-              }}
-            />
-          ),
-        })}
+        component={Programs}
+        options={{
+          headerShown: false,
+        }}
       />
     </Stack.Navigator>
   );

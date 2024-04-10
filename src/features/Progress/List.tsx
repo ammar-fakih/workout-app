@@ -67,10 +67,12 @@ export default function List() {
 
   return (
     <View f={1}>
-      <SortByMenu
-        onPressDateAsc={onPressDateAsc}
-        onPressDateDesc={onPressDateDesc}
-      />
+      <View ai="flex-start">
+        <SortByMenu
+          onPressDateAsc={onPressDateAsc}
+          onPressDateDesc={onPressDateDesc}
+        />
+      </View>
       <FlatList data={sortedWorkoutRecords} renderItem={renderItem} />
     </View>
   );

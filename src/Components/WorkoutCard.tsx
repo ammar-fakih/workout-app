@@ -11,17 +11,17 @@ import {
 import { TodaysExercise } from "../features/Home/types";
 
 type Props = {
-  onPressWorkout: () => void;
   name: string;
   date: string;
   exercises: TodaysExercise[];
+  onPressWorkout: () => void;
 };
 
 export default function WorkoutCard({
-  onPressWorkout,
   name,
   date,
   exercises,
+  onPressWorkout,
 }: Props) {
   const units = useAppSelector((state) => state.appData.workouts.units);
   const nextTimeDate = new Date(date);

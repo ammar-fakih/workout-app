@@ -33,6 +33,8 @@ export type RootTabsParamList = {
   HomePage: undefined;
   TrackWorkout: undefined;
   Programs: undefined;
+  CreateProgramPage: undefined;
+  ProgramsPage: undefined;
 };
 const Tabs = createBottomTabNavigator<RootTabsParamList>();
 
@@ -46,6 +48,7 @@ export default function () {
           <RootSiblingParent>
             <TamaguiProvider config={config} defaultTheme="dark_blue">
               <Theme name={colorScheme === "dark" ? "dark_blue" : "light_blue"}>
+                {/* <Theme name="dark_blue"> */}
                 <App />
               </Theme>
             </TamaguiProvider>
@@ -111,7 +114,6 @@ function App() {
         flex: 1,
         backgroundColor: theme.background.val,
       }}
-      //@ts-expect-error onLayout is not defined in ViewProps
       onLayout={onLayoutRootView}
     >
       <NavigationContainer theme={NavigationTheme}>

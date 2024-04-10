@@ -1,11 +1,10 @@
-import React, { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { ChevronDown, Settings2 } from "@tamagui/lucide-icons";
-import { Alert, FlatList } from "react-native";
+import { Alert, FlatList, useColorScheme } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
-  Accordion,
   AnimatePresence,
   Button,
   Card,
@@ -14,15 +13,16 @@ import {
   Separator,
   Square,
   Text,
+  View,
   XStack,
   YStack,
 } from "tamagui";
 import { RootTabsParamList } from "../../../App";
-import startingProgram from "../../../startingProgram.json";
-import startingWorkouts from "../../../startingWorkouts.json";
+import { startingProgram, startingWorkouts } from "../../../startingWorkout";
 import StopWatch from "../../Components/StopWatch";
 import WorkoutCard from "../../Components/WorkoutCard";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import LogBodyWeight from "./LogBodyWeight";
 import { TodaysWorkout } from "./types";
 import {
   appOpened,
@@ -34,6 +34,7 @@ type Props = BottomTabScreenProps<RootTabsParamList, "HomePage">;
 
 export default function HomePage({ navigation }: Props) {
   const insets = useSafeAreaInsets();
+  const [weeksWorkoutsOpen, setWeeksWorkoutsOpen] = useState(false);
   const weeksWorkouts = useAppSelector(selectWeeksWorkouts);
   const todaysWorkout = useAppSelector(
     (state) => state.appData.workouts.todaysWorkout,
@@ -41,14 +42,19 @@ export default function HomePage({ navigation }: Props) {
   const selectedWorkout = useAppSelector(
     (state) => state.appData.workouts.selectedWorkout,
   );
+  // const bodyWeightRecords = bodyWeightRecordSelectors;
   const dispatch = useAppDispatch();
 
   useEffect(() => {
     dispatch(appOpened({ startingProgram, startingWorkouts }));
   }, []);
 
+  console.log();
+
   const onPressWorkout = (workout: TodaysWorkout) => {
-    if (selectedWorkout) {
+    if (workout.name === selectedWorkout?.name) {
+      navigation.navigate("TrackWorkout");
+    } else if (selectedWorkout) {
       Alert.alert(
         `Start ${workout.name}?`,
         "The current workout will be canceled",
@@ -82,7 +88,7 @@ export default function HomePage({ navigation }: Props) {
           marginVertical="$6"
         >
           <Button variant="outlined" disabled>
-            <H3>Rest Day</H3>
+            <H3>☀️ Rest Day</H3>
           </Button>
           <Button
             variant="outlined"
@@ -108,22 +114,29 @@ export default function HomePage({ navigation }: Props) {
           </Button>
         </XStack>
         <WorkoutCard
-          onPressWorkout={() => onPressWorkout(todaysWorkout)}
           date={todaysWorkout.closestTimeToNow}
           exercises={todaysWorkout.exercises}
           name={todaysWorkout.name}
+          onPressWorkout={() => onPressWorkout(todaysWorkout)}
         />
       </YStack>
     );
   };
 
-  const renderWeeksWorkouts = ({ item }: { item: TodaysWorkout }) => {
+  const renderWeeksWorkouts = ({
+    item,
+    index,
+  }: {
+    item: TodaysWorkout;
+    index: number;
+  }) => {
     return (
       <WorkoutCard
         onPressWorkout={() => onPressWorkout(item)}
         date={item.closestTimeToNow}
         exercises={item.exercises}
         name={item.name}
+        key={index}
       />
     );
   };
@@ -135,57 +148,62 @@ export default function HomePage({ navigation }: Props) {
         <Button disabled variant="outlined">
           <H3 fontFamily="$gerhaus">LIFT-IQ</H3>
         </Button>
-        <Button
-          icon={<Settings2 size="$2" />}
-          variant="outlined"
-          onPress={() => navigation.navigate("Settings")}
-        />
+
+        <XStack>
+          <LogBodyWeight />
+          <Button
+            icon={<Settings2 size="$2" />}
+            variant="outlined"
+            onPress={() => navigation.navigate("Settings")}
+          />
+        </XStack>
       </XStack>
 
       {renderTodaysWorkout()}
       <Separator />
 
       {/* Other Week's Workouts */}
-      <Accordion
-        type="multiple"
-        defaultValue={todaysWorkout ? undefined : ["a1"]}
+      <Button
+        unstyled
+        flexDirection="row"
+        borderWidth="$0"
+        marginHorizontal="$2"
+        jc="space-between"
+        ai="center"
+        p="$4"
+        onPress={() => setWeeksWorkoutsOpen(!weeksWorkoutsOpen)}
       >
-        <Accordion.Item value="a1">
-          <Accordion.Trigger
-            flexDirection="row"
-            borderWidth="$0"
-            marginHorizontal="$2"
-            jc="space-between"
-            ai="center"
-          >
-            {({ open }: { open: boolean }) => (
-              <>
-                <Text>Other Workouts This Week</Text>
-                <Square animation="quick" rotate={open ? "180deg" : "0deg"}>
-                  <ChevronDown size="$1" />
-                </Square>
-              </>
-            )}
-          </Accordion.Trigger>
+        <Text>Other Workouts This Week</Text>
+        <Square
+          animation="quick"
+          rotate={weeksWorkoutsOpen ? "180deg" : "0deg"}
+        >
+          <ChevronDown size="$1" />
+        </Square>
+      </Button>
 
-          <AnimatePresence>
-            <Accordion.Content
-              zIndex={-1}
-              paddingVertical="$0"
-              animation="quick"
-              enterStyle={{ opacity: 0, y: -10 }}
-              exitStyle={{ opacity: 0, y: -20 }}
-            >
-              <FlatList
-                style={{ paddingBottom: 120, paddingTop: 20 }}
-                data={weeksWorkouts}
-                renderItem={renderWeeksWorkouts}
-                keyExtractor={(item) => item.workoutId}
-              />
-            </Accordion.Content>
-          </AnimatePresence>
-        </Accordion.Item>
-      </Accordion>
+      {weeksWorkoutsOpen && (
+        <AnimatePresence>
+          <View
+            f={1}
+            zIndex={-1}
+            pt="$0"
+            animation="quick"
+            enterStyle={{ opacity: 0, y: -10 }}
+            exitStyle={{ opacity: 0, y: -20 }}
+          >
+            <FlatList
+              style={{ paddingTop: 20 }}
+              contentContainerStyle={{
+                paddingBottom: 150,
+                paddingHorizontal: 15,
+              }}
+              data={weeksWorkouts}
+              renderItem={renderWeeksWorkouts}
+            />
+          </View>
+        </AnimatePresence>
+      )}
       {/* Start Workout Card*/}
       {selectedWorkout && (
         <Card
@@ -211,7 +229,7 @@ export default function HomePage({ navigation }: Props) {
               <Text fontWeight="$10">{selectedWorkout.name}</Text>
             </YStack>
             <YStack f={1} ai="center" jc="center">
-              <StopWatch isFocused={navigation.isFocused()} />
+              <StopWatch />
               <Button
                 onPress={() => {
                   navigation.navigate("TrackWorkout");

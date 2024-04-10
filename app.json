@@ -17,7 +17,8 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.liftiq.app",
-      "userInterfaceStyle": "automatic"
+      "userInterfaceStyle": "automatic",
+      "jsEngine": "jsc"
     },
     "android": {
       "adaptiveIcon": {
@@ -39,6 +40,7 @@
     },
     "updates": {
       "url": "https://u.expo.dev/7db1303a-4fb3-4bac-9153-1c8bc1243c8a"
-    }
+    },
+    "jsEngine": "hermes"
   }
 }

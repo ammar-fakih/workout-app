@@ -1,6 +1,5 @@
-import { useFocusEffect } from "@react-navigation/native";
 import { Pause, Play } from "@tamagui/lucide-icons";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Button, Text } from "tamagui";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import {
@@ -12,11 +11,7 @@ import {
   stopWatchStarted,
 } from "../features/Home/workoutsSlice";
 
-type Props = {
-  isFocused: boolean;
-};
-
-export default function StopWatch({ isFocused }: Props) {
+export default function StopWatch() {
   const dispatch = useAppDispatch();
   const intervalCallback = useRef<() => void>(() => {});
   const [stopWatchValue, setStopWatchValue] = useState(0);
@@ -28,35 +23,33 @@ export default function StopWatch({ isFocused }: Props) {
     (state) => state.appData.workouts.stopWatchExtraSeconds,
   );
 
-  useFocusEffect(
-    useCallback(() => {
-      // Set initial value so that the stop watch doesn't start at 0
-      setStopWatchValue(
-        calculateStopWatchValue(stopWatchStartTime, stopWatchExtraTime),
-      );
+  useEffect(() => {
+    // Set initial value so that the stop watch doesn't start at 0
+    setStopWatchValue(
+      calculateStopWatchValue(stopWatchStartTime, stopWatchExtraTime),
+    );
 
-      clearInterval(intervalID);
-      setIntervalID(undefined);
+    clearInterval(intervalID);
 
-      if (stopWatchStartTime) {
-        intervalCallback.current = () => {
-          setStopWatchValue(
-            calculateStopWatchValue(stopWatchStartTime, stopWatchExtraTime),
-          );
-        };
-
-        const intervalID = setInterval(function () {
-          intervalCallback.current();
-        }, 1000);
-        setIntervalID(intervalID);
-      }
-
-      return () => {
-        clearInterval(intervalID);
-        setIntervalID(undefined);
+    if (stopWatchStartTime) {
+      intervalCallback.current = () => {
+        setStopWatchValue(
+          calculateStopWatchValue(stopWatchStartTime, stopWatchExtraTime),
+        );
       };
-    }, [stopWatchStartTime, stopWatchExtraTime]),
-  );
+
+      const intervalID = setInterval(() => {
+        setStopWatchValue(
+          calculateStopWatchValue(stopWatchStartTime, stopWatchExtraTime),
+        );
+      }, 1000);
+      setIntervalID(intervalID);
+    }
+
+    return () => {
+      clearInterval(intervalID);
+    };
+  }, [stopWatchStartTime, stopWatchExtraTime]);
 
   const getStopWatchString = useCallback(
     (stopWatchValue: number) => getStopWatchStringFromSeconds(stopWatchValue),
@@ -69,10 +62,6 @@ export default function StopWatch({ isFocused }: Props) {
       setIntervalID(undefined);
       dispatch(stopWatchPaused());
     } else {
-      const intervalID = setInterval(function () {
-        intervalCallback.current();
-      }, 1000);
-      setIntervalID(intervalID);
       dispatch(stopWatchStarted());
     }
   };

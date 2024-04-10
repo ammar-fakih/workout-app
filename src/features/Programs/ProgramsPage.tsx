@@ -1,5 +1,5 @@
 import { FlatList } from "react-native";
-import { Separator, Text, XStack, YStack } from "tamagui";
+import { Button, Separator, Text, XStack, YStack } from "tamagui";
 import { useAppSelector } from "../../app/hooks";
 import { Program } from "../Home/types";
 
@@ -17,23 +17,26 @@ export default function ProgramsPage() {
     );
 
     return (
-      <XStack f={1} m="$5" onPress={() => {}}>
-        <Text fontSize="$8" fontWeight="$8">
-          {item.name}
-        </Text>
-        <YStack ai="flex-end" f={1}>
-          {exercises.map((exercise) => (
-            <Text key={exercise.name}>{exercise.name}</Text>
-          ))}
-        </YStack>
-      </XStack>
+      <Button unstyled>
+        <XStack f={1} m="$5">
+          <Text fontSize="$8" fontWeight="$8">
+            {item.name}
+          </Text>
+          <YStack ai="flex-end" f={1}>
+            {exercises.map((exercise) => (
+              <Text key={exercise.name}>{exercise.name}</Text>
+            ))}
+          </YStack>
+        </XStack>
+      </Button>
     );
   };
+
   return (
     <YStack f={1}>
       <FlatList
         data={programs}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item: Program) => item.id}
         renderItem={renderItem}
         ItemSeparatorComponent={Separator}
         ListFooterComponent={Separator}

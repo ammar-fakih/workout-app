@@ -22,10 +22,6 @@ export const getFullDayName = () => {
   return days[dayNum];
 };
 
-export const getDefaultWeight = (units: Units) => {
-  return units === Units.IMPERIAL ? 45 : 20;
-};
-
 export const getUnitAbbreviation = (units: Units) => {
   return units === Units.IMPERIAL ? "lb" : "kg";
 };
@@ -68,9 +64,6 @@ export const getClosestDate = (
 
   // round to nearest interval
   const closestTimeToNow = newNumIntervals * interval + workoutStartTime;
-  // console.log(new Date(closestTimeToNow));
-  // console.log(newNumIntervals * interval);
-
   return { closestTimeToNow: new Date(closestTimeToNow), newNumIntervals };
 };
 
