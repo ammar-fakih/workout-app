@@ -51,10 +51,10 @@ interface WorkoutsState {
   workoutRecords: WorkoutRecord[]; // record of all workouts (groups of exercises); maps to allRecords
 
   units: Units;
+  bodyWeightRecords: ReturnType<typeof BodyWeightRecordAdapter.getInitialState>;
 }
 
-const initialState: WorkoutsState &
-  ReturnType<typeof BodyWeightRecordAdapter.getInitialState> = {
+const initialState: WorkoutsState = {
   allPrograms: [],
   allWorkouts: [],
   selectedProgram: undefined,
@@ -72,7 +72,7 @@ const initialState: WorkoutsState &
 
   units: Units.IMPERIAL,
 
-  ...BodyWeightRecordAdapter.getInitialState(),
+  bodyWeightRecords: BodyWeightRecordAdapter.getInitialState(),
 };
 
 export const workoutsSlice = createSlice({
@@ -424,7 +424,12 @@ export const workoutsSlice = createSlice({
       state.stopWatchStartTime = null;
       state.stopWatchExtraSeconds = 0;
     },
-    bodyWeightRecordAdded: BodyWeightRecordAdapter.addOne,
+    todayBodyWeightRecordAdded: (
+      state,
+      action: PayloadAction<BodyWeightRecord>,
+    ) => {
+      BodyWeightRecordAdapter.setOne(state.bodyWeightRecords, action.payload);
+    },
   },
 });
 
@@ -467,10 +472,12 @@ export const selectSelectedWorkout = (state: RootState) =>
 export const selectExerciseRecords = (state: RootState) =>
   state.appData.workouts.exerciseRecords;
 
-export const bodyWeightRecordSelectors = BodyWeightRecordAdapter.getSelectors(
-  (state: RootState) => state.appData.workouts,
+export const {
+  selectById: selectBodyWeightRecordByID,
+  selectAll: selectAllBodyWeightRecords,
+} = BodyWeightRecordAdapter.getSelectors<RootState>(
+  (state) => state.appData.workouts.bodyWeightRecords,
 );
-
 
 // Actions
 export const {
@@ -492,7 +499,7 @@ export const {
   appOpened,
   unitsSet,
   onEditSelectedWorkoutNotes,
-  bodyWeightRecordAdded,
+  todayBodyWeightRecordAdded,
   stopWatchStopped,
 } = workoutsSlice.actions;
 

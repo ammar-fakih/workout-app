@@ -1,5 +1,6 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { CheckCheck, Info, X } from "@tamagui/lucide-icons";
+import { useEffect, useState } from "react";
 import { useColorScheme } from "react-native";
 import {
   Adapt,
@@ -14,32 +15,53 @@ import {
   Unspaced,
   XStack,
 } from "tamagui";
+import { showToast } from "../../app/functions";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { getUnitAbbreviation } from "./helperFunctions";
 import {
-  bodyWeightRecordAdded,
-  bodyWeightRecordSelectors,
+  selectBodyWeightRecordByID,
+  todayBodyWeightRecordAdded as todaysBodyWeightRecordAdded,
 } from "./workoutsSlice";
-import { useState } from "react";
-import { store } from "../../app/store";
 
 export default function LogBodyWeight() {
-  // const today = new Date();
-  // today.setHours(0, 0, 0, 0);
+  const today = new Date(new Date().setHours(0, 0, 0, 0)).toISOString();
 
   const dispatch = useAppDispatch();
   const colorScheme = useColorScheme();
-  const [weight, setWeight] = useState(0);
+  const [weight, setWeight] = useState<string>();
   const units = useAppSelector((state) => state.appData.workouts.units);
-  const todaysBodyWeight = bodyWeightRecordSelectors.selectById(
-    store.getState(),
-    today.toISOString(),
+  const todaysBodyWeight = useAppSelector((state) =>
+    selectBodyWeightRecordByID(state, today),
   );
 
-  console.log(todaysBodyWeight);
+  useEffect(() => {
+    if (todaysBodyWeight) {
+      setWeight(todaysBodyWeight.weight.toString());
+    }
+  }, [todaysBodyWeight]);
 
-  const submitHandler = () => {
-    dispatch(bodyWeightRecordAdded({ weight, date: today.toISOString() }));
+  const handleSubmit = () => {
+    if (today && weight) {
+      dispatch(
+        todaysBodyWeightRecordAdded({
+          weight: parseInt(weight, 10),
+          date: today,
+        }),
+      );
+      showToast("Body weight logged", "green");
+    }
+  };
+
+  const handleClear = () => {
+    if (today) {
+      dispatch(
+        todaysBodyWeightRecordAdded({
+          weight: 0,
+          date: today,
+        }),
+      );
+      setWeight("");
+    }
   };
 
   return (
@@ -54,15 +76,15 @@ export default function LogBodyWeight() {
                 size={24}
                 color={colorScheme === "dark" ? "#fff" : "#000"}
               />
-              <CheckCheck color="$green10" />
+              {todaysBodyWeight ? <CheckCheck color="$green10" /> : null}
             </XStack>
           }
           variant="outlined"
         />
       </Dialog.Trigger>
 
-      <Adapt when="sm" platform="touch">
-        <Sheet animation="150ms" zIndex={200000} modal dismissOnSnapToBottom>
+      <Adapt when="sm">
+        <Sheet zIndex={200000} modal dismissOnSnapToBottom>
           <Sheet.Frame padding="$4" gap="$4">
             <Adapt.Contents />
           </Sheet.Frame>
@@ -102,7 +124,7 @@ export default function LogBodyWeight() {
         >
           <Dialog.Title>Log Body Weight</Dialog.Title>
           <Dialog.Description>
-            Log your body weight for today ({today})
+            Log your body weight for today ({today ? today.split("T")[0] : ""})
           </Dialog.Description>
           <Fieldset gap="$4" horizontal>
             <Label width={160} justifyContent="flex-end" htmlFor="name">
@@ -118,7 +140,12 @@ export default function LogBodyWeight() {
 
           <XStack alignSelf="flex-end" gap="$4">
             <Dialog.Close displayWhenAdapted asChild>
-              <Button theme="active" aria-label="Close" onPress={submitHandler}>
+              <Button theme="red" onPress={handleClear}>
+                <Text>Clear Entry</Text>
+              </Button>
+            </Dialog.Close>
+            <Dialog.Close displayWhenAdapted asChild>
+              <Button theme="active" onPress={handleSubmit}>
                 Save changes
               </Button>
             </Dialog.Close>
@@ -150,7 +177,6 @@ function PopOver() {
       </Popover.Trigger>
 
       <Popover.Content
-        zIndex={2000000}
         borderWidth={1}
         borderColor="$borderColor"
         enterStyle={{ y: -10, opacity: 0 }}

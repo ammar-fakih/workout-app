@@ -176,7 +176,7 @@ export default function Table() {
         <Text fontWeight="$8" fontSize="$5">
           No Records Yet
         </Text>
-        <Text>Log a workout to see it here</Text>
+        <Text>Log some workouts to see them here</Text>
       </YStack>
     );
 
