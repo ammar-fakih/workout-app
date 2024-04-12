@@ -127,6 +127,7 @@ export default function LogBodyWeight() {
               Weight ({getUnitAbbreviation(units)}) <PopOver />
             </Label>
             <Input
+              autoFocus
               flex={1}
               inputMode="numeric"
               value={String(weight)}

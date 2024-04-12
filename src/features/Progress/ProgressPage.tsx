@@ -5,7 +5,6 @@ import Calendar from "./Calendar";
 import List from "./List";
 import Table from "./Table";
 import { useMemo } from "react";
-import BodyWeight from "./BodyWeight";
 import Graphs from "./Graphs";
 
 export default function ProgressPage() {
@@ -46,9 +45,6 @@ export default function ProgressPage() {
         </Tabs.Content>
         <Tabs.Content value="tab4" f={1} key={colorScheme}>
           <Calendar />
-        </Tabs.Content>
-        <Tabs.Content value="tab5" f={1}>
-          <BodyWeight />
         </Tabs.Content>
       </Tabs>
     </YStack>
