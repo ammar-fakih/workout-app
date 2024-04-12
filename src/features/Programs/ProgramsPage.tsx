@@ -1,12 +1,86 @@
 import { FlatList } from "react-native";
-import { Button, Separator, Text, XStack, YStack } from "tamagui";
+import {
+  AnimatePresence,
+  Button,
+  Separator,
+  Square,
+  Text,
+  View,
+  XStack,
+  YStack,
+} from "tamagui";
 import { useAppSelector } from "../../app/hooks";
 import { Program } from "../Home/types";
+import { ChevronDown, Pencil } from "@tamagui/lucide-icons";
+import { useState } from "react";
 
 export default function ProgramsPage() {
+  const [draftsOpen, setDraftsOpen] = useState(false);
   const programs = useAppSelector(
     (state) => state.appData.workouts.allPrograms,
   );
+
+  const Drafts = () => {
+    return (
+      <View>
+        <Separator />
+        {/* <Button
+          unstyled
+          flexDirection="row"
+          borderWidth="$0"
+          marginHorizontal="$2"
+          jc="space-between"
+          ai="center"
+          p="$4"
+          onPress={() => setDraftsOpen(!draftsOpen)}
+        >
+          <XStack ai="center" space="$3">
+            <Text>Drafts</Text>
+            <Pencil size="$1" color="$gray11" />
+          </XStack>
+
+          <Square animation="quick" rotate={draftsOpen ? "180deg" : "0deg"}>
+            <ChevronDown size="$1" />
+          </Square>
+        </Button> */}
+        <Button
+          unstyled
+          flexDirection="row"
+          borderWidth="$0"
+          marginHorizontal="$2"
+          jc="space-between"
+          ai="center"
+          p="$4"
+          onPress={() => setDraftsOpen(!setDraftsOpen)}
+        >
+          <Text>Other Workouts This Week</Text>
+          <Square animation="quick" rotate={draftsOpen ? "180deg" : "0deg"}>
+            <ChevronDown size="$1" />
+          </Square>
+        </Button>
+        <AnimatePresence>
+          <View
+            f={1}
+            zIndex={-1}
+            pt="$0"
+            animation="quick"
+            enterStyle={{ opacity: 0, y: -10 }}
+            exitStyle={{ opacity: 0, y: -20 }}
+          >
+            {/* <FlatList
+              style={{ paddingTop: 20 }}
+              contentContainerStyle={{
+                paddingBottom: 150,
+                paddingHorizontal: 15,
+              }}
+              data={weeksWorkouts}
+              renderItem={renderWeeksWorkouts}
+            /> */}
+          </View>
+        </AnimatePresence>
+      </View>
+    );
+  };
 
   const renderItem = ({ item }: { item: Program }) => {
     // Filter out duplicate exercises
@@ -39,7 +113,7 @@ export default function ProgramsPage() {
         keyExtractor={(item: Program) => item.id}
         renderItem={renderItem}
         ItemSeparatorComponent={Separator}
-        ListFooterComponent={Separator}
+        ListFooterComponent={<Drafts />}
         contentContainerStyle={{ margin: 10 }}
       />
     </YStack>

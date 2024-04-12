@@ -3,8 +3,8 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { Plus } from "@tamagui/lucide-icons";
 import { Button, Square } from "tamagui";
 import { RootTabsParamList } from "../../../App";
-import ProgramsPage from "./ProgramsPage";
 import CreateProgramPage from "./CreateProgramPage";
+import ProgramsPage from "./ProgramsPage";
 
 const Stack = createStackNavigator<RootTabsParamList>();
 
@@ -35,7 +35,6 @@ export default function Programs({ navigation }: Props) {
           headerRight: () => (
             <ProgramsPageHeaderRight
               onPress={() => {
-                console.log("Create program");
                 navigation.navigate("CreateProgramPage");
               }}
             />

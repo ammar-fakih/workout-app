@@ -4,7 +4,7 @@ import { ScrollView, View, XStack, YStack } from "tamagui";
 import { useAppSelector } from "../../app/hooks";
 import { BodyWeightRecord } from "../Home/types";
 import { selectAllBodyWeightRecords } from "../Home/workoutsSlice";
-import { HeaderCell } from "./Table";
+import { HeaderCell, TableCell } from "./Table";
 
 export default function BodyWeight() {
   const records = useAppSelector((state) => selectAllBodyWeightRecords(state));
@@ -15,9 +15,11 @@ export default function BodyWeight() {
   );
 
   const renderRow = ({ item }: { item: BodyWeightRecord }) => {
-    return (<XStack f={1}>
-
-    </XStack>);    
+    return (
+      <XStack f={1}>
+        <TableCell item={item.date} index={0} renderTopBorder={true} />
+      </XStack>
+    );
   };
 
   return (

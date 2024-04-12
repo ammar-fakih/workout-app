@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { ChevronDown, Settings2 } from "@tamagui/lucide-icons";
-import { Alert, FlatList, useColorScheme } from "react-native";
+import { Alert, FlatList } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
   AnimatePresence,
@@ -48,8 +48,6 @@ export default function HomePage({ navigation }: Props) {
   useEffect(() => {
     dispatch(appOpened({ startingProgram, startingWorkouts }));
   }, []);
-
-  console.log();
 
   const onPressWorkout = (workout: TodaysWorkout) => {
     if (workout.name === selectedWorkout?.name) {
