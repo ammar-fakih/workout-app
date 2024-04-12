@@ -430,6 +430,12 @@ export const workoutsSlice = createSlice({
     ) => {
       BodyWeightRecordAdapter.setOne(state.bodyWeightRecords, action.payload);
     },
+    todaysBodyWeightRecordCleared: (state, action: PayloadAction<string>) => {
+      BodyWeightRecordAdapter.removeOne(
+        state.bodyWeightRecords,
+        action.payload,
+      );
+    },
   },
 });
 
@@ -500,6 +506,7 @@ export const {
   unitsSet,
   onEditSelectedWorkoutNotes,
   todayBodyWeightRecordAdded,
+  todaysBodyWeightRecordCleared,
   stopWatchStopped,
 } = workoutsSlice.actions;
 

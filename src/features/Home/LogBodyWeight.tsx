@@ -21,6 +21,7 @@ import { getUnitAbbreviation } from "./helperFunctions";
 import {
   selectBodyWeightRecordByID,
   todayBodyWeightRecordAdded as todaysBodyWeightRecordAdded,
+  todaysBodyWeightRecordCleared,
 } from "./workoutsSlice";
 
 export default function LogBodyWeight() {
@@ -28,7 +29,7 @@ export default function LogBodyWeight() {
 
   const dispatch = useAppDispatch();
   const colorScheme = useColorScheme();
-  const [weight, setWeight] = useState<string>();
+  const [weight, setWeight] = useState<string>("");
   const units = useAppSelector((state) => state.appData.workouts.units);
   const todaysBodyWeight = useAppSelector((state) =>
     selectBodyWeightRecordByID(state, today),
@@ -54,12 +55,7 @@ export default function LogBodyWeight() {
 
   const handleClear = () => {
     if (today) {
-      dispatch(
-        todaysBodyWeightRecordAdded({
-          weight: 0,
-          date: today,
-        }),
-      );
+      dispatch(todaysBodyWeightRecordCleared(today));
       setWeight("");
     }
   };
@@ -68,11 +64,11 @@ export default function LogBodyWeight() {
     <Dialog modal>
       <Dialog.Trigger asChild>
         <Button
-          p="$0"
           icon={
             <XStack ai="center">
               <MaterialCommunityIcons
                 name="scale-bathroom"
+                p="$3"
                 size={24}
                 color={colorScheme === "dark" ? "#fff" : "#000"}
               />
@@ -139,11 +135,13 @@ export default function LogBodyWeight() {
           </Fieldset>
 
           <XStack alignSelf="flex-end" gap="$4">
-            <Dialog.Close displayWhenAdapted asChild>
-              <Button theme="red" onPress={handleClear}>
-                <Text>Clear Entry</Text>
-              </Button>
-            </Dialog.Close>
+            {todaysBodyWeight ? (
+              <Dialog.Close displayWhenAdapted asChild>
+                <Button theme="red" onPress={handleClear}>
+                  <Text>Clear Entry</Text>
+                </Button>
+              </Dialog.Close>
+            ) : null}
             <Dialog.Close displayWhenAdapted asChild>
               <Button theme="active" onPress={handleSubmit}>
                 Save changes

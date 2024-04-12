@@ -147,9 +147,10 @@ export default function HomePage({ navigation }: Props) {
           <H3 fontFamily="$gerhaus">LIFT-IQ</H3>
         </Button>
 
-        <XStack>
+        <XStack mr="$2">
           <LogBodyWeight />
           <Button
+            p="$3"
             icon={<Settings2 size="$2" />}
             variant="outlined"
             onPress={() => navigation.navigate("Settings")}
