@@ -1,7 +1,13 @@
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { isEqual } from "lodash";
 import { useState } from "react";
-import { Alert, FlatList, Keyboard } from "react-native";
+import {
+  Alert,
+  FlatList,
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+} from "react-native";
 import {
   AnimatePresence,
   Button,
@@ -258,46 +264,51 @@ export default function TrackWorkout({ navigation }: Props) {
   };
 
   return (
-    <View flex={1} onPress={Keyboard.dismiss} m="$2">
-      <FlatList
-        data={selectedWorkout.exercises}
-        renderItem={renderItem}
-        ListFooterComponent={
-          <View>
-            <Input
-              m="$4"
-              placeholder="Notes..."
-              minHeight={70}
-              multiline
-              value={selectedWorkout.notes}
-              onChangeText={(text: string) =>
-                dispatch(onEditSelectedWorkoutNotes(text))
-              }
-            />
-            <Button
-              margin="$4"
-              marginTop="$10"
-              onPress={() => {
-                Alert.alert("Are you sure you want to finish?", "", [
-                  {
-                    text: "Cancel",
-                    style: "cancel",
-                  },
-                  {
-                    text: "Finish",
-                    onPress: () => {
-                      dispatch(workoutFinished());
-                      navigation.navigate("HomePage");
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={{ flex: 1 }}
+    >
+      <View flex={1} onPress={Keyboard.dismiss} m="$2">
+        <FlatList
+          data={selectedWorkout.exercises}
+          renderItem={renderItem}
+          ListFooterComponent={
+            <View>
+              <Input
+                m="$4"
+                placeholder="Notes..."
+                minHeight={70}
+                multiline
+                value={selectedWorkout.notes}
+                onChangeText={(text: string) =>
+                  dispatch(onEditSelectedWorkoutNotes(text))
+                }
+              />
+              <Button
+                margin="$4"
+                marginTop="$10"
+                onPress={() => {
+                  Alert.alert("Are you sure you want to finish?", "", [
+                    {
+                      text: "Cancel",
+                      style: "cancel",
                     },
-                  },
-                ]);
-              }}
-            >
-              Finish
-            </Button>
-          </View>
-        }
-      />
-    </View>
+                    {
+                      text: "Finish",
+                      onPress: () => {
+                        dispatch(workoutFinished());
+                        navigation.navigate("HomePage");
+                      },
+                    },
+                  ]);
+                }}
+              >
+                Finish
+              </Button>
+            </View>
+          }
+        />
+      </View>
+    </KeyboardAvoidingView>
   );
 }

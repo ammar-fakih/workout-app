@@ -1,5 +1,5 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { CheckCheck, Info, X } from "@tamagui/lucide-icons";
+import { ArrowDown, CheckCheck, Info, X } from "@tamagui/lucide-icons";
 import { useEffect, useState } from "react";
 import { useColorScheme } from "react-native";
 import {
@@ -9,11 +9,14 @@ import {
   Fieldset,
   Input,
   Label,
+  ListItem,
   Popover,
+  Separator,
   Sheet,
   Text,
   Unspaced,
   XStack,
+  YGroup,
 } from "tamagui";
 import { showToast } from "../../app/functions";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
@@ -171,11 +174,17 @@ export default function LogBodyWeight() {
 function PopOver() {
   return (
     <Popover>
-      <Popover.Trigger pr="$4">
-        <Info size="$1" />
+      <Popover.Trigger pr="$4" asChild>
+        <Button
+          icon={Info}
+          variant="outlined"
+          ai="flex-start"
+          paddingLeft={0}
+        />
       </Popover.Trigger>
 
       <Popover.Content
+        zIndex={2000000}
         borderWidth={1}
         borderColor="$borderColor"
         enterStyle={{ y: -10, opacity: 0 }}

@@ -11,10 +11,7 @@ export default function ProgressPage() {
   const insets = useSafeAreaInsets();
   const colorScheme = useColorScheme();
 
-  const tabsList = useMemo(
-    () => ["Table", "List", "Graphs", "Calendar", "Body Weight"],
-    [],
-  );
+  const tabsList = useMemo(() => ["Table", "List", "Graphs", "Calendar"], []);
 
   return (
     <YStack paddingTop={insets.top} f={1} marginHorizontal="$2">
