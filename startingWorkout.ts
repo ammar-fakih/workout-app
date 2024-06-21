@@ -1,46 +1,91 @@
-export const startingProgram = {
-  name: "Starting Strength",
-  id: "1",
-  lucidIcon: "Dumbbell",
-  workouts: [
-    {
-      id: "1",
-      workoutId: "1",
-      startDate: "2019-07-01T00:00:00.000Z",
-      frequency: 2,
-    },
-    {
-      id: "2",
-      workoutId: "2",
-      startDate: "2019-07-03T00:00:00.000Z",
-      frequency: 2,
-    },
-    {
-      id: "3",
-      workoutId: "1",
-      startDate: "2019-07-05T00:00:00.000Z",
-      frequency: 2,
-    },
-    {
-      id: "4",
-      workoutId: "2",
-      startDate: "2019-07-08T00:00:00.000Z",
-      frequency: 2,
-    },
-    {
-      id: "5",
-      workoutId: "1",
-      startDate: "2019-07-10T00:00:00.000Z",
-      frequency: 2,
-    },
-    {
-      id: "6",
-      workoutId: "2",
-      startDate: "2019-07-12T00:00:00.000Z",
-      frequency: 2,
-    },
-  ],
-};
+export const startingPrograms = [
+  {
+    name: "Starting Strength",
+    id: "1",
+    lucidIcon: "Dumbbell",
+    workouts: [
+      {
+        id: "1",
+        workoutId: "1",
+        startDate: "2019-07-01T00:00:00.000Z",
+        frequency: 2,
+      },
+      {
+        id: "2",
+        workoutId: "2",
+        startDate: "2019-07-03T00:00:00.000Z",
+        frequency: 2,
+      },
+      {
+        id: "3",
+        workoutId: "1",
+        startDate: "2019-07-05T00:00:00.000Z",
+        frequency: 2,
+      },
+      {
+        id: "4",
+        workoutId: "2",
+        startDate: "2019-07-08T00:00:00.000Z",
+        frequency: 2,
+      },
+      {
+        id: "5",
+        workoutId: "1",
+        startDate: "2019-07-10T00:00:00.000Z",
+        frequency: 2,
+      },
+      {
+        id: "6",
+        workoutId: "2",
+        startDate: "2019-07-12T00:00:00.000Z",
+        frequency: 2,
+      },
+    ],
+  },
+  {
+    name: "Oasis Apartment Gym Workout",
+    id: "2",
+    lucidIcon: "Dumbbell",
+    workouts: [
+      {
+        id: "1",
+        workoutId: "3",
+        startDate: "2019-07-01T00:00:00.000Z",
+        frequency: 2,
+      },
+      {
+        id: "2",
+        workoutId: "4",
+        startDate: "2019-07-03T00:00:00.000Z",
+        frequency: 2,
+      },
+      {
+        id: "3",
+        workoutId: "3",
+        startDate: "2019-07-05T00:00:00.000Z",
+        frequency: 2,
+      },
+      {
+        id: "4",
+        workoutId: "4",
+        startDate: "2019-07-08T00:00:00.000Z",
+        frequency: 2,
+      },
+      {
+        id: "5",
+        workoutId: "3",
+        startDate: "2019-07-10T00:00:00.000Z",
+        frequency: 2,
+      },
+      {
+        id: "6",
+        workoutId: "4",
+        startDate: "2019-07-12T00:00:00.000Z",
+        frequency: 2,
+      },
+    ],
+  },
+];
 
 export const startingWorkouts = [
   {
@@ -88,6 +133,60 @@ export const startingWorkouts = [
         id: "3",
         sets: 3,
         reps: 5,
+      },
+    ],
+  },
+  {
+    name: "Oasis Leg Workout",
+    id: "3",
+    exercises: [
+      {
+        name: "Leg Press",
+        id: "5",
+        sets: 3,
+        reps: 8,
+      },
+      {
+        name: "Leg Curl",
+        id: "6",
+        sets: 3,
+        reps: 8,
+      },
+      {
+        name: "Calf Raises",
+        id: "7",
+        sets: 3,
+        reps: 8,
+      },
+    ],
+  },
+  {
+    name: "Oasis Upper Body",
+    id: "4",
+    exercises: [
+      {
+        name: "Bench",
+        id: "8",
+        sets: 3,
+        reps: 8,
+      },
+      {
+        name: "Shoulder Press",
+        id: "9",
+        sets: 3,
+        reps: 8,
+      },
+      {
+        name: "Rows",
+        id: "10",
+        sets: 3,
+        reps: 8,
+      },
+      {
+        name: "Lat Pulldown",
+        id: "11",
+        sets: 3,
+        reps: 8,
       },
     ],
   },

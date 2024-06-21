@@ -26,6 +26,23 @@ export default function WorkoutCard({
   const units = useAppSelector((state) => state.appData.workouts.units);
   const nextTimeDate = new Date(date);
 
+  const renderExercise = ({
+    item: exercise,
+    index: exerciseIndex,
+  }: {
+    item: TodaysExercise;
+    index: number;
+  }) => (
+    <View p="$2" fd="row" jc="space-between" key={exerciseIndex}>
+      <View>
+        <Text>{exercise.name}</Text>
+      </View>
+      <View>
+        <Text>{renderExerciseLabel(exercise, units)}</Text>
+      </View>
+    </View>
+  );
+
   return (
     <Card
       p="$3"
@@ -54,16 +71,7 @@ export default function WorkoutCard({
         data={exercises}
         scrollEnabled={false}
         ItemSeparatorComponent={Separator}
-        renderItem={({ item: exercise, index: exerciseIndex }) => (
-          <View p="$2" fd="row" jc="space-between" key={exerciseIndex}>
-            <View>
-              <Text>{exercise.name}</Text>
-            </View>
-            <View>
-              <Text>{renderExerciseLabel(exercise, units)}</Text>
-            </View>
-          </View>
-        )}
+        renderItem={renderExercise}
       />
     </Card>
   );

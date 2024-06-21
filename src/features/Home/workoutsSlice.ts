@@ -52,6 +52,10 @@ interface WorkoutsState {
 
   units: Units;
   bodyWeightRecords: ReturnType<typeof BodyWeightRecordAdapter.getInitialState>;
+
+  // Create Program Page
+  drafts: Partial<Program>[];
+  selectedDraft: Partial<Program>; // after selecting a draft, it will be cut from drafts and moved here
 }
 
 const initialState: WorkoutsState = {
@@ -73,6 +77,9 @@ const initialState: WorkoutsState = {
   units: Units.IMPERIAL,
 
   bodyWeightRecords: BodyWeightRecordAdapter.getInitialState(),
+
+  drafts: [],
+  selectedDraft: {},
 };
 
 export const workoutsSlice = createSlice({
@@ -84,16 +91,16 @@ export const workoutsSlice = createSlice({
       state,
       action: PayloadAction<{
         startingWorkouts: GeneralWorkout[];
-        startingProgram: ProgramFromFile;
+        startingPrograms: ProgramFromFile[];
       }>,
     ) => {
       workoutsSlice.caseReducers.workoutsReadFromFiles(state, {
         payload: action.payload.startingWorkouts,
         type: typeof action.payload.startingWorkouts,
       });
-      workoutsSlice.caseReducers.programReadFromFile(state, {
-        payload: action.payload.startingProgram,
-        type: typeof action.payload.startingProgram,
+      workoutsSlice.caseReducers.programsReadFromFile(state, {
+        payload: action.payload.startingPrograms,
+        type: typeof action.payload.startingPrograms,
       });
       workoutsSlice.caseReducers.weeksWorkoutsSet(state);
       workoutsSlice.caseReducers.todaysWorkoutsSet(state);
@@ -103,31 +110,31 @@ export const workoutsSlice = createSlice({
       state.allWorkouts = action.payload;
     },
     // !USED FOR DEVELOPMENT ONLY
-    programReadFromFile: (state, action: PayloadAction<ProgramFromFile>) => {
-      let updatedWorkouts: Workout[] = [];
+    programsReadFromFile: (state, action: PayloadAction<ProgramFromFile[]>) => {
+      action.payload.forEach((program) => {
+        let updatedWorkouts: Workout[] = [];
 
-      try {
-        // @ts-expect-error Typing is off but its just for development
-        updatedWorkouts = action.payload.workouts.map((workout) => {
-          const genWorkout = state.allWorkouts.find(
-            (w) => w.id === workout.workoutId,
-          );
-          if (!genWorkout)
-            throw new Error("Workout not found: id " + workout.id);
+        try {
+          // @ts-expect-error Typing is off but its just for development
+          updatedWorkouts = program.workouts.map((workout) => {
+            const genWorkout = state.allWorkouts.find(
+              (w) => w.id === workout.workoutId,
+            );
+            if (!genWorkout)
+              throw new Error("Workout not found: id " + workout.id);
 
-          return { ...genWorkout, ...workout };
-        });
-      } catch (e) {
-        console.warn(e);
-        return;
-      }
-
-      const updatedProgram: Program = {
-        ...action.payload,
-        workouts: updatedWorkouts,
-      };
-      state.allPrograms = [updatedProgram];
-      state.selectedProgram = updatedProgram;
+            return { ...genWorkout, ...workout };
+          });
+          const updatedProgram: Program = {
+            ...program,
+            workouts: updatedWorkouts,
+          };
+          state.allPrograms.push(updatedProgram);
+          state.selectedProgram = updatedProgram;
+        } catch (e) {
+          console.warn(e);
+        }
+      });
     },
     unitsSet: (state, action: PayloadAction<Units>) => {
       state.units = action.payload;
@@ -488,7 +495,7 @@ export const {
 // Actions
 export const {
   reset,
-  programReadFromFile,
+  programsReadFromFile,
   workoutsReadFromFiles,
   todaysWorkoutsSet,
   weeksWorkoutsSet,

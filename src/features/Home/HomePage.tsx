@@ -18,7 +18,7 @@ import {
   YStack,
 } from "tamagui";
 import { RootTabsParamList } from "../../../App";
-import { startingProgram, startingWorkouts } from "../../../startingWorkout";
+import { startingPrograms, startingWorkouts } from "../../../startingWorkout";
 import StopWatch from "../../Components/StopWatch";
 import WorkoutCard from "../../Components/WorkoutCard";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
@@ -46,7 +46,7 @@ export default function HomePage({ navigation }: Props) {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(appOpened({ startingProgram, startingWorkouts }));
+    dispatch(appOpened({ startingPrograms, startingWorkouts }));
   }, []);
 
   const onPressWorkout = (workout: TodaysWorkout) => {

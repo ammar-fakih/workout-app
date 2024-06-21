@@ -1,5 +1,5 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { ArrowDown, CheckCheck, Info, X } from "@tamagui/lucide-icons";
+import { CheckCheck, Info, X } from "@tamagui/lucide-icons";
 import { useEffect, useState } from "react";
 import { useColorScheme } from "react-native";
 import {
@@ -9,14 +9,11 @@ import {
   Fieldset,
   Input,
   Label,
-  ListItem,
   Popover,
-  Separator,
   Sheet,
   Text,
   Unspaced,
   XStack,
-  YGroup,
 } from "tamagui";
 import { showToast } from "../../app/functions";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";

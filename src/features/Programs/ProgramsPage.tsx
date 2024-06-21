@@ -1,3 +1,5 @@
+import { ChevronDown, Pencil } from "@tamagui/lucide-icons";
+import { useState } from "react";
 import { FlatList } from "react-native";
 import {
   AnimatePresence,
@@ -11,8 +13,6 @@ import {
 } from "tamagui";
 import { useAppSelector } from "../../app/hooks";
 import { Program } from "../Home/types";
-import { ChevronDown, Pencil } from "@tamagui/lucide-icons";
-import { useState } from "react";
 
 export default function ProgramsPage() {
   const [draftsOpen, setDraftsOpen] = useState(false);
@@ -24,7 +24,7 @@ export default function ProgramsPage() {
     return (
       <View>
         <Separator />
-        {/* <Button
+        <Button
           unstyled
           flexDirection="row"
           borderWidth="$0"
@@ -39,21 +39,6 @@ export default function ProgramsPage() {
             <Pencil size="$1" color="$gray11" />
           </XStack>
 
-          <Square animation="quick" rotate={draftsOpen ? "180deg" : "0deg"}>
-            <ChevronDown size="$1" />
-          </Square>
-        </Button> */}
-        <Button
-          unstyled
-          flexDirection="row"
-          borderWidth="$0"
-          marginHorizontal="$2"
-          jc="space-between"
-          ai="center"
-          p="$4"
-          onPress={() => setDraftsOpen(!setDraftsOpen)}
-        >
-          <Text>Other Workouts This Week</Text>
           <Square animation="quick" rotate={draftsOpen ? "180deg" : "0deg"}>
             <ChevronDown size="$1" />
           </Square>
@@ -93,14 +78,18 @@ export default function ProgramsPage() {
     return (
       <Button unstyled>
         <XStack f={1} m="$5">
-          <Text fontSize="$8" fontWeight="$8">
-            {item.name}
-          </Text>
-          <YStack ai="flex-end" f={1}>
-            {exercises.map((exercise) => (
-              <Text key={exercise.name}>{exercise.name}</Text>
-            ))}
-          </YStack>
+          <View f={1}>
+            <Text fontSize="$8" fontWeight="$8">
+              {item.name}
+            </Text>
+          </View>
+          <View f={1}>
+            <YStack ai="flex-end" f={1}>
+              {exercises.map((exercise) => (
+                <Text key={exercise.name}>{exercise.name}</Text>
+              ))}
+            </YStack>
+          </View>
         </XStack>
       </Button>
     );

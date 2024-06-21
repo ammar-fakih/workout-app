@@ -201,7 +201,7 @@ export default function Table() {
           onShowExercise={onShowExercise}
         />
       </XStack>
-      <ScrollView horizontal>
+      <ScrollView horizontal pl="$2">
         <YStack>
           <XStack>
             <HeaderCell item="Date" index={0} />
