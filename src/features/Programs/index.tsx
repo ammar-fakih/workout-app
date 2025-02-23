@@ -5,6 +5,7 @@ import { Button, Square } from "tamagui";
 import { RootTabsParamList } from "../../../App";
 import CreateProgramPage from "./CreateProgramPage";
 import ProgramsPage from "./ProgramsPage";
+import CreateWorkoutListPage from "./CreateWorkoutListPage";
 
 const Stack = createStackNavigator<RootTabsParamList>();
 
@@ -46,6 +47,13 @@ export default function Programs({ navigation }: Props) {
         component={CreateProgramPage}
         options={{
           title: "Create Program",
+        }}
+      />
+      <Stack.Screen
+        name="CreateWorkoutListPage"
+        component={CreateWorkoutListPage}
+        options={{
+          title: "",
         }}
       />
     </Stack.Navigator>

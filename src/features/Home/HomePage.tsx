@@ -89,7 +89,6 @@ export default function HomePage({ navigation }: Props) {
             <H3>☀️ Rest Day</H3>
           </Button>
           <Button
-            variant="outlined"
             onPress={() => navigation.navigate("Programs")}
           >
             Program

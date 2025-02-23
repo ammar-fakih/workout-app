@@ -20,6 +20,8 @@ export default function ProgramsPage() {
     (state) => state.appData.workouts.allPrograms,
   );
 
+  console.log(programs);
+
   const Drafts = () => {
     return (
       <View>

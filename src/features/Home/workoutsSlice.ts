@@ -54,8 +54,7 @@ interface WorkoutsState {
   bodyWeightRecords: ReturnType<typeof BodyWeightRecordAdapter.getInitialState>;
 
   // Create Program Page
-  drafts: Partial<Program>[];
-  selectedDraft: Partial<Program>; // after selecting a draft, it will be cut from drafts and moved here
+  draftWorkout: Partial<Program>;
 }
 
 const initialState: WorkoutsState = {
@@ -78,8 +77,7 @@ const initialState: WorkoutsState = {
 
   bodyWeightRecords: BodyWeightRecordAdapter.getInitialState(),
 
-  drafts: [],
-  selectedDraft: {},
+  draftWorkout: {},
 };
 
 export const workoutsSlice = createSlice({
@@ -111,6 +109,8 @@ export const workoutsSlice = createSlice({
     },
     // !USED FOR DEVELOPMENT ONLY
     programsReadFromFile: (state, action: PayloadAction<ProgramFromFile[]>) => {
+      state.allPrograms = [];
+
       action.payload.forEach((program) => {
         let updatedWorkouts: Workout[] = [];
 
@@ -222,7 +222,8 @@ export const workoutsSlice = createSlice({
     },
     todaysWorkoutsSet: (state) => {
       if (!state.weeksWorkouts) return;
-      const day = new Date().getDay();
+      const day = new Date().getDay() + 8;
+      console.log("day", 0);
 
       const todaysWorkout = state.weeksWorkouts.find((workout) => {
         const startDate = new Date(workout.closestTimeToNow);

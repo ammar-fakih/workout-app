@@ -21,6 +21,10 @@ import persistStore from "redux-persist/es/persistStore";
 import { PersistGate } from "redux-persist/integration/react";
 import Progress from "./src/features/Progress";
 import config from "./tamagui.config";
+import { Linking } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+const PERSISTENCE_KEY = "NAVIGATION_STATE_V1";
 
 const persistor = persistStore(store);
 
@@ -35,6 +39,7 @@ export type RootTabsParamList = {
   Programs: undefined;
   CreateProgramPage: undefined;
   ProgramsPage: undefined;
+  CreateWorkoutListPage: undefined;
 };
 const Tabs = createBottomTabNavigator<RootTabsParamList>();
 
@@ -64,6 +69,7 @@ export default function () {
 function App() {
   const theme = useTheme();
   const [appIsReady, setAppIsReady] = useState(false);
+  const [initialState, setInitialState] = useState();
 
   const NavigationTheme = useMemo(
     () => ({
@@ -91,6 +97,23 @@ function App() {
           OpenSansBold: require("./assets/fonts/OpenSans-Bold.ttf"),
           SpaceMono: require("./assets/fonts/SpaceMono-Regular.ttf"),
         });
+
+        const initialUrl = await Linking.getInitialURL();
+        console.log("initialUrl", initialUrl);
+
+        if (initialUrl == null) {
+          // Only restore state if there's no deep link
+          const savedStateString = await AsyncStorage.getItem(PERSISTENCE_KEY);
+          const state = savedStateString
+            ? JSON.parse(savedStateString)
+            : undefined;
+
+          console.log("state", state);
+
+          if (state !== undefined) {
+            setInitialState(state);
+          }
+        }
       } catch (e) {
         console.warn("Error while preparing app", e);
       } finally {
@@ -116,7 +139,13 @@ function App() {
       }}
       onLayout={onLayoutRootView}
     >
-      <NavigationContainer theme={NavigationTheme}>
+      <NavigationContainer
+        theme={NavigationTheme}
+        initialState={initialState}
+        onStateChange={(state) => {
+          AsyncStorage.setItem(PERSISTENCE_KEY, JSON.stringify(state));
+        }}
+      >
         <Tabs.Navigator
           screenOptions={({ route }) => ({
             headerShown: false,

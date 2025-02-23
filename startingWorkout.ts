@@ -2,7 +2,6 @@ export const startingPrograms = [
   {
     name: "Starting Strength",
     id: "1",
-    lucidIcon: "Dumbbell",
     workouts: [
       {
         id: "1",
