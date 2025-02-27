@@ -79,7 +79,6 @@ export default function Table() {
   const [selectedExercises, setSelectedExercises] = useState<Set<string>>(
     new Set(),
   );
-
   const workoutRecordIds = useAppSelector(
     (state) => state.appData.workouts.workoutRecords,
   );
@@ -89,6 +88,13 @@ export default function Table() {
   const exercises = useAppSelector(
     (state) => state.appData.workouts.exerciseRecords,
   );
+  const selectedProgram = useAppSelector(
+    (state) => state.appData.workouts.selectedProgram,
+  );
+
+  const [selectedPrograms, setSelectedPrograms] = useState<Set<string>>(
+    new Set([selectedProgram?.id || "all"]),
+  );
 
   useEffect(() => {
     setWorkoutRecords(getWorkoutRecords());
@@ -96,11 +102,28 @@ export default function Table() {
     setSelectedExercises(new Set(Object.keys(exercises)));
   }, [allRecords]);
 
+  // Update selected programs when global program changes
+  useEffect(() => {
+    if (selectedProgram?.id) {
+      setSelectedPrograms(new Set([selectedProgram.id]));
+      setWorkoutRecords(getWorkoutRecords());
+    }
+  }, [selectedProgram]);
+
   const getWorkoutRecords = () => {
-    return workoutRecordIds.map((record) => ({
-      exercises: record.exercises.map((exerciseId) => allRecords[exerciseId]),
-      name: record.name,
-    }));
+    return workoutRecordIds
+      .map((record) => ({
+        exercises: record.exercises.map((exerciseId) => allRecords[exerciseId]),
+        name: record.name,
+        programId: record.programId,
+        programName: record.programName,
+      }))
+      .filter((record) => {
+        // If "all" is selected or no program filter is active, show all records
+        if (selectedPrograms.has("all")) return true;
+        // Otherwise only show if the program is selected
+        return record.programId && selectedPrograms.has(record.programId);
+      });
   };
 
   const onPressDateAsc = () => {
@@ -139,8 +162,36 @@ export default function Table() {
     setSelectedExercises(newSelectedExercises);
   };
 
+  const onHideProgram = (programId: string) => {
+    const newSelectedPrograms = new Set(selectedPrograms);
+    newSelectedPrograms.delete(programId);
+    // If no programs are selected, show all
+    if (newSelectedPrograms.size === 0) {
+      newSelectedPrograms.add("all");
+    }
+    setSelectedPrograms(newSelectedPrograms);
+    setWorkoutRecords(getWorkoutRecords());
+  };
+
+  const onShowProgram = (programId: string) => {
+    const newSelectedPrograms = new Set(selectedPrograms);
+    // If selecting a specific program, remove "all"
+    if (programId !== "all") {
+      newSelectedPrograms.delete("all");
+    } else {
+      // If selecting "all", clear other selections
+      newSelectedPrograms.clear();
+    }
+    newSelectedPrograms.add(programId);
+    setSelectedPrograms(newSelectedPrograms);
+    setWorkoutRecords(getWorkoutRecords());
+  };
+
   const wasExerciseCompleted = (exercise: ExerciseRecord | undefined) => {
-    return !exercise || exercise.completedSets.find((set) => !set.selected);
+    return (
+      !exercise ||
+      exercise.completedSets.find((set) => !set.selected) === undefined
+    );
   };
 
   const renderRow = ({
@@ -156,7 +207,9 @@ export default function Table() {
         workout.exercises.find((record) => record.name === exerciseName),
       );
     });
-    const date = rowData[0] ? getDateString(rowData[0].date) : "/";
+    const date = workout.exercises[0]
+      ? getDateString(workout.exercises[0].date)
+      : "/";
 
     return (
       <XStack f={1} key={index}>
@@ -199,6 +252,23 @@ export default function Table() {
           selectedExercises={selectedExercises}
           onHideExercise={onHideExercise}
           onShowExercise={onShowExercise}
+          selectedPrograms={selectedPrograms}
+          onHideProgram={onHideProgram}
+          onShowProgram={onShowProgram}
+          programs={[
+            { id: "all", name: "All Programs" },
+            ...workoutRecordIds
+              .reduce((acc, record) => {
+                if (record.programId && record.programName) {
+                  acc.set(record.programId, {
+                    id: record.programId,
+                    name: record.programName,
+                  });
+                }
+                return acc;
+              }, new Map())
+              .values(),
+          ]}
         />
       </XStack>
       <ScrollView horizontal pl="$2">

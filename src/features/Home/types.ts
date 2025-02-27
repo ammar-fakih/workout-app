@@ -30,7 +30,7 @@ export interface SpecificWorkout {
   id: string;
   workoutId: string;
   startDate: string;
-  frequency: number; // in weeks
+  frequency: number; // in days
 }
 
 export interface Workout extends GeneralWorkout, SpecificWorkout {
@@ -62,6 +62,8 @@ export interface Program {
 
 export interface ExerciseRecord extends TodaysExercise {
   date: string;
+  programId?: string; // Optional because you can add an exercise without a program
+  programName?: string; // Optional because you can add an exercise without a program
 }
 
 export interface WorkoutRecord {
@@ -69,8 +71,11 @@ export interface WorkoutRecord {
   name: string;
   timeToComplete: number; // in seconds
   notes: string;
+  programId?: string; // Optional because you can add a workout without a program
+  programName?: string; // Optional because you can add a workout without a program
 }
 
+// For rendering the workout records table
 export interface WorkoutRecordData {
   exercises: ExerciseRecord[];
   name: string;

@@ -46,6 +46,7 @@ interface WorkoutsState {
   allRecords: ExerciseRecord[];
   exerciseRecords: {
     // Map exercise name to record entries in allRecords
+    // * For rendering exercise graphs faster
     [name: string]: number[];
   };
   workoutRecords: WorkoutRecord[]; // record of all workouts (groups of exercises); maps to allRecords
@@ -196,9 +197,8 @@ export const workoutsSlice = createSlice({
           const workoutDate = new Date(workout.startDate);
           const diff = Math.abs(workoutDate.getTime() - date.getTime());
           const daysBetween = Math.ceil(diff / (1000 * 60 * 60 * 24));
-          const weeks = Math.floor(daysBetween / 7);
 
-          if (weeks % workout.frequency === 0) {
+          if (daysBetween % workout.frequency === 0) {
             weeksWorkouts.push({
               ...workout,
               closestTimeToNow: date.toISOString(),
@@ -222,8 +222,7 @@ export const workoutsSlice = createSlice({
     },
     todaysWorkoutsSet: (state) => {
       if (!state.weeksWorkouts) return;
-      const day = new Date().getDay() + 8;
-      console.log("day", 0);
+      const day = new Date().getDay();
 
       const todaysWorkout = state.weeksWorkouts.find((workout) => {
         const startDate = new Date(workout.closestTimeToNow);
@@ -292,6 +291,8 @@ export const workoutsSlice = createSlice({
           reps: exercise.reps,
           name: exercise.name,
           id: exercise.id,
+          programId: state.selectedProgram?.id,
+          programName: state.selectedProgram?.name,
         });
 
         // Update exercise records
@@ -310,6 +311,8 @@ export const workoutsSlice = createSlice({
         name: state.selectedWorkout.name,
         notes: state.selectedWorkout.notes,
         timeToComplete: totalTime,
+        programId: state.selectedProgram?.id,
+        programName: state.selectedProgram?.name,
       });
       state.selectedSet = workoutsSlice.getInitialState().selectedSet;
 
@@ -444,6 +447,11 @@ export const workoutsSlice = createSlice({
         action.payload,
       );
     },
+    programSelected: (state, action: PayloadAction<Program>) => {
+      state.selectedProgram = action.payload;
+      workoutsSlice.caseReducers.weeksWorkoutsSet(state);
+      workoutsSlice.caseReducers.todaysWorkoutsSet(state);
+    },
   },
 });
 
@@ -485,6 +493,8 @@ export const selectSelectedWorkout = (state: RootState) =>
   state.appData.workouts.selectedWorkout;
 export const selectExerciseRecords = (state: RootState) =>
   state.appData.workouts.exerciseRecords;
+export const selectSelectedProgram = (state: RootState) =>
+  state.appData.workouts.selectedProgram;
 
 export const {
   selectById: selectBodyWeightRecordByID,
@@ -516,6 +526,7 @@ export const {
   todayBodyWeightRecordAdded,
   todaysBodyWeightRecordCleared,
   stopWatchStopped,
+  programSelected,
 } = workoutsSlice.actions;
 
 export default workoutsSlice.reducer;

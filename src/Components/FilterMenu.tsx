@@ -1,13 +1,34 @@
 import { Check, Filter } from "@tamagui/lucide-icons";
 import { useState } from "react";
 import { FlatList } from "react-native";
-import { Button, Checkbox, H3, ListItem, Sheet, Text, View } from "tamagui";
+import {
+  Button,
+  Checkbox,
+  H3,
+  ListItem,
+  Sheet,
+  Text,
+  View,
+  YStack,
+  Separator,
+  Circle,
+  XStack,
+} from "tamagui";
+
+type Program = {
+  id: string;
+  name: string;
+};
 
 type Props = {
   exercises: string[];
   selectedExercises: Set<string>;
   onHideExercise: (exercise: string) => void;
   onShowExercise: (exercise: string) => void;
+  programs: Program[];
+  selectedPrograms: Set<string>;
+  onHideProgram: (programId: string) => void;
+  onShowProgram: (programId: string) => void;
 };
 
 export default function FilterMenu({
@@ -15,14 +36,45 @@ export default function FilterMenu({
   selectedExercises,
   onHideExercise,
   onShowExercise,
+  programs,
+  selectedPrograms,
+  onHideProgram,
+  onShowProgram,
 }: Props) {
   const [isOpen, setIsOpen] = useState(false);
 
-  const onPress = (isChecked: boolean, item: string) => {
+  // Calculate number of active filters
+  const getActiveFilterCount = () => {
+    let count = 0;
+
+    // If not showing all programs (default state)
+    if (!selectedPrograms.has("all")) {
+      count += selectedPrograms.size;
+    }
+
+    // If not showing all exercises (default state)
+    if (selectedExercises.size !== exercises.length) {
+      count += 1; // Count exercise filtering as 1 change
+    }
+
+    return count;
+  };
+
+  const activeFilterCount = getActiveFilterCount();
+
+  const onPressExercise = (isChecked: boolean, item: string) => {
     if (isChecked) {
       onHideExercise(item);
     } else {
       onShowExercise(item);
+    }
+  };
+
+  const onPressProgram = (isChecked: boolean, item: Program) => {
+    if (isChecked) {
+      onHideProgram(item.id);
+    } else {
+      onShowProgram(item.id);
     }
   };
 
@@ -31,9 +83,9 @@ export default function FilterMenu({
     return (
       <ListItem
         title={item}
-        onPress={() => onPress(isChecked, item)}
+        onPress={() => onPressExercise(isChecked, item)}
         icon={
-          <Checkbox checked={isChecked} size="$4">
+          <Checkbox checked={isChecked} size="$4" disabled>
             <Checkbox.Indicator>
               <Check />
             </Checkbox.Indicator>
@@ -43,6 +95,35 @@ export default function FilterMenu({
     );
   };
 
+  const renderProgram = ({ item }: { item: Program }) => {
+    const isChecked = selectedPrograms.has(item.id);
+    return (
+      <ListItem
+        title={item.name}
+        onPress={() => onPressProgram(isChecked, item)}
+        icon={
+          <Checkbox checked={isChecked} size="$4" disabled>
+            <Checkbox.Indicator>
+              <Check />
+            </Checkbox.Indicator>
+          </Checkbox>
+        }
+      />
+    );
+  };
+
+  const onClearFilters = () => {
+    // Reset programs to "all"
+    onShowProgram("all");
+
+    // Reset exercises to show all
+    exercises.forEach((exercise) => {
+      if (!selectedExercises.has(exercise)) {
+        onShowExercise(exercise);
+      }
+    });
+  };
+
   return (
     <View>
       <Button
@@ -50,7 +131,16 @@ export default function FilterMenu({
         variant="outlined"
         onPress={() => setIsOpen(!isOpen)}
       >
-        <Text>Filter</Text>
+        <XStack space="$2" ai="center">
+          <Text>Filter</Text>
+          {activeFilterCount > 0 && (
+            <Circle size="$1" bg="$color5" p="$0.5">
+              <Text fontSize="$2" color="$color11">
+                {activeFilterCount}
+              </Text>
+            </Circle>
+          )}
+        </XStack>
       </Button>
 
       <Sheet dismissOnSnapToBottom modal open={isOpen} onOpenChange={setIsOpen}>
@@ -58,8 +148,25 @@ export default function FilterMenu({
         <Sheet.Handle />
 
         <Sheet.Frame p="$4">
-          <H3>Exercises Shown</H3>
-          <FlatList data={exercises} renderItem={renderExercise} />
+          <YStack space="$4">
+            <XStack jc="space-between" ai="center">
+              <H3>Filters</H3>
+              {activeFilterCount > 0 && (
+                <Button variant="outlined" onPress={onClearFilters} size="$3">
+                  <Text>Clear Filters</Text>
+                </Button>
+              )}
+            </XStack>
+            <YStack>
+              <H3>Programs</H3>
+              <FlatList data={programs} renderItem={renderProgram} />
+            </YStack>
+            <Separator />
+            <YStack>
+              <H3>Exercises Shown</H3>
+              <FlatList data={exercises} renderItem={renderExercise} />
+            </YStack>
+          </YStack>
         </Sheet.Frame>
       </Sheet>
     </View>

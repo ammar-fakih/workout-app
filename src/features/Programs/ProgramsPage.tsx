@@ -1,6 +1,6 @@
 import { ChevronDown, Pencil } from "@tamagui/lucide-icons";
 import { useState } from "react";
-import { FlatList } from "react-native";
+import { Alert, FlatList } from "react-native";
 import {
   AnimatePresence,
   Button,
@@ -11,16 +11,40 @@ import {
   XStack,
   YStack,
 } from "tamagui";
-import { useAppSelector } from "../../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { Program } from "../Home/types";
+import { programSelected, selectSelectedProgram } from "../Home/workoutsSlice";
 
 export default function ProgramsPage() {
   const [draftsOpen, setDraftsOpen] = useState(false);
+  const dispatch = useAppDispatch();
   const programs = useAppSelector(
     (state) => state.appData.workouts.allPrograms,
   );
+  const selectedProgram = useAppSelector(selectSelectedProgram);
 
   console.log(programs);
+
+  const handleProgramSelect = (program: Program) => {
+    if (program.id === selectedProgram?.id) return;
+
+    Alert.alert(
+      "Switch Program",
+      `Are you sure you want to switch the program to ${program.name}?`,
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Switch",
+          onPress: () => {
+            dispatch(programSelected(program));
+          },
+        },
+      ],
+    );
+  };
 
   const Drafts = () => {
     return (
@@ -77,8 +101,17 @@ export default function ProgramsPage() {
         allExercises.findIndex((e) => e.name === exercise.name) === index,
     );
 
+    const isSelected = item.id === selectedProgram?.id;
+
     return (
-      <Button unstyled>
+      <Button
+        unstyled
+        onPress={() => handleProgramSelect(item)}
+        bg={isSelected ? "$color5" : "transparent"}
+        pressStyle={{
+          bg: "$color6",
+        }}
+      >
         <XStack f={1} m="$5">
           <View f={1}>
             <Text fontSize="$8" fontWeight="$8">
