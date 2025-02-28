@@ -1,16 +1,16 @@
+import { useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { Plus } from "@tamagui/lucide-icons";
 import { useMemo } from "react";
 import { useColorScheme } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { ScrollView, Tabs, Text, YStack, Button, XStack } from "tamagui";
-import { Plus } from "@tamagui/lucide-icons";
-import { useNavigation } from "@react-navigation/native";
-import { StackNavigationProp } from "@react-navigation/stack";
+import { Button, ScrollView, Tabs, Text, XStack, YStack } from "tamagui";
 import { RootTabsParamList } from "../../../App";
+import BodyWeight from "./BodyWeight";
 import Calendar from "./Calendar";
 import Graphs from "./Graphs";
 import List from "./List";
 import Table from "./Table";
-import BodyWeight from "./BodyWeight";
 
 type ProgressNavigationProp = StackNavigationProp<RootTabsParamList>;
 
@@ -20,7 +20,7 @@ export default function ProgressPage() {
   const navigation = useNavigation<ProgressNavigationProp>();
 
   const tabsList = useMemo(
-    () => ["Graphs", "List", "Calendar", "Body Weight"],
+    () => ["Graphs", "List", "Table", "Calendar", "Body Weight"],
     [],
   );
 
@@ -68,13 +68,13 @@ export default function ProgressPage() {
         <Tabs.Content value="tab2" f={1}>
           <List />
         </Tabs.Content>
-        {/* <Tabs.Content value="tab3" f={1}>
+        <Tabs.Content value="tab3" f={1}>
           <Table />
-        </Tabs.Content> */}
-        <Tabs.Content value="tab3" f={1} key={colorScheme}>
+        </Tabs.Content>
+        <Tabs.Content value="tab4" f={1} key={colorScheme}>
           <Calendar />
         </Tabs.Content>
-        <Tabs.Content value="tab4" f={1}>
+        <Tabs.Content value="tab5" f={1}>
           <BodyWeight />
         </Tabs.Content>
       </Tabs>

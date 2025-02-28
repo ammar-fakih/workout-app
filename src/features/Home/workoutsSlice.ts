@@ -244,6 +244,13 @@ export const workoutsSlice = createSlice({
         exercises: action.payload.exercises.map((exercise) => ({
           ...exercise,
           startingWeight: exercise.weight,
+          completedSets: Array(exercise.sets)
+            .fill(0)
+            .map((_, i) => ({
+              repCount: exercise.reps,
+              selected: false,
+              weight: exercise.weight,
+            })),
         })),
       };
 
@@ -304,10 +311,23 @@ export const workoutsSlice = createSlice({
       const exerciseRecord: WorkoutRecord["exercises"] = [];
 
       state.selectedWorkout.exercises.forEach((exercise) => {
+        // Check if weights differ across sets and calculate average if needed
+        const weights = exercise.completedSets.map((set) =>
+          set.weight !== undefined ? set.weight : exercise.weight,
+        );
+        const allSameWeight = weights.every((w) => w === weights[0]);
+
+        // If weights differ, calculate average for the exercise weight
+        let recordWeight = exercise.weight;
+        if (!allSameWeight) {
+          const sum = weights.reduce((acc, w) => acc + w, 0);
+          recordWeight = sum / weights.length;
+        }
+
         // Push to allrecords
         state.allRecords.push({
           date: new Date().toISOString(),
-          weight: exercise.weight,
+          weight: recordWeight,
           completedSets: exercise.completedSets,
           sets: exercise.sets,
           reps: exercise.reps,
@@ -360,18 +380,40 @@ export const workoutsSlice = createSlice({
         newWeight?: number;
         weightChange?: number;
         exerciseId: string;
+        setIndex?: number; // Optional set index to update specific set weight
       }>,
     ) => {
-      const { newWeight, weightChange, exerciseId } = action.payload;
+      const { newWeight, weightChange, exerciseId, setIndex } = action.payload;
       const exercise = state.selectedWorkout?.exercises.find(
         (exercise) => exercise.id === exerciseId,
       );
       if (!exercise) return;
 
-      if (weightChange && weightChange + exercise.weight >= 0) {
-        exercise.weight += weightChange;
-      } else if (newWeight !== undefined) {
-        exercise.weight = newWeight;
+      // If setIndex is provided, update weight for that specific set
+      if (
+        setIndex !== undefined &&
+        setIndex >= 0 &&
+        setIndex < exercise.completedSets.length
+      ) {
+        if (
+          weightChange &&
+          exercise.completedSets[setIndex].weight !== undefined
+        ) {
+          const currentWeight = exercise.completedSets[setIndex].weight!;
+          if (weightChange + currentWeight >= 0) {
+            exercise.completedSets[setIndex].weight =
+              currentWeight + weightChange;
+          }
+        } else if (newWeight !== undefined) {
+          exercise.completedSets[setIndex].weight = newWeight;
+        }
+      } else {
+        // Update the default weight for the exercise
+        if (weightChange && weightChange + exercise.weight >= 0) {
+          exercise.weight += weightChange;
+        } else if (newWeight !== undefined) {
+          exercise.weight = newWeight;
+        }
       }
     },
     // Track WorkoutPage
@@ -496,6 +538,18 @@ export const workoutsSlice = createSlice({
 
       // Add each exercise to allRecords
       exercises.forEach((exercise) => {
+        // Check if weights differ across sets and calculate average if needed
+        const weights = exercise.completedSets.map((set) =>
+          set.weight !== undefined ? set.weight : exercise.weight,
+        );
+        const allSameWeight = weights.every((w) => w === weights[0]);
+
+        // If weights differ, calculate average for the exercise weight
+        if (!allSameWeight) {
+          const sum = weights.reduce((acc, w) => acc + w, 0);
+          exercise.weight = sum / weights.length;
+        }
+
         // Push to allrecords
         state.allRecords.push({
           ...exercise,
@@ -518,8 +572,8 @@ export const workoutsSlice = createSlice({
         name: workoutName,
         notes: workoutNotes,
         timeToComplete: workoutDuration * 60, // Convert minutes to seconds
-        programId: undefined,
-        programName: undefined,
+        programId: state.selectedProgram?.id,
+        programName: state.selectedProgram?.name,
       });
     },
     importAppData: (state, action: PayloadAction<any>) => {

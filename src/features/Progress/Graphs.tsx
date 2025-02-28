@@ -13,7 +13,11 @@ import {
 } from "tamagui";
 import { useAppSelector } from "../../app/hooks";
 import { ExerciseRecord, Units } from "../Home/types";
-import { getDateString } from "../Home/helperFunctions";
+import {
+  getDateString,
+  getAverageWeight,
+  getUnitAbbreviation,
+} from "../Home/helperFunctions";
 import { ChevronDown, ChevronUp, Filter } from "@tamagui/lucide-icons";
 
 const { width } = Dimensions.get("window");
@@ -55,11 +59,24 @@ export default function Graphs() {
       );
 
       // Create data points for the chart
-      const data = records.map((record) => ({
-        date: record.date,
-        weight: record.weight,
-        formattedDate: getDateString(record.date),
-      }));
+      const data = records.map((record) => {
+        // Check if weights differ across sets and use average if needed
+        let weight = record.weight;
+        const weights = record.completedSets.map((set) =>
+          set.weight !== undefined ? set.weight : record.weight,
+        );
+        const allSameWeight = weights.every((w) => w === weights[0]);
+
+        if (!allSameWeight) {
+          weight = getAverageWeight(record.completedSets, record.weight);
+        }
+
+        return {
+          date: record.date,
+          weight: weight,
+          formattedDate: getDateString(record.date),
+        };
+      });
 
       processedData[exerciseName] = {
         name: exerciseName,
@@ -89,8 +106,11 @@ export default function Graphs() {
     if (!exercise) return [];
 
     return exercise.data.map((item, index) => ({
-      value: item.weight,
-      dataPointText: item.weight.toString(),
+      value: item.weight || 0,
+      dataPointText:
+        item.weight !== undefined && item.weight !== null
+          ? item.weight.toString()
+          : "0",
       label: index % 2 === 0 ? item.formattedDate : "",
       date: item.formattedDate, // Store date for pointer label
       labelComponent: () =>
@@ -266,7 +286,14 @@ export default function Graphs() {
                         Starting Weight
                       </Text>
                       <Text fontWeight="bold">
-                        {selectedExerciseData.data[0]?.weight}
+                        {selectedExerciseData.data[0]?.weight !== undefined &&
+                        selectedExerciseData.data[0]?.weight !== null
+                          ? Math.round(
+                              selectedExerciseData.data[0]?.weight || 0,
+                            ).toString() +
+                            " " +
+                            getUnitAbbreviation(units)
+                          : "0 " + getUnitAbbreviation(units)}
                       </Text>
                     </YStack>
 
@@ -275,7 +302,16 @@ export default function Graphs() {
                         Current Weight
                       </Text>
                       <Text fontWeight="bold">
-                        {selectedExerciseData.data.slice(-1)[0]?.weight}
+                        {selectedExerciseData.data.slice(-1)[0]?.weight !==
+                          undefined &&
+                        selectedExerciseData.data.slice(-1)[0]?.weight !== null
+                          ? Math.round(
+                              selectedExerciseData.data.slice(-1)[0]?.weight ||
+                                0,
+                            ).toString() +
+                            " " +
+                            getUnitAbbreviation(units)
+                          : "0 " + getUnitAbbreviation(units)}
                       </Text>
                     </YStack>
 
@@ -330,9 +366,22 @@ export default function Graphs() {
 }
 
 // Helper functions
-function getProgressText(startWeight: number, currentWeight: number): string {
+function getProgressText(
+  startWeight: number | null | undefined,
+  currentWeight: number | null | undefined,
+): string {
+  // Handle null or undefined values
+  if (
+    startWeight === null ||
+    startWeight === undefined ||
+    currentWeight === null ||
+    currentWeight === undefined
+  ) {
+    return "No data";
+  }
+
   const diff = currentWeight - startWeight;
-  const percentage = (diff / startWeight) * 100;
+  const percentage = startWeight !== 0 ? (diff / startWeight) * 100 : 0;
 
   if (diff === 0) return "No change";
 
@@ -341,10 +390,20 @@ function getProgressText(startWeight: number, currentWeight: number): string {
 }
 
 function getProgressColor(
-  startWeight: number,
-  currentWeight: number,
+  startWeight: number | null | undefined,
+  currentWeight: number | null | undefined,
   theme: any,
 ): string {
+  // Handle null or undefined values
+  if (
+    startWeight === null ||
+    startWeight === undefined ||
+    currentWeight === null ||
+    currentWeight === undefined
+  ) {
+    return theme.color.val;
+  }
+
   const diff = currentWeight - startWeight;
 
   if (diff > 0) return theme.green9.val;

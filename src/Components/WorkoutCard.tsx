@@ -9,6 +9,7 @@ import {
   renderExerciseLabel,
 } from "../features/Home/helperFunctions";
 import { TodaysExercise } from "../features/Home/types";
+import { Units } from "../features/Home/types";
 
 type Props = {
   name: string;
@@ -24,7 +25,7 @@ export default function WorkoutCard({
   onPressWorkout,
 }: Props) {
   const units = useAppSelector((state) => state.appData.workouts.units);
-  const nextTimeDate = new Date(date);
+  const nextTimeDate = new Date(date || new Date().toISOString());
 
   const renderExercise = ({
     item: exercise,
@@ -32,16 +33,31 @@ export default function WorkoutCard({
   }: {
     item: TodaysExercise;
     index: number;
-  }) => (
-    <View p="$2" fd="row" jc="space-between" key={exerciseIndex}>
-      <View>
-        <Text>{exercise.name}</Text>
+  }) => {
+    if (!exercise) {
+      return (
+        <View p="$2" fd="row" jc="space-between" key={exerciseIndex}>
+          <View>
+            <Text>Unknown Exercise</Text>
+          </View>
+          <View>
+            <Text></Text>
+          </View>
+        </View>
+      );
+    }
+
+    return (
+      <View p="$2" fd="row" jc="space-between" key={exerciseIndex}>
+        <View>
+          <Text>{exercise.name || "Unknown"}</Text>
+        </View>
+        <View>
+          <Text>{renderExerciseLabel(exercise, units || Units.IMPERIAL)}</Text>
+        </View>
       </View>
-      <View>
-        <Text>{renderExerciseLabel(exercise, units)}</Text>
-      </View>
-    </View>
-  );
+    );
+  };
 
   return (
     <Card
@@ -59,7 +75,7 @@ export default function WorkoutCard({
     >
       <View fd="row" jc="space-between" p="$2" pb="$3">
         <Text fontSize="$1" fontWeight="bold">
-          {name}
+          {name || "Unnamed Workout"}
         </Text>
         <Text fontSize="$1" fontWeight="bold">
           {getDayName(nextTimeDate)}, {monthNames[nextTimeDate.getMonth()]}{" "}
@@ -68,7 +84,7 @@ export default function WorkoutCard({
       </View>
 
       <FlatList
-        data={exercises}
+        data={exercises || []}
         scrollEnabled={false}
         ItemSeparatorComponent={Separator}
         renderItem={renderExercise}

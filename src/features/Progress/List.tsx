@@ -27,8 +27,10 @@ export default function List() {
 
     const sortedWorkoutRecords = [...workoutRecords];
     sortedWorkoutRecords.sort((a, b) => {
-      const aDate = allRecords[a.exercises[0]].date;
-      const bDate = allRecords[b.exercises[0]].date;
+      const aDate =
+        a.exercises[0] !== undefined && allRecords[a.exercises[0]]?.date;
+      const bDate =
+        b.exercises[0] !== undefined && allRecords[b.exercises[0]]?.date;
       return aDate > bDate ? 1 : -1;
     });
     setSortedWorkoutRecords(sortedWorkoutRecords);
@@ -39,8 +41,10 @@ export default function List() {
 
     const sortedWorkoutRecords = [...workoutRecords];
     sortedWorkoutRecords.sort((a, b) => {
-      const aDate = allRecords[a.exercises[0]].date;
-      const bDate = allRecords[b.exercises[0]].date;
+      const aDate =
+        a.exercises[0] !== undefined && allRecords[a.exercises[0]]?.date;
+      const bDate =
+        b.exercises[0] !== undefined && allRecords[b.exercises[0]]?.date;
       return aDate < bDate ? 1 : -1;
     });
     setSortedWorkoutRecords(sortedWorkoutRecords);
@@ -53,14 +57,14 @@ export default function List() {
     item: WorkoutRecord;
     index: number;
   }) => {
-    const exercises = getWorkoutExercises(item.exercises, allRecords);
+    const exercises = getWorkoutExercises(item.exercises || [], allRecords || []);
     return (
       <WorkoutCard
         key={index}
         onPressWorkout={() => {}}
-        date={exercises[0].date}
+        date={exercises && exercises[0]?.date || new Date().toISOString()}
         exercises={exercises as TodaysExercise[]}
-        name={item.name}
+        name={item.name || "Unnamed Workout"}
       />
     );
   };

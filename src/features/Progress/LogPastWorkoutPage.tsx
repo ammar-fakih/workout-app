@@ -15,6 +15,8 @@ import {
   useTheme,
   TextArea,
   Select,
+  Accordion,
+  Switch,
 } from "tamagui";
 import {
   ArrowLeft,
@@ -22,11 +24,14 @@ import {
   Clock,
   Plus,
   Trash,
+  ChevronDown,
+  ChevronUp,
 } from "@tamagui/lucide-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { v4 as uuidv4 } from "uuid";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { CompletedSet, ExerciseRecord, WorkoutRecord } from "../Home/types";
+import { formatWeights } from "../Home/helperFunctions";
 
 export default function LogPastWorkoutPage() {
   const insets = useSafeAreaInsets();
@@ -113,6 +118,7 @@ export default function LogPastWorkoutPage() {
             ...Array(newSets - exercise.completedSets.length).fill({
               repCount: exercise.reps,
               selected: true,
+              weight: exercise.weight, // Initialize with the exercise weight
             }),
           ];
         } else if (newSets < exercise.completedSets.length) {
@@ -138,6 +144,42 @@ export default function LogPastWorkoutPage() {
     }
 
     updatedExercises[index] = exercise;
+    setExercises(updatedExercises);
+  };
+
+  // Update weight for a specific set
+  const updateSetWeight = (
+    exerciseIndex: number,
+    setIndex: number,
+    weight: string,
+  ) => {
+    const updatedExercises = [...exercises];
+    const exercise = { ...updatedExercises[exerciseIndex] };
+    const completedSets = [...exercise.completedSets];
+
+    const newWeight = parseFloat(weight);
+    if (!isNaN(newWeight) && newWeight >= 0) {
+      completedSets[setIndex] = {
+        ...completedSets[setIndex],
+        weight: newWeight,
+      };
+      exercise.completedSets = completedSets;
+      updatedExercises[exerciseIndex] = exercise;
+      setExercises(updatedExercises);
+    }
+  };
+
+  // Apply the default weight to all sets
+  const applyDefaultWeight = (exerciseIndex: number) => {
+    const updatedExercises = [...exercises];
+    const exercise = { ...updatedExercises[exerciseIndex] };
+
+    exercise.completedSets = exercise.completedSets.map((set) => ({
+      ...set,
+      weight: exercise.weight,
+    }));
+
+    updatedExercises[exerciseIndex] = exercise;
     setExercises(updatedExercises);
   };
 
@@ -346,6 +388,66 @@ export default function LogPastWorkoutPage() {
                         />
                       </YStack>
                     </XStack>
+
+                    {/* Per-set weights accordion */}
+                    <Accordion type="multiple" mt="$2">
+                      <Accordion.Item value="weights">
+                        <Accordion.Trigger>
+                          {({ open }: { open: boolean }) => (
+                            <XStack
+                              justifyContent="space-between"
+                              alignItems="center"
+                              py="$2"
+                            >
+                              <Text>
+                                Set Weights{" "}
+                                {formatWeights(
+                                  exercise.completedSets,
+                                  exercise.weight,
+                                )}
+                              </Text>
+                              {open ? (
+                                <ChevronUp size={16} />
+                              ) : (
+                                <ChevronDown size={16} />
+                              )}
+                            </XStack>
+                          )}
+                        </Accordion.Trigger>
+                        <Accordion.Content>
+                          <YStack space="$2" pt="$2">
+                            <Button
+                              size="$2"
+                              onPress={() => applyDefaultWeight(index)}
+                              mb="$2"
+                            >
+                              Apply Default Weight to All Sets
+                            </Button>
+                            {exercise.completedSets.map((set, setIndex) => (
+                              <XStack
+                                key={setIndex}
+                                space="$2"
+                                alignItems="center"
+                              >
+                                <Text flex={1}>Set {setIndex + 1}</Text>
+                                <Input
+                                  flex={2}
+                                  placeholder="Weight"
+                                  value={(set.weight !== undefined
+                                    ? set.weight
+                                    : exercise.weight
+                                  ).toString()}
+                                  onChangeText={(value: string) =>
+                                    updateSetWeight(index, setIndex, value)
+                                  }
+                                  keyboardType="numeric"
+                                />
+                              </XStack>
+                            ))}
+                          </YStack>
+                        </Accordion.Content>
+                      </Accordion.Item>
+                    </Accordion>
                   </YStack>
                 ))
               )}

@@ -1,3 +1,4 @@
+import React from "react";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { isEqual } from "lodash";
 import { useState } from "react";
@@ -270,6 +271,64 @@ export default function TrackWorkout({ navigation }: Props) {
                               {set.repCount - exercise.reps} extra
                             </Text>
                           )}
+
+                          {/* Per-set weight controls */}
+                          <XStack space="$2" ai="center" mt="$2">
+                            <Button
+                              size="$2"
+                              onPress={() => {
+                                dispatch(
+                                  exerciseWeightChanged({
+                                    exerciseId: exercise.id,
+                                    weightChange: -getAddWeight(),
+                                    setIndex: exerciseSetIndex,
+                                  }),
+                                );
+                              }}
+                            >
+                              <Text fontSize="$3">-</Text>
+                            </Button>
+                            <XStack ai="center" space="$1">
+                              <Text opacity={0}>
+                                {getUnitAbbreviation(units)}
+                              </Text>
+                              <Input
+                                keyboardType="numeric"
+                                width={70}
+                                textAlign="center"
+                                onChangeText={(text: string) => {
+                                  dispatch(
+                                    exerciseWeightChanged({
+                                      exerciseId: exercise.id,
+                                      newWeight: Number(text),
+                                      setIndex: exerciseSetIndex,
+                                    }),
+                                  );
+                                }}
+                                value={(set.weight !== undefined
+                                  ? set.weight
+                                  : exercise.weight
+                                ).toString()}
+                              />
+                              <Text opacity={0.5}>
+                                {getUnitAbbreviation(units)}
+                              </Text>
+                            </XStack>
+                            <Button
+                              size="$2"
+                              onPress={() => {
+                                dispatch(
+                                  exerciseWeightChanged({
+                                    exerciseId: exercise.id,
+                                    weightChange: getAddWeight(),
+                                    setIndex: exerciseSetIndex,
+                                  }),
+                                );
+                              }}
+                            >
+                              <Text fontSize="$3">+</Text>
+                            </Button>
+                          </XStack>
                         </YStack>
                         <Button onPress={handlePressNextSet}>
                           <Text>Next</Text>
@@ -281,8 +340,9 @@ export default function TrackWorkout({ navigation }: Props) {
                 return <>{setContent}</>;
               }}
             />
-            {/* Weight Chooser */}
+            {/* Weight Chooser - Default weight for all sets */}
             <YStack ai="center" space="$2">
+              <Text fontWeight="500">Target Max Weight</Text>
               <XStack space="$4" jc="center">
                 <Button
                   onPress={() => {
@@ -297,6 +357,7 @@ export default function TrackWorkout({ navigation }: Props) {
                   <Text>{`-${getAddWeight()}`}</Text>
                 </Button>
                 <XStack ai="center" space="$2">
+                  <Text opacity={0}>{getUnitAbbreviation(units)}</Text>
                   <Input
                     keyboardType="numeric"
                     onChangeText={(text: string) => {
@@ -307,10 +368,9 @@ export default function TrackWorkout({ navigation }: Props) {
                         }),
                       );
                     }}
-                    value={exercise.weight.toString() || ""}
-                    // m="$0"
+                    value={(exercise.weight || 0).toString()}
                   />
-                  <Text>{getUnitAbbreviation(units)}</Text>
+                  <Text opacity={0.5}>{getUnitAbbreviation(units)}</Text>
                 </XStack>
                 <Button
                   onPress={() => {
@@ -326,10 +386,47 @@ export default function TrackWorkout({ navigation }: Props) {
                 </Button>
               </XStack>
 
+              {/* Apply default weight to all sets button */}
+              <AnimatePresence>
+                {exercise.weight !== exercise.startingWeight &&
+                  exercise.completedSets.some(
+                    (set) => set.weight !== exercise.weight,
+                  ) && (
+                    <YStack
+                      animation="medium"
+                      opacity={1}
+                      height="$4"
+                      enterStyle={{ opacity: 0, height: 0 }}
+                      exitStyle={{ opacity: 0, height: 0 }}
+                      paddingVertical="$1"
+                    >
+                      <Button
+                        size="$2"
+                        onPress={() => {
+                          // Apply default weight to all sets
+                          exercise.completedSets.forEach((_, setIndex) => {
+                            dispatch(
+                              exerciseWeightChanged({
+                                exerciseId: exercise.id,
+                                newWeight: exercise.weight,
+                                setIndex,
+                              }),
+                            );
+                          });
+                        }}
+                      >
+                        <Text>Apply to All Sets</Text>
+                      </Button>
+                    </YStack>
+                  )}
+              </AnimatePresence>
+
               <Text fontWeight="200">
-                {`Last Workout: ${exercise.startingWeight.toString()} ${getUnitAbbreviation(
-                  units,
-                )}`}
+                {`Last Workout: ${
+                  exercise.startingWeight !== undefined
+                    ? exercise.startingWeight.toString()
+                    : "0"
+                } ${getUnitAbbreviation(units)}`}
               </Text>
             </YStack>
           </YStack>

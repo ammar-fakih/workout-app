@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { FlatList } from "react-native";
+import { useEffect, useState, useMemo } from "react";
+import { FlatList } from "react-native-gesture-handler";
 import {
   ScrollView,
   Text,
@@ -7,14 +7,19 @@ import {
   View,
   XStack,
   YStack,
+  H4,
 } from "tamagui";
 import FilterMenu from "../../Components/FilterMenu";
 import SortByMenu from "../../Components/SortByMenu";
 import { useAppSelector } from "../../app/hooks";
-import { getDateString } from "../Home/helperFunctions";
+import {
+  getDateString,
+  formatWeights,
+  getUnitAbbreviation,
+} from "../Home/helperFunctions";
 import { ExerciseRecord, WorkoutRecordData } from "../Home/types";
 
-const borderWidth = "$1";
+const borderWidth = 1;
 
 export const HeaderCell = ({
   item: headerCell,
@@ -68,7 +73,7 @@ export const TableCell = ({
       bg={redBackground ? "red" : "transparent"}
       opacity={redBackground ? 0.5 : 1}
     >
-      <Text textAlign="center">{text}</Text>
+      <Text textAlign="center">{text || "/"}</Text>
     </View>
   );
 };
@@ -76,9 +81,6 @@ export const TableCell = ({
 export default function Table() {
   const [workoutRecords, setWorkoutRecords] = useState<WorkoutRecordData[]>();
   const [tableHeader, setTableHeader] = useState<string[]>([]);
-  const [selectedExercises, setSelectedExercises] = useState<Set<string>>(
-    new Set(),
-  );
   const workoutRecordIds = useAppSelector(
     (state) => state.appData.workouts.workoutRecords,
   );
@@ -96,20 +98,7 @@ export default function Table() {
     new Set([selectedProgram?.id || "all"]),
   );
 
-  useEffect(() => {
-    setWorkoutRecords(getWorkoutRecords());
-    setTableHeader(Object.keys(exercises));
-    setSelectedExercises(new Set(Object.keys(exercises)));
-  }, [allRecords]);
-
-  // Update selected programs when global program changes
-  useEffect(() => {
-    if (selectedProgram?.id) {
-      setSelectedPrograms(new Set([selectedProgram.id]));
-      setWorkoutRecords(getWorkoutRecords());
-    }
-  }, [selectedProgram]);
-
+  // Get filtered workout records based on selected programs
   const getWorkoutRecords = () => {
     return workoutRecordIds
       .map((record) => ({
@@ -126,13 +115,57 @@ export default function Table() {
       });
   };
 
+  // Calculate filtered exercise headers based on selected programs
+  const filteredExerciseHeaders = useMemo(() => {
+    if (selectedPrograms.has("all")) {
+      // If "all" programs selected, show all exercises
+      return Object.keys(exercises);
+    }
+
+    // Get all exercises from the selected programs
+    const exercisesInSelectedPrograms = new Set<string>();
+
+    // Get all workout records for selected programs
+    const filteredRecords = workoutRecordIds.filter(
+      (record) => record.programId && selectedPrograms.has(record.programId),
+    );
+
+    // Collect all exercise names from these records
+    filteredRecords.forEach((record) => {
+      record.exercises.forEach((exerciseId) => {
+        const exercise = allRecords[exerciseId];
+        if (exercise) {
+          exercisesInSelectedPrograms.add(exercise.name);
+        }
+      });
+    });
+
+    // Return only exercise names that are in the selected programs
+    return Object.keys(exercises).filter((exerciseName) =>
+      exercisesInSelectedPrograms.has(exerciseName),
+    );
+  }, [selectedPrograms, workoutRecordIds, allRecords, exercises]);
+
+  useEffect(() => {
+    setWorkoutRecords(getWorkoutRecords());
+    setTableHeader(filteredExerciseHeaders);
+  }, [allRecords, selectedPrograms, filteredExerciseHeaders]);
+
+  // Update selected programs when global program changes
+  useEffect(() => {
+    if (selectedProgram?.id) {
+      setSelectedPrograms(new Set([selectedProgram.id]));
+      setWorkoutRecords(getWorkoutRecords());
+    }
+  }, [selectedProgram]);
+
   const onPressDateAsc = () => {
     if (!workoutRecords?.length) return;
 
     const sortedWorkoutRecords = [...workoutRecords];
     sortedWorkoutRecords.sort((a, b) => {
-      const aDate = a.exercises[0].date;
-      const bDate = b.exercises[0].date;
+      const aDate = a.exercises[0]?.date;
+      const bDate = b.exercises[0]?.date;
       return aDate > bDate ? 1 : -1;
     });
     setWorkoutRecords(sortedWorkoutRecords);
@@ -143,23 +176,11 @@ export default function Table() {
 
     const sortedWorkoutRecords = [...workoutRecords];
     sortedWorkoutRecords.sort((a, b) => {
-      const aDate = a.exercises[0].date;
-      const bDate = b.exercises[0].date;
+      const aDate = a.exercises[0]?.date;
+      const bDate = b.exercises[0]?.date;
       return aDate < bDate ? 1 : -1;
     });
     setWorkoutRecords(sortedWorkoutRecords);
-  };
-
-  const onHideExercise = (exerciseName: string) => {
-    const newSelectedExercises = new Set(selectedExercises);
-    newSelectedExercises.delete(exerciseName);
-    setSelectedExercises(newSelectedExercises);
-  };
-
-  const onShowExercise = (exerciseName: string) => {
-    const newSelectedExercises = new Set(selectedExercises);
-    newSelectedExercises.add(exerciseName);
-    setSelectedExercises(newSelectedExercises);
   };
 
   const onHideProgram = (programId: string) => {
@@ -170,7 +191,6 @@ export default function Table() {
       newSelectedPrograms.add("all");
     }
     setSelectedPrograms(newSelectedPrograms);
-    setWorkoutRecords(getWorkoutRecords());
   };
 
   const onShowProgram = (programId: string) => {
@@ -184,7 +204,6 @@ export default function Table() {
     }
     newSelectedPrograms.add(programId);
     setSelectedPrograms(newSelectedPrograms);
-    setWorkoutRecords(getWorkoutRecords());
   };
 
   const wasExerciseCompleted = (exercise: ExerciseRecord | undefined) => {
@@ -202,9 +221,9 @@ export default function Table() {
     index: number;
   }) => {
     const rowData: (ExerciseRecord | undefined)[] = [];
-    selectedExercises.forEach((exerciseName) => {
+    tableHeader.forEach((exerciseName) => {
       rowData.push(
-        workout.exercises.find((record) => record.name === exerciseName),
+        workout.exercises.find((record) => record?.name === exerciseName),
       );
     });
     const date = workout.exercises[0]
@@ -214,18 +233,19 @@ export default function Table() {
     return (
       <XStack f={1} key={index}>
         <TableCell item={date} index={0} renderTopBorder={!index} />
-        {rowData.map(
-          (record, cellIndex) =>
-            (!record || selectedExercises.has(record.name)) && (
-              <TableCell
-                item={record ? record.weight.toString() : "/"}
-                key={cellIndex + 1}
-                index={cellIndex + 1}
-                renderTopBorder={!index}
-                redBackground={!wasExerciseCompleted(record)}
-              />
-            ),
-        )}
+        {rowData.map((record, cellIndex) => (
+          <TableCell
+            item={
+              record
+                ? formatWeights(record.completedSets || [], record.weight)
+                : "/"
+            }
+            key={cellIndex + 1}
+            index={cellIndex + 1}
+            renderTopBorder={!index}
+            redBackground={!wasExerciseCompleted(record)}
+          />
+        ))}
       </XStack>
     );
   };
@@ -248,10 +268,6 @@ export default function Table() {
           onPressDateDesc={onPressDateDesc}
         />
         <FilterMenu
-          exercises={tableHeader}
-          selectedExercises={selectedExercises}
-          onHideExercise={onHideExercise}
-          onShowExercise={onShowExercise}
           selectedPrograms={selectedPrograms}
           onHideProgram={onHideProgram}
           onShowProgram={onShowProgram}
@@ -275,16 +291,9 @@ export default function Table() {
         <YStack>
           <XStack>
             <HeaderCell item="Date" index={0} />
-            {tableHeader.map(
-              (headerCell, index) =>
-                selectedExercises.has(headerCell) && (
-                  <HeaderCell
-                    item={headerCell}
-                    index={index + 1}
-                    key={index + 1}
-                  />
-                ),
-            )}
+            {tableHeader.map((headerCell, index) => (
+              <HeaderCell item={headerCell} index={index + 1} key={index + 1} />
+            ))}
           </XStack>
           <FlatList
             alwaysBounceVertical={false}

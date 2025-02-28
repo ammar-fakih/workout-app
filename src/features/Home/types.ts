@@ -8,6 +8,7 @@ export interface Exercise {
 export interface CompletedSet {
   repCount: number;
   selected: boolean;
+  weight?: number;
 }
 
 export interface TodaysExercise extends Exercise {

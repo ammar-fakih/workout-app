@@ -1,5 +1,6 @@
 import "react-native-gesture-handler";
 
+import React from "react";
 import { MaterialCommunityIcons, Octicons } from "@expo/vector-icons";
 import { NavigationContainer } from "@react-navigation/native";
 import * as SplashScreen from "expo-splash-screen";
@@ -23,6 +24,8 @@ import Progress from "./src/features/Progress";
 import config from "./tamagui.config";
 import { Linking } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useAppSelector } from "./src/app/hooks";
+import Settings from "./src/features/Settings/Settings";
 
 const PERSISTENCE_KEY = "NAVIGATION_STATE_V1";
 
@@ -46,25 +49,40 @@ export type RootTabsParamList = {
 const Tabs = createBottomTabNavigator<RootTabsParamList>();
 
 export default function () {
-  const colorScheme = useColorScheme();
-
   return (
     <SafeAreaProvider>
       <Provider store={store}>
         <PersistGate persistor={persistor}>
           <RootSiblingParent>
             <TamaguiProvider config={config} defaultTheme="dark_blue">
-              <Theme name={colorScheme === "dark" ? "dark_blue" : "light_blue"}>
-                {/* <Theme name="dark_blue"> */}
-                <App />
-              </Theme>
+              <AppWithTheme />
             </TamaguiProvider>
           </RootSiblingParent>
         </PersistGate>
       </Provider>
-
-      <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
     </SafeAreaProvider>
+  );
+}
+
+function AppWithTheme() {
+  const deviceColorScheme = useColorScheme();
+  const themeMode = useAppSelector(
+    (state) => state.appData.secure.themeMode || "system",
+  );
+
+  // Determine which theme to use based on settings
+  const activeColorScheme =
+    themeMode === "system" ? deviceColorScheme : themeMode;
+
+  const themeName = activeColorScheme === "dark" ? "dark_blue" : "light_blue";
+
+  return (
+    <>
+      <Theme name={themeName}>
+        <App />
+      </Theme>
+      <StatusBar style={activeColorScheme === "dark" ? "light" : "dark"} />
+    </>
   );
 }
 

@@ -21,25 +21,27 @@ type Program = {
 };
 
 type Props = {
-  exercises: string[];
-  selectedExercises: Set<string>;
-  onHideExercise: (exercise: string) => void;
-  onShowExercise: (exercise: string) => void;
+  exercises?: string[];
+  selectedExercises?: Set<string>;
+  onHideExercise?: (exercise: string) => void;
+  onShowExercise?: (exercise: string) => void;
   programs: Program[];
   selectedPrograms: Set<string>;
   onHideProgram: (programId: string) => void;
   onShowProgram: (programId: string) => void;
+  showExerciseFilters?: boolean;
 };
 
 export default function FilterMenu({
-  exercises,
-  selectedExercises,
-  onHideExercise,
-  onShowExercise,
+  exercises = [],
+  selectedExercises = new Set(),
+  onHideExercise = () => {},
+  onShowExercise = () => {},
   programs,
   selectedPrograms,
   onHideProgram,
   onShowProgram,
+  showExerciseFilters = false,
 }: Props) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -52,8 +54,8 @@ export default function FilterMenu({
       count += selectedPrograms.size;
     }
 
-    // If not showing all exercises (default state)
-    if (selectedExercises.size !== exercises.length) {
+    // If exercise filtering is enabled and not showing all exercises (default state)
+    if (showExerciseFilters && selectedExercises.size !== exercises.length) {
       count += 1; // Count exercise filtering as 1 change
     }
 
@@ -116,12 +118,14 @@ export default function FilterMenu({
     // Reset programs to "all"
     onShowProgram("all");
 
-    // Reset exercises to show all
-    exercises.forEach((exercise) => {
-      if (!selectedExercises.has(exercise)) {
-        onShowExercise(exercise);
-      }
-    });
+    // Reset exercises to show all if exercise filtering is enabled
+    if (showExerciseFilters) {
+      exercises.forEach((exercise) => {
+        if (!selectedExercises.has(exercise)) {
+          onShowExercise(exercise);
+        }
+      });
+    }
   };
 
   return (
@@ -161,11 +165,16 @@ export default function FilterMenu({
               <H3>Programs</H3>
               <FlatList data={programs} renderItem={renderProgram} />
             </YStack>
-            <Separator />
-            <YStack>
-              <H3>Exercises Shown</H3>
-              <FlatList data={exercises} renderItem={renderExercise} />
-            </YStack>
+            
+            {showExerciseFilters && (
+              <>
+                <Separator />
+                <YStack>
+                  <H3>Exercises Shown</H3>
+                  <FlatList data={exercises} renderItem={renderExercise} />
+                </YStack>
+              </>
+            )}
           </YStack>
         </Sheet.Frame>
       </Sheet>

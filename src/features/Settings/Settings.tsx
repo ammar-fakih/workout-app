@@ -1,22 +1,34 @@
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { Alert } from "react-native";
 import { useDispatch } from "react-redux";
-import { Button, Text, ToggleGroup, XStack, YStack } from "tamagui";
+import { Button, Text, ToggleGroup, XStack, YStack, Separator } from "tamagui";
 import { RootTabsParamList } from "../../../App";
-import { reset as resetAppDataSlice } from "../../app/appDataSlice";
+import {
+  reset as resetAppDataSlice,
+  themeModeChanged,
+  ThemeMode,
+} from "../../app/appDataSlice";
 import { showToast } from "../../app/functions";
 import { useAppSelector } from "../../app/hooks";
 import { Units } from "../Home/types";
-import { reset as resetWorkoutSlice, unitsSet, importAppData } from "../Home/workoutsSlice";
+import {
+  reset as resetWorkoutSlice,
+  unitsSet,
+  importAppData,
+} from "../Home/workoutsSlice";
 import * as FileSystem from "expo-file-system";
 import * as Sharing from "expo-sharing";
 import * as DocumentPicker from "expo-document-picker";
+import { Download, Upload } from "@tamagui/lucide-icons";
 
 type Props = BottomTabScreenProps<RootTabsParamList, "Settings">;
 
 export default function Settings({ navigation }: Props) {
   const dispatch = useDispatch();
   const units = useAppSelector((state) => state.appData.workouts.units);
+  const themeMode = useAppSelector(
+    (state) => state.appData.secure.themeMode || "system",
+  );
   const workoutRecords = useAppSelector(
     (state) => state.appData.workouts.workoutRecords,
   );
@@ -53,6 +65,10 @@ export default function Settings({ navigation }: Props) {
 
   const onUnitsChange = (units: Units) => {
     dispatch(unitsSet(units));
+  };
+
+  const onThemeModeChange = (mode: ThemeMode) => {
+    dispatch(themeModeChanged(mode));
   };
 
   const exportWorkoutsToCSV = async () => {
@@ -129,24 +145,24 @@ export default function Settings({ navigation }: Props) {
         copyToCacheDirectory: true,
       });
 
-      if (result.canceled) {
+      if (result.type === "cancel") {
         return;
       }
 
       // Read the file content
       // Handle both the new API format (result.assets[0].uri) and the old format (result.uri)
-      const fileUri = result.assets?.[0]?.uri || result.uri;
-      
+      const fileUri = result.uri;
+
       if (!fileUri) {
         showToast("Failed to get file URI");
         return;
       }
-      
+
       const fileContent = await FileSystem.readAsStringAsync(fileUri);
-      
+
       // Parse the JSON
       const backupData = JSON.parse(fileContent);
-      
+
       // Confirm with the user
       Alert.alert(
         "Import Backup",
@@ -169,7 +185,7 @@ export default function Settings({ navigation }: Props) {
               }
             },
           },
-        ]
+        ],
       );
     } catch (error) {
       console.error("Error importing backup:", error);
@@ -197,17 +213,56 @@ export default function Settings({ navigation }: Props) {
         </ToggleGroup>
       </XStack>
 
-      <YStack space="$2">
+      <Separator />
+
+      <YStack space="$4">
         <Text fontSize="$5" fontWeight="bold">
-          Export Data
+          Appearance
         </Text>
-        <Button onPress={exportWorkoutsToCSV} theme="active">
-          Export Workouts to CSV
-        </Button>
-        <Button onPress={exportAppBackup} theme="active">
+        <XStack space="$4" jc="center" ai="center">
+          <Text>Theme</Text>
+          <ToggleGroup
+            disableDeactivation
+            type="single"
+            size="$5"
+            value={themeMode}
+            onValueChange={onThemeModeChange}
+          >
+            <ToggleGroup.Item value="light">
+              <Text>☀️</Text>
+            </ToggleGroup.Item>
+            <ToggleGroup.Item value="dark">
+              <Text>🌙</Text>
+            </ToggleGroup.Item>
+            <ToggleGroup.Item value="system">
+              <Text>📱</Text>
+            </ToggleGroup.Item>
+          </ToggleGroup>
+        </XStack>
+        <Text fontSize="$2" color="$color11" textAlign="center">
+          {themeMode === "system"
+            ? "Using device settings"
+            : themeMode === "light"
+            ? "Light mode"
+            : "Dark mode"}
+        </Text>
+      </YStack>
+
+      <Separator />
+
+      <Text fontSize="$5" fontWeight="bold">
+        Export Data
+      </Text>
+      <Button onPress={exportWorkoutsToCSV} theme="active">
+        Export Workouts to CSV
+      </Button>
+      <YStack space="$2">
+        <Button onPress={exportAppBackup} theme="blue">
+          <Download />
           Backup App Data
         </Button>
         <Button onPress={importAppBackup} theme="blue">
+          <Upload />
           Import Backup
         </Button>
       </YStack>

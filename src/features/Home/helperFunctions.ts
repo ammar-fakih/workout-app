@@ -43,9 +43,13 @@ export const getCurrentWeekRangeTime = () => {
 };
 
 export const renderExerciseLabel = (exercise: TodaysExercise, units: Units) => {
-  return `${exercise.sets}x${exercise.reps} ${
-    exercise.weight
-  }${getUnitAbbreviation(units)}`;
+  if (!exercise) return "";
+
+  // Format weights with slashes if they differ
+  const weightDisplay = formatWeights(exercise.completedSets, exercise.weight);
+  return `${exercise.sets}x${
+    exercise.reps
+  } ${weightDisplay}${getUnitAbbreviation(units)}`;
 };
 
 export const getClosestDate = (
@@ -93,7 +97,16 @@ export const getWorkoutExercises = (
   workout: number[],
   allRecords: ExerciseRecord[],
 ) => {
-  return workout.map((exericseId) => allRecords[exericseId]);
+  if (!workout || !allRecords) return [];
+
+  return workout
+    .map((exerciseId) => {
+      if (exerciseId >= 0 && exerciseId < allRecords.length) {
+        return allRecords[exerciseId];
+      }
+      return null;
+    })
+    .filter(Boolean);
 };
 
 export const calculateStopWatchValue = (
@@ -115,4 +128,60 @@ export const getStopWatchStringFromSeconds = (seconds: number) => {
 export const shortenString = (str: string, maxLength: number) => {
   if (str.length <= maxLength) return str;
   return str.slice(0, maxLength) + "...";
+};
+
+// Add a function to format weights with slashes when they differ
+export const formatWeights = (
+  completedSets: { weight?: number }[] | null | undefined,
+  defaultWeight: number | null | undefined,
+): string => {
+  // If no completed sets or default weight is undefined, return '0'
+  if (
+    !completedSets ||
+    completedSets.length === 0 ||
+    defaultWeight === undefined ||
+    defaultWeight === null
+  ) {
+    return defaultWeight !== undefined && defaultWeight !== null
+      ? defaultWeight.toString()
+      : "0";
+  }
+
+  // Get all weights, using default weight if not specified
+  const weights = completedSets.map((set) =>
+    set && set.weight !== undefined ? set.weight : defaultWeight,
+  );
+
+  // Check if all weights are the same
+  const allSame = weights.every((weight) => weight === weights[0]);
+
+  // If all weights are the same, return the first one
+  if (allSame && weights[0] !== null && weights[0] !== undefined) {
+    return weights[0].toString();
+  }
+
+  // Otherwise, return weights with slashes, ensuring no null values
+  return weights
+    .map((w) => (w !== null && w !== undefined ? w.toString() : "0"))
+    .join("/");
+};
+
+// Add a function to get the average weight
+export const getAverageWeight = (
+  completedSets: { weight?: number }[],
+  defaultWeight: number,
+): number => {
+  if (
+    !completedSets ||
+    completedSets.length === 0 ||
+    defaultWeight === undefined
+  ) {
+    return defaultWeight !== undefined ? defaultWeight : 0;
+  }
+
+  const weights = completedSets.map((set) =>
+    set && set.weight !== undefined ? set.weight : defaultWeight,
+  );
+  const sum = weights.reduce((acc, weight) => acc + weight, 0);
+  return sum / weights.length;
 };
