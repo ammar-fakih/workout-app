@@ -41,6 +41,7 @@ export type RootTabsParamList = {
   ProgramsPage: undefined;
   CreateWorkoutListPage: undefined;
   WorkoutRecordPage: { date: string };
+  LogPastWorkoutPage: undefined;
 };
 const Tabs = createBottomTabNavigator<RootTabsParamList>();
 

@@ -1,16 +1,23 @@
 import { useMemo } from "react";
 import { useColorScheme } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { ScrollView, Tabs, Text, YStack } from "tamagui";
+import { ScrollView, Tabs, Text, YStack, Button, XStack } from "tamagui";
+import { Plus } from "@tamagui/lucide-icons";
+import { useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { RootTabsParamList } from "../../../App";
 import Calendar from "./Calendar";
 import Graphs from "./Graphs";
 import List from "./List";
 import Table from "./Table";
 import BodyWeight from "./BodyWeight";
 
+type ProgressNavigationProp = StackNavigationProp<RootTabsParamList>;
+
 export default function ProgressPage() {
   const insets = useSafeAreaInsets();
   const colorScheme = useColorScheme();
+  const navigation = useNavigation<ProgressNavigationProp>();
 
   const tabsList = useMemo(
     () => ["Graphs", "List", "Calendar", "Body Weight"],
@@ -19,6 +26,24 @@ export default function ProgressPage() {
 
   return (
     <YStack paddingTop={insets.top} f={1}>
+      <XStack
+        justifyContent="space-between"
+        alignItems="center"
+        paddingHorizontal="$2"
+        paddingBottom="$2"
+      >
+        <Text fontSize="$6" fontWeight="bold">
+          Progress
+        </Text>
+        <Button
+          size="$3"
+          icon={<Plus size={16} />}
+          onPress={() => navigation.navigate("LogPastWorkoutPage")}
+        >
+          Log Past Workout
+        </Button>
+      </XStack>
+
       <Tabs defaultValue="tab1" f={1} flexDirection="column">
         <Tabs.List>
           <ScrollView horizontal space="$2" paddingHorizontal="$2">

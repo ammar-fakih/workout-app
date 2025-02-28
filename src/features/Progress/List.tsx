@@ -1,5 +1,5 @@
 import { FlatList } from "react-native-gesture-handler";
-import { View } from "tamagui";
+import { H4, View, YStack, Text } from "tamagui";
 import SortByMenu from "../../Components/SortByMenu";
 import WorkoutCard from "../../Components/WorkoutCard";
 import { useAppSelector } from "../../app/hooks";
@@ -64,6 +64,15 @@ export default function List() {
       />
     );
   };
+
+  if (!sortedWorkoutRecords.length) {
+    return (
+      <YStack f={1} ai="center" jc="center" space="$4">
+        <H4>No Exercise Data Available</H4>
+        <Text>Complete workouts to see your progress</Text>
+      </YStack>
+    );
+  }
 
   return (
     <View f={1}>

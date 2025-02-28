@@ -474,6 +474,65 @@ export const workoutsSlice = createSlice({
       workoutsSlice.caseReducers.weeksWorkoutsSet(state);
       workoutsSlice.caseReducers.todaysWorkoutsSet(state);
     },
+    logPastWorkout: (
+      state,
+      action: PayloadAction<{
+        workoutName: string;
+        workoutDate: string;
+        workoutNotes: string;
+        workoutDuration: number;
+        exercises: ExerciseRecord[];
+      }>,
+    ) => {
+      const {
+        workoutName,
+        workoutDate,
+        workoutNotes,
+        workoutDuration,
+        exercises,
+      } = action.payload;
+
+      const exerciseRecord: WorkoutRecord["exercises"] = [];
+
+      // Add each exercise to allRecords
+      exercises.forEach((exercise) => {
+        // Push to allrecords
+        state.allRecords.push({
+          ...exercise,
+          date: workoutDate,
+        });
+
+        // Update exercise records
+        if (!state.exerciseRecords[exercise.name]) {
+          state.exerciseRecords[exercise.name] = [];
+        }
+        state.exerciseRecords[exercise.name].push(state.allRecords.length - 1);
+
+        // Save value for workout record
+        exerciseRecord.push(state.allRecords.length - 1);
+      });
+
+      // Push to workout records
+      state.workoutRecords.push({
+        exercises: exerciseRecord,
+        name: workoutName,
+        notes: workoutNotes,
+        timeToComplete: workoutDuration * 60, // Convert minutes to seconds
+        programId: undefined,
+        programName: undefined,
+      });
+    },
+    importAppData: (state, action: PayloadAction<any>) => {
+      // Import workouts data from backup
+      if (action.payload.workouts) {
+        // Replace the current state with the backup state
+        return {
+          ...initialState,
+          ...action.payload.workouts,
+        };
+      }
+      return state;
+    },
   },
 });
 
@@ -549,6 +608,8 @@ export const {
   todaysBodyWeightRecordCleared,
   stopWatchStopped,
   programSelected,
+  logPastWorkout,
+  importAppData,
 } = workoutsSlice.actions;
 
 export default workoutsSlice.reducer;

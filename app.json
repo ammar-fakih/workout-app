@@ -18,7 +18,10 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.liftiq.app",
       "userInterfaceStyle": "automatic",
-      "jsEngine": "jsc"
+      "jsEngine": "jsc",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
