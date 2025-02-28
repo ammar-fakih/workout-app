@@ -487,32 +487,32 @@ export default function TrackWorkout({ navigation }: Props) {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={{ flex: 1 }}
     >
-      {/* Progress Bar */}
-      <XStack p="$2" space="$0.5" justifyContent="center">
-        {workoutProgress.setStatus.map((status, index) => (
-          <Stack
-            key={index}
-            flex={1}
-            height="$1"
-            maxWidth={20}
-            backgroundColor={
-              status === "completed"
-                ? "$color7"
-                : status === "current"
-                ? "$color10"
-                : status === "skipped"
-                ? "$color5"
-                : "$color3"
-            }
-            opacity={status === "skipped" ? 0.5 : 1}
-          />
-        ))}
-      </XStack>
-
-      <View flex={1} onPress={Keyboard.dismiss} m="$2">
+      <View flex={1} onPress={Keyboard.dismiss} m="$2" mt="$0">
         <FlatList
           data={selectedWorkout.exercises}
           renderItem={renderItem}
+          ListHeaderComponent={
+            <XStack p="$2" space="$0.5" justifyContent="center">
+              {workoutProgress.setStatus.map((status, index) => (
+                <Stack
+                  key={index}
+                  flex={1}
+                  height="$1"
+                  maxWidth={20}
+                  backgroundColor={
+                    status === "completed"
+                      ? "$color7"
+                      : status === "current"
+                      ? "$color10"
+                      : status === "skipped"
+                      ? "$color5"
+                      : "$color3"
+                  }
+                  opacity={status === "skipped" ? 0.5 : 1}
+                />
+              ))}
+            </XStack>
+          }
           ListFooterComponent={
             <View>
               <Input
