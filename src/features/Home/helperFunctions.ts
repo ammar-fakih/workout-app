@@ -111,3 +111,8 @@ export const getStopWatchStringFromSeconds = (seconds: number) => {
   const remainingSeconds = seconds % 60;
   return `${minutes}:${remainingSeconds < 10 ? "0" : ""}${remainingSeconds}`;
 };
+
+export const shortenString = (str: string, maxLength: number) => {
+  if (str.length <= maxLength) return str;
+  return str.slice(0, maxLength) + "...";
+};

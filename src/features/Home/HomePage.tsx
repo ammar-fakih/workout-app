@@ -29,6 +29,7 @@ import {
   selectWeeksWorkouts,
   workoutSelected,
 } from "./workoutsSlice";
+import { shortenString } from "./helperFunctions";
 
 type Props = BottomTabScreenProps<RootTabsParamList, "HomePage">;
 
@@ -41,6 +42,9 @@ export default function HomePage({ navigation }: Props) {
   );
   const selectedWorkout = useAppSelector(
     (state) => state.appData.workouts.selectedWorkout,
+  );
+  const selectedProgram = useAppSelector(
+    (state) => state.appData.workouts.selectedProgram,
   );
   // const bodyWeightRecords = bodyWeightRecordSelectors;
   const dispatch = useAppDispatch();
@@ -88,10 +92,10 @@ export default function HomePage({ navigation }: Props) {
           <Button variant="outlined" disabled>
             <H3>☀️ Rest Day</H3>
           </Button>
-          <Button
-            onPress={() => navigation.navigate("Programs")}
-          >
-            Program
+          <Button onPress={() => navigation.navigate("Programs")}>
+            {selectedProgram
+              ? shortenString(selectedProgram.name, 20)
+              : "Program"}
           </Button>
         </XStack>
       );

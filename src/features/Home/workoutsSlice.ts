@@ -197,8 +197,12 @@ export const workoutsSlice = createSlice({
           const workoutDate = new Date(workout.startDate);
           const diff = Math.abs(workoutDate.getTime() - date.getTime());
           const daysBetween = Math.ceil(diff / (1000 * 60 * 60 * 24));
+          const weeks = Math.floor(daysBetween / 7);
 
-          if (daysBetween % workout.frequency === 0) {
+          if (
+            workout.frequency < 7 ||
+            weeks % Math.floor(workout.frequency / 7) === 0
+          ) {
             weeksWorkouts.push({
               ...workout,
               closestTimeToNow: date.toISOString(),
