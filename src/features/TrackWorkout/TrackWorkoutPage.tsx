@@ -1,7 +1,7 @@
 import React from "react";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { isEqual } from "lodash";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import {
   Alert,
   FlatList,
@@ -18,6 +18,7 @@ import {
   XStack,
   YStack,
   styled,
+  Stack,
 } from "tamagui";
 import { RootTabsParamList } from "../../../App";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
@@ -58,6 +59,52 @@ export default function TrackWorkout({ navigation }: Props) {
   const selectedWorkout = useAppSelector(selectSelectedWorkout);
   const units = useAppSelector((state) => state.appData.workouts.units);
   const dispatch = useAppDispatch();
+
+  // Calculate total sets and completed sets for progress bar
+  const workoutProgress = useMemo(() => {
+    if (!selectedWorkout)
+      return { totalSets: 0, completedSets: 0, setStatus: [] };
+
+    let totalSets = 0;
+    let completedSets = 0;
+    const setStatus: ("completed" | "current" | "skipped" | "pending")[] = [];
+
+    selectedWorkout.exercises.forEach((exercise, exerciseIndex) => {
+      exercise.completedSets.forEach((set, setIndex) => {
+        totalSets++;
+
+        // Mark current set
+        if (
+          selectedSet &&
+          selectedSet[0] === exerciseIndex &&
+          selectedSet[1] === setIndex
+        ) {
+          setStatus.push("current");
+        }
+        // Mark completed sets
+        else if (set.selected) {
+          completedSets++;
+          setStatus.push("completed");
+        }
+        // Mark skipped sets (if a later set in the same exercise or a later exercise has been completed)
+        else if (
+          exercise.completedSets.some((s, i) => i > setIndex && s.selected) ||
+          selectedWorkout.exercises.some(
+            (ex, i) =>
+              i > exerciseIndex && ex.completedSets.some((s) => s.selected),
+          )
+        ) {
+          setStatus.push("skipped");
+        }
+        // Mark pending sets
+        else {
+          setStatus.push("pending");
+        }
+      });
+    });
+
+    return { totalSets, completedSets, setStatus };
+  }, [selectedWorkout, selectedSet]);
 
   const getAddWeight = () => {
     return units === Units.IMPERIAL
@@ -440,6 +487,28 @@ export default function TrackWorkout({ navigation }: Props) {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={{ flex: 1 }}
     >
+      {/* Progress Bar */}
+      <XStack p="$2" space="$0.5" justifyContent="center">
+        {workoutProgress.setStatus.map((status, index) => (
+          <Stack
+            key={index}
+            flex={1}
+            height="$1"
+            maxWidth={20}
+            backgroundColor={
+              status === "completed"
+                ? "$color7"
+                : status === "current"
+                ? "$color10"
+                : status === "skipped"
+                ? "$color5"
+                : "$color3"
+            }
+            opacity={status === "skipped" ? 0.5 : 1}
+          />
+        ))}
+      </XStack>
+
       <View flex={1} onPress={Keyboard.dismiss} m="$2">
         <FlatList
           data={selectedWorkout.exercises}
