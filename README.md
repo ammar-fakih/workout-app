@@ -4,4 +4,4 @@
 * Get a notification on workout days.
 * Save your workout logs and export to a spreadsheet.
 
-Made with react native and typescript. Part of my motivation was to try out [tamagui](tamagui.dev) component library and I have enjoyed using it a lot.
+Made with react native and typescript. Part of my motivation was to try out [tamagui](https://tamagui.dev/) component library and I have enjoyed using it a lot.
