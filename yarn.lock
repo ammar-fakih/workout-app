@@ -87,13 +87,6 @@
   dependencies:
     "@babel/types" "^7.22.5"
 
-"@babel/helper-builder-binary-assignment-operator-visitor@^7.22.15":
-  version "7.22.15"
-  resolved "https://registry.npmjs.org/@babel/helper-builder-binary-assignment-operator-visitor/-/helper-builder-binary-assignment-operator-visitor-7.22.15.tgz"
-  integrity sha512-QkBXwGgaoC2GtGZRoma6kv7Szfv06khvhFav67ZExau2RaXzy8MpHSMO2PNoP2XtmQphJQRHFfg77Bq731Yizw==
-  dependencies:
-    "@babel/types" "^7.22.15"
-
 "@babel/helper-compilation-targets@^7.20.7", "@babel/helper-compilation-targets@^7.22.15", "@babel/helper-compilation-targets@^7.22.5", "@babel/helper-compilation-targets@^7.22.6", "@babel/helper-compilation-targets@^7.23.6", "@babel/helper-compilation-targets@^7.26.5":
   version "7.26.5"
   resolved "https://registry.npmjs.org/@babel/helper-compilation-targets/-/helper-compilation-targets-7.26.5.tgz"
@@ -760,14 +753,6 @@
   dependencies:
     "@babel/helper-plugin-utils" "^7.24.0"
     "@babel/plugin-syntax-dynamic-import" "^7.8.3"
-
-"@babel/plugin-transform-exponentiation-operator@^7.24.1":
-  version "7.24.1"
-  resolved "https://registry.npmjs.org/@babel/plugin-transform-exponentiation-operator/-/plugin-transform-exponentiation-operator-7.24.1.tgz"
-  integrity sha512-U1yX13dVBSwS23DEAqU+Z/PkwE9/m7QQy8Y9/+Tdb8UWYaGNDYwTLi19wqIAiROr8sXVum9A/rtiH5H0boUcTw==
-  dependencies:
-    "@babel/helper-builder-binary-assignment-operator-visitor" "^7.22.15"
-    "@babel/helper-plugin-utils" "^7.24.0"
 
 "@babel/plugin-transform-export-namespace-from@^7.24.1":
   version "7.24.1"
@@ -6349,6 +6334,11 @@ expo-keep-awake@~12.0.1:
   resolved "https://registry.npmjs.org/expo-keep-awake/-/expo-keep-awake-12.0.1.tgz"
   integrity sha512-hqeCnb4033TyuZaXs93zTK7rjVJ3bywXATyMmKmKkLEsH2PKBAl/VmjlCOPQL/2Ncqz6aj7Wo//tjeJTARBD4g==
 
+expo-linear-gradient@*, expo-linear-gradient@~12.1.2:
+  version "12.1.2"
+  resolved "https://registry.npmjs.org/expo-linear-gradient/-/expo-linear-gradient-12.1.2.tgz"
+  integrity sha512-e1d6Hq5qsRL8sWutrOuQhuir4vHiRJ1PmvDIL8P33mt51Y8VFTQjTG/mr5qJlT8lUD/ADJfaBLzV7SNqSuDTLQ==
+
 expo-manifests@~0.5.0:
   version "0.5.2"
   resolved "https://registry.npmjs.org/expo-manifests/-/expo-manifests-0.5.2.tgz"
@@ -6967,6 +6957,11 @@ getenv@^1.0.0:
   version "1.0.0"
   resolved "https://registry.npmjs.org/getenv/-/getenv-1.0.0.tgz"
   integrity sha512-7yetJWqbS9sbn0vIfliPsFgoXMKn/YMF+Wuiog97x+urnSRRRZ7xB+uVkwGKzRgq9CDFfMQnE9ruL5DHv9c6Xg==
+
+gifted-charts-core@0.1.59:
+  version "0.1.59"
+  resolved "https://registry.npmjs.org/gifted-charts-core/-/gifted-charts-core-0.1.59.tgz"
+  integrity sha512-yFqqhsXLAgBSSYmk2+/6DO4XMtipKNpDsjIftLtNxoCGFvmMTTgEqXJL4yr4GPX1jo3TFDPnFW1Fvmjr95C6eA==
 
 glob-parent@^5.1.2, glob-parent@~5.1.2:
   version "5.1.2"
@@ -10051,6 +10046,13 @@ react-native-codegen@^0.71.6:
     lodash "^4.17.21"
     prop-types "^15.7.2"
 
+react-native-gifted-charts@^1.4.57:
+  version "1.4.57"
+  resolved "https://registry.npmjs.org/react-native-gifted-charts/-/react-native-gifted-charts-1.4.57.tgz"
+  integrity sha512-h79fnp+JAhh+GJESJ9lsr9PGaxW+z7YyvDhzaHM7FW5saaPRwuzbA8wwiACYBwHVcyy5A7mPdihqe76RgFh6Wg==
+  dependencies:
+    gifted-charts-core "0.1.59"
+
 react-native-gradle-plugin@^0.71.19:
   version "0.71.19"
   resolved "https://registry.npmjs.org/react-native-gradle-plugin/-/react-native-gradle-plugin-0.71.19.tgz"
@@ -10096,7 +10098,7 @@ react-native-root-toast@^3.4.1:
     react-freeze "^1.0.0"
     warn-once "^0.1.0"
 
-react-native-svg@>=12, react-native-svg@13.4.0:
+react-native-svg@*, react-native-svg@>=12, react-native-svg@13.4.0:
   version "13.4.0"
   resolved "https://registry.npmjs.org/react-native-svg/-/react-native-svg-13.4.0.tgz"
   integrity sha512-B3TwK+H0+JuRhYPzF21AgqMt4fjhCwDZ9QUtwNstT5XcslJBXC0FoTkdZo8IEb1Sv4suSqhZwlAY6lwOv3tHag==

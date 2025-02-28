@@ -254,15 +254,33 @@ export const workoutsSlice = createSlice({
       action: PayloadAction<{
         exerciseIndex: number;
         exerciseSetIndex: number;
+        incrementReps?: boolean;
+        markIncomplete?: boolean;
       }>,
     ) => {
       if (!state.selectedWorkout) return;
 
-      const { exerciseIndex, exerciseSetIndex } = action.payload;
+      const { exerciseIndex, exerciseSetIndex, incrementReps, markIncomplete } =
+        action.payload;
 
       const exercise = state.selectedWorkout.exercises[exerciseIndex];
       const exerciseSet = exercise.completedSets[exerciseSetIndex];
 
+      // Handle marking set as incomplete
+      if (markIncomplete) {
+        exerciseSet.repCount = exercise.reps;
+        exerciseSet.selected = false;
+        return;
+      }
+
+      // Handle incrementing reps beyond prescribed amount
+      if (incrementReps) {
+        exerciseSet.repCount++;
+        exerciseSet.selected = true;
+        return;
+      }
+
+      // Original behavior for decrementing
       if (exerciseSet.repCount === exercise.reps && !exerciseSet.selected) {
         exerciseSet.selected = true;
       } else if (exerciseSet.selected && exerciseSet.repCount === 0) {

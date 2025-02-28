@@ -173,28 +173,103 @@ export default function TrackWorkout({ navigation }: Props) {
                           <Text>Prev</Text>
                         </Button>
                         <YStack space="$space.3" ai="center" jc="center">
-                          <Button
-                            size="$5"
-                            circular
-                            bg={set.selected ? "$color7" : "$color1"}
-                            onPress={() => {
-                              dispatch(
-                                exerciseSetClicked({
-                                  exerciseIndex: index,
-                                  exerciseSetIndex,
-                                }),
-                              );
-                            }}
-                          >
-                            <Text
-                              fontSize="$8"
-                              letterSpacing="$3"
-                              color={isItemSelected ? "$color" : "$color6"}
+                          <XStack space="$2" ai="center">
+                            <Button
+                              size="$3"
+                              circular
+                              onPress={() => {
+                                dispatch(
+                                  exerciseSetClicked({
+                                    exerciseIndex: index,
+                                    exerciseSetIndex,
+                                  }),
+                                );
+                              }}
                             >
-                              {set.repCount}
-                            </Text>
-                          </Button>
+                              <Text fontSize="$4">-</Text>
+                            </Button>
+                            <Button
+                              size="$5"
+                              circular
+                              bg={set.selected ? "$color7" : "$color1"}
+                              onPress={() => {
+                                if (
+                                  set.repCount === exercise.reps &&
+                                  !set.selected
+                                ) {
+                                  // Just mark as completed without changing rep count
+                                  dispatch(
+                                    exerciseSetClicked({
+                                      exerciseIndex: index,
+                                      exerciseSetIndex,
+                                    }),
+                                  );
+                                } else if (set.selected && set.repCount === 0) {
+                                  // Reset to default
+                                  dispatch(
+                                    exerciseSetClicked({
+                                      exerciseIndex: index,
+                                      exerciseSetIndex,
+                                    }),
+                                  );
+                                } else {
+                                  // Toggle between completed and not completed
+                                  Alert.alert(
+                                    "Set Completion",
+                                    "What would you like to do?",
+                                    [
+                                      {
+                                        text: "Mark Incomplete",
+                                        style: "destructive",
+                                        onPress: () => {
+                                          dispatch(
+                                            exerciseSetClicked({
+                                              exerciseIndex: index,
+                                              exerciseSetIndex,
+                                              markIncomplete: true,
+                                            }),
+                                          );
+                                        },
+                                      },
+                                      {
+                                        text: "Cancel",
+                                        style: "cancel",
+                                      },
+                                    ],
+                                  );
+                                }
+                              }}
+                            >
+                              <Text
+                                fontSize="$8"
+                                letterSpacing="$3"
+                                color={isItemSelected ? "$color" : "$color6"}
+                              >
+                                {set.repCount}
+                              </Text>
+                            </Button>
+                            <Button
+                              size="$3"
+                              circular
+                              onPress={() => {
+                                dispatch(
+                                  exerciseSetClicked({
+                                    exerciseIndex: index,
+                                    exerciseSetIndex,
+                                    incrementReps: true,
+                                  }),
+                                );
+                              }}
+                            >
+                              <Text fontSize="$4">+</Text>
+                            </Button>
+                          </XStack>
                           <Text>Reps</Text>
+                          {set.repCount > exercise.reps && (
+                            <Text fontSize="$2" color="$color7">
+                              {set.repCount - exercise.reps} extra
+                            </Text>
+                          )}
                         </YStack>
                         <Button onPress={handlePressNextSet}>
                           <Text>Next</Text>
