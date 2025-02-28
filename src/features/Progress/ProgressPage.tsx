@@ -6,13 +6,14 @@ import Calendar from "./Calendar";
 import Graphs from "./Graphs";
 import List from "./List";
 import Table from "./Table";
+import BodyWeight from "./BodyWeight";
 
 export default function ProgressPage() {
   const insets = useSafeAreaInsets();
   const colorScheme = useColorScheme();
 
   const tabsList = useMemo(
-    () => ["Table", "List", "Graphs", "Calendar", "Body Weight"],
+    () => ["Graphs", "List", "Calendar", "Body Weight"],
     [],
   );
 
@@ -37,16 +38,19 @@ export default function ProgressPage() {
         </Tabs.List>
 
         <Tabs.Content value="tab1" f={1}>
-          <Table />
+          <Graphs />
         </Tabs.Content>
         <Tabs.Content value="tab2" f={1}>
           <List />
         </Tabs.Content>
-        <Tabs.Content value="tab3" f={1}>
-          <Graphs />
-        </Tabs.Content>
-        <Tabs.Content value="tab4" f={1} key={colorScheme}>
+        {/* <Tabs.Content value="tab3" f={1}>
+          <Table />
+        </Tabs.Content> */}
+        <Tabs.Content value="tab3" f={1} key={colorScheme}>
           <Calendar />
+        </Tabs.Content>
+        <Tabs.Content value="tab4" f={1}>
+          <BodyWeight />
         </Tabs.Content>
       </Tabs>
     </YStack>

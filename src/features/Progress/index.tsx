@@ -14,7 +14,11 @@ export default function Progress() {
           title: "",
         }}
       />
-      <Stack.Screen name="WorkoutRecordPage" component={WorkoutRecordPage} />
+      <Stack.Screen
+        name="WorkoutRecordPage"
+        component={WorkoutRecordPage}
+        options={{ headerShown: false }}
+      />
     </Stack.Navigator>
   );
 }

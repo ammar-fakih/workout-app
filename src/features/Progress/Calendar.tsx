@@ -4,12 +4,23 @@ import { CalendarUtils, Calendar as RNC } from "react-native-calendars";
 import { MarkedDates } from "react-native-calendars/src/types";
 import { View, useTheme } from "tamagui";
 import { useAppSelector } from "../../app/hooks";
+import { useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+
+type WorkoutRecordNavigationProp = StackNavigationProp<
+  { WorkoutRecordPage: { date: string } },
+  "WorkoutRecordPage"
+>;
 
 export default function Calendar() {
   const colorScheme = useColorScheme();
   const theme = useTheme();
+  const navigation = useNavigation<WorkoutRecordNavigationProp>();
   const allRecords = useAppSelector(
     (state) => state.appData.workouts.allRecords,
+  );
+  const workoutRecords = useAppSelector(
+    (state) => state.appData.workouts.workoutRecords,
   );
 
   const markedDates = useMemo(() => {
@@ -22,7 +33,20 @@ export default function Calendar() {
       };
       return acc;
     }, {} as MarkedDates);
-  }, [allRecords]);
+  }, [allRecords, theme]);
+
+  const handleDayPress = (day: { dateString: string }) => {
+    // Check if there are any records for this date
+    const hasRecordsForDate = allRecords.some((record) => {
+      const recordDate = new Date(record.date);
+      const recordDateString = recordDate.toISOString().split("T")[0];
+      return recordDateString === day.dateString;
+    });
+
+    if (hasRecordsForDate) {
+      navigation.navigate("WorkoutRecordPage", { date: day.dateString });
+    }
+  };
 
   return (
     <View m="$2">
@@ -45,6 +69,7 @@ export default function Calendar() {
           textDisabledColor: theme.background.val,
         }}
         markedDates={markedDates}
+        onDayPress={handleDayPress}
       />
     </View>
   );
